@@ -9,6 +9,7 @@
 #define GAME_HPP_
 
 namespace metallicar {
+namespace engine {
 
 class Game {
   public:
@@ -18,6 +19,7 @@ class Game {
     void run();
 };
 
+} // engine metallicar
 } // namespace metallicar
 
 #endif /* GAME_HPP_ */

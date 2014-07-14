@@ -7,7 +7,7 @@
 
 #include "Game.hpp"
 
-class MyGame : public metallicar::Game {
+class MyGame : public metallicar::engine::Game {
   public:
     
 };
