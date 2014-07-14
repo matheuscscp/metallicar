@@ -45,7 +45,7 @@ static void updateStack();
 // private globals
 // =============================================================================
 
-static ScreenOptions screenOptions;
+static WindowOptions windowOptions;
 static SDL_Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
 static bool quitRequested = false;
@@ -58,12 +58,12 @@ static ChangeOption changeOption = ChangeOption::NA;
 // public methods
 // =============================================================================
 
-void Game::init(const ScreenOptions& screenOptions) {
+void Game::init(const WindowOptions& windowOptions) {
   if (window) {
     return;
   }
   
-  engine::screenOptions = screenOptions;
+  engine::windowOptions = windowOptions;
   
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0) {
     util::Logger::log(util::Logger::ERROR, SDL_GetError());
@@ -74,23 +74,23 @@ void Game::init(const ScreenOptions& screenOptions) {
     exit(0);
   }
   if ((window = SDL_CreateWindow(
-    screenOptions.title.c_str(),
+    windowOptions.title.c_str(),
     SDL_WINDOWPOS_CENTERED,
     SDL_WINDOWPOS_CENTERED,
-    screenOptions.width,
-    screenOptions.height,
-    SDL_WINDOW_OPENGL | (screenOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
+    windowOptions.width,
+    windowOptions.height,
+    SDL_WINDOW_OPENGL | (windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
   )) == nullptr) {
     util::Logger::log(util::Logger::ERROR, SDL_GetError());
     exit(0);
   }
-  SDL_GetWindowSize(window, &engine::screenOptions.width, &engine::screenOptions.height);
+  SDL_GetWindowSize(window, &engine::windowOptions.width, &engine::windowOptions.height);
   if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == nullptr) {
     util::Logger::log(util::Logger::ERROR, SDL_GetError());
     exit(0);
   }
-  if (screenOptions.icon.size()) {
-    SDL_Surface* iconsurface = IMG_Load(util::Path::get(screenOptions.icon).c_str());
+  if (windowOptions.icon.size()) {
+    SDL_Surface* iconsurface = IMG_Load(util::Path::get(windowOptions.icon).c_str());
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
@@ -152,15 +152,15 @@ void Game::quit() {
   changeOption = ChangeOption::QUIT;
 }
 
-void Game::setScreenOptions(const ScreenOptions& screenOptions) {
-  engine::screenOptions = screenOptions;
+void Game::setWindowOptions(const WindowOptions& windowOptions) {
+  engine::windowOptions = windowOptions;
   
-  SDL_SetWindowTitle(window, screenOptions.title.c_str());
-  SDL_SetWindowFullscreen(window, screenOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
-  SDL_SetWindowSize(window, screenOptions.width, screenOptions.height);
-  SDL_GetWindowSize(window, &engine::screenOptions.width, &engine::screenOptions.height);
-  if (screenOptions.icon.size()) {
-    SDL_Surface* iconsurface = IMG_Load(util::Path::get(screenOptions.icon).c_str());
+  SDL_SetWindowTitle(window, windowOptions.title.c_str());
+  SDL_SetWindowFullscreen(window, windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+  SDL_SetWindowSize(window, windowOptions.width, windowOptions.height);
+  SDL_GetWindowSize(window, &engine::windowOptions.width, &engine::windowOptions.height);
+  if (windowOptions.icon.size()) {
+    SDL_Surface* iconsurface = IMG_Load(util::Path::get(windowOptions.icon).c_str());
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }

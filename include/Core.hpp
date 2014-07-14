@@ -32,19 +32,19 @@ class GameScene {
     virtual void wakeup(void* args) = 0;
 };
 
-struct ScreenOptions {
+struct WindowOptions {
   std::string title;
   int width;
   int height;
   bool fullscreen;
   std::string icon;
-  ScreenOptions();
-  ScreenOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon);
+  WindowOptions();
+  WindowOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon);
 };
 
 class Game {
   public:
-    static void init(const ScreenOptions& screenOptions = ScreenOptions());
+    static void init(const WindowOptions& windowOptions = WindowOptions());
     static void run(GameScene* firstScene);
     
     static void changeScene(GameScene* scene);
@@ -52,7 +52,7 @@ class Game {
     static void popScene(void* args);
     static void quit();
     
-    static void setScreenOptions(const ScreenOptions& screenOptions);
+    static void setWindowOptions(const WindowOptions& windowOptions);
     
     static bool quitRequested();
     static void resetQuitRequest();
