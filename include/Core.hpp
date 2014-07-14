@@ -1,18 +1,36 @@
 /*
- * Game.hpp
+ * Core.hpp
  *
  *  Created on: Jul 13, 2014
  *      Author: Pimenta
  */
 
 #ifndef GAME_HPP_
-#define GAME_HPP_
+#define CORE_HPP_
 
 // standard
 #include <string>
 
+// local
+#include "Asset.hpp"
+
 namespace metallicar {
 namespace engine {
+
+class GameScene {
+  protected:
+    Assets assets;
+  public:
+    bool frozen;
+    bool visible;
+  protected:
+    GameScene();
+  public:
+    virtual ~GameScene();
+    virtual void update() = 0;
+    virtual void render() = 0;
+    virtual void wakeup(void* args) = 0;
+};
 
 struct ScreenOptions {
   std::string title;
@@ -22,11 +40,6 @@ struct ScreenOptions {
   std::string icon;
   ScreenOptions();
   ScreenOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon);
-};
-
-class GameScene {
-  public:
-    
 };
 
 class Game {
@@ -48,4 +61,4 @@ class Game {
 } // engine metallicar
 } // namespace metallicar
 
-#endif /* GAME_HPP_ */
+#endif /* CORE_HPP_ */

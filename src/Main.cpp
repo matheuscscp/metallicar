@@ -5,11 +5,21 @@
  *      Author: Pimenta
  */
 
-#include "Game.hpp"
+#include "metallicar.hpp"
 
 class FirstScene : public metallicar::engine::GameScene {
-  public:
+  protected:
+    void update() {
+      
+    }
     
+    void render() {
+      
+    }
+    
+    void wakeup(void* args) {
+      
+    }
 };
 
 int main(int argc, char* argv[]) {

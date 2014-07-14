@@ -6,7 +6,7 @@
  */
 
 // this
-#include "Game.hpp"
+#include "Core.hpp"
 
 // standard
 #include <cstdlib>
@@ -17,6 +17,7 @@
 #include "SDL_image.h"
 
 // local
+#include "Time.hpp"
 #include "Util.hpp"
 
 using namespace std;
@@ -38,6 +39,7 @@ enum ChangeOption {
 
 static void close();
 static void input();
+static void updateStack();
 
 // =============================================================================
 // private globals
@@ -48,25 +50,13 @@ static SDL_Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
 static bool quitRequested = false;
 static list<GameScene*> scenes;
-static GameScene* scene_change = nullptr;
-static ChangeOption change_option = ChangeOption::NA;
-static void* pop_args = nullptr;
+static GameScene* newScene = nullptr;
+static void* popArgs = nullptr;
+static ChangeOption changeOption = ChangeOption::NA;
 
 // =============================================================================
 // public methods
 // =============================================================================
-
-ScreenOptions::ScreenOptions() :
-title("metallicar game"), width(800), height(600), fullscreen(false), icon("asset/icon.png")
-{
-  
-}
-
-ScreenOptions::ScreenOptions(const string& title, int width, int height, bool fullscreen, const string& icon) :
-title(title), width(width), height(height), fullscreen(fullscreen), icon(icon)
-{
-  
-}
 
 void Game::init(const ScreenOptions& screenOptions) {
   if (window) {
@@ -111,35 +101,55 @@ void Game::run(GameScene* firstScene) {
     return;
   }
   
+  scenes.push_back(firstScene);
+  
   while (scenes.size()) {
+    DeltaTime::update();
+    
     input();
     
-    //update
-    //render
+    // update scenes
+    while (DeltaTime::periodReached()) {
+      for (auto scene : scenes) {
+        if (!scene->frozen) {
+          scene->update();
+        }
+      }
+    }
+    DeltaTime::accumulate();
+    
+    // render scenes
+    for (auto scene : scenes) {
+      if (!scene->frozen || (scene->frozen && scene->visible)) {
+        scene->render();
+      }
+    }
     
     SDL_RenderPresent(renderer);
+    
+    updateStack();
   }
   
   close();
 }
 
 void Game::changeScene(GameScene* scene) {
-  scene_change = scene;
-  change_option = ChangeOption::CHANGE;
+  newScene = scene;
+  changeOption = ChangeOption::CHANGE;
 }
 
 void Game::pushScene(GameScene* scene) {
-  scene_change = scene;
-  change_option = ChangeOption::PUSH;
+  newScene = scene;
+  changeOption = ChangeOption::PUSH;
 }
 
 void Game::popScene(void* args) {
-  pop_args = args;
-  change_option = ChangeOption::POP;
+  popArgs = args;
+  changeOption = ChangeOption::POP;
 }
 
 void Game::quit() {
-  change_option = ChangeOption::QUIT;
+  changeOption = ChangeOption::QUIT;
 }
 
 void Game::setScreenOptions(const ScreenOptions& screenOptions) {
@@ -194,6 +204,43 @@ static void input() {
         break;
     }
   }
+}
+
+static void updateStack() {
+  switch (changeOption) {
+    case ChangeOption::NA:
+      break;
+      
+    case ChangeOption::CHANGE:
+      delete scenes.back();
+      scenes.pop_back();
+      scenes.push_back(newScene);
+      break;
+      
+    case ChangeOption::PUSH:
+      scenes.push_back(newScene);
+      break;
+      
+    case ChangeOption::POP:
+      delete scenes.back();
+      scenes.pop_back();
+      if (scenes.size())
+        scenes.back()->wakeup(popArgs);
+      break;
+      
+    case ChangeOption::QUIT:
+      while (scenes.size()) {
+        delete scenes.back();
+        scenes.pop_back();
+      }
+      break;
+      
+    default:
+      break;
+  }
+  newScene = nullptr;
+  popArgs = nullptr;
+  changeOption = ChangeOption::NA;
 }
 
 } // engine metallicar
