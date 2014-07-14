@@ -34,7 +34,7 @@ class Logger {
 
 class String {
   public:
-    template <typename T> T to(const std::string& value) {
+    template <typename T> static T to(const std::string& value) {
       std::stringstream ss;
       ss << value;
       T tmp;
@@ -42,7 +42,7 @@ class String {
       return tmp;
     }
     
-    template <typename T> std::string from(T value) {
+    template <typename T> static std::string from(T value) {
       std::stringstream ss;
       ss << value;
       std::string tmp;

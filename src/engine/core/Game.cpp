@@ -54,7 +54,14 @@ void Game::init(const ScreenOptions& screenOptions) {
     util::Logger::log(util::Logger::ERROR, IMG_GetError());
     exit(0);
   }
-  if ((window = SDL_CreateWindow(screenOptions.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenOptions.width, screenOptions.height, 0)) == nullptr) {
+  if ((window = SDL_CreateWindow(
+    screenOptions.title.c_str(),
+    SDL_WINDOWPOS_CENTERED,
+    SDL_WINDOWPOS_CENTERED,
+    screenOptions.width,
+    screenOptions.height,
+    SDL_WINDOW_OPENGL | (screenOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
+  )) == nullptr) {
     util::Logger::log(util::Logger::ERROR, SDL_GetError());
     exit(0);
   }
@@ -89,9 +96,9 @@ void Game::start(GameState* firstState) {
   }
   started = true;
   while (started) {
+    SDL_RenderPresent(renderer);
     if (SDL_QuitRequested())
       stop();
-    SDL_RenderPresent(renderer);
   }
 }
 
