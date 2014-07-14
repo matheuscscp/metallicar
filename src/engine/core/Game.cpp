@@ -94,6 +94,7 @@ void Game::init(const WindowOptions& windowOptions) {
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
+  DeltaTime::init();
 }
 
 void Game::run(GameScene* firstScene) {
@@ -192,7 +193,7 @@ static void close() {
   SDL_Quit();
 }
 
-static void input() {
+static void input() {//TODO
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
