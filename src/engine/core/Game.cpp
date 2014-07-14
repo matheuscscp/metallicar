@@ -10,6 +10,8 @@
 
 // standard
 #include <cstdlib>
+#include <cstdio>
+#include <list>
 
 // lib
 #include "SDL_image.h"
@@ -22,10 +24,37 @@ using namespace std;
 namespace metallicar {
 namespace engine {
 
+// =============================================================================
+// private types
+// =============================================================================
+
+enum ChangeOption {
+  NA, CHANGE, PUSH, POP, QUIT
+};
+
+// =============================================================================
+// private function declarations
+// =============================================================================
+
+static void close();
+static void input();
+
+// =============================================================================
+// private globals
+// =============================================================================
+
 static ScreenOptions screenOptions;
 static SDL_Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
-static bool started = false;
+static bool quitRequested = false;
+static list<GameScene*> scenes;
+static GameScene* scene_change = nullptr;
+static ChangeOption change_option = ChangeOption::NA;
+static void* pop_args = nullptr;
+
+// =============================================================================
+// public methods
+// =============================================================================
 
 ScreenOptions::ScreenOptions() :
 title("metallicar game"), width(800), height(600), fullscreen(false), icon("asset/icon.png")
@@ -40,7 +69,7 @@ title(title), width(width), height(height), fullscreen(fullscreen), icon(icon)
 }
 
 void Game::init(const ScreenOptions& screenOptions) {
-  if (started) {
+  if (window) {
     return;
   }
   
@@ -65,6 +94,7 @@ void Game::init(const ScreenOptions& screenOptions) {
     util::Logger::log(util::Logger::ERROR, SDL_GetError());
     exit(0);
   }
+  SDL_GetWindowSize(window, &engine::screenOptions.width, &engine::screenOptions.height);
   if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == nullptr) {
     util::Logger::log(util::Logger::ERROR, SDL_GetError());
     exit(0);
@@ -76,7 +106,69 @@ void Game::init(const ScreenOptions& screenOptions) {
   }
 }
 
-void Game::close() {
+void Game::run(GameScene* firstScene) {
+  if (scenes.size()) {
+    return;
+  }
+  
+  while (scenes.size()) {
+    input();
+    
+    //update
+    //render
+    
+    SDL_RenderPresent(renderer);
+  }
+  
+  close();
+}
+
+void Game::changeScene(GameScene* scene) {
+  scene_change = scene;
+  change_option = ChangeOption::CHANGE;
+}
+
+void Game::pushScene(GameScene* scene) {
+  scene_change = scene;
+  change_option = ChangeOption::PUSH;
+}
+
+void Game::popScene(void* args) {
+  pop_args = args;
+  change_option = ChangeOption::POP;
+}
+
+void Game::quit() {
+  change_option = ChangeOption::QUIT;
+}
+
+void Game::setScreenOptions(const ScreenOptions& screenOptions) {
+  engine::screenOptions = screenOptions;
+  
+  SDL_SetWindowTitle(window, screenOptions.title.c_str());
+  SDL_SetWindowFullscreen(window, screenOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+  SDL_SetWindowSize(window, screenOptions.width, screenOptions.height);
+  SDL_GetWindowSize(window, &engine::screenOptions.width, &engine::screenOptions.height);
+  if (screenOptions.icon.size()) {
+    SDL_Surface* iconsurface = IMG_Load(util::Path::get(screenOptions.icon).c_str());
+    SDL_SetWindowIcon(window, iconsurface);
+    SDL_FreeSurface(iconsurface);
+  }
+}
+
+bool Game::quitRequested() {
+  return engine::quitRequested;
+}
+
+void Game::resetQuitRequest() {
+  engine::quitRequested = false;
+}
+
+// =============================================================================
+// private functions
+// =============================================================================
+
+static void close() {
   if (!window) {
     return;
   }
@@ -90,24 +182,18 @@ void Game::close() {
   SDL_Quit();
 }
 
-void Game::start(GameState* firstState) {
-  if (started) {
-    return;
+static void input() {
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+      case SDL_QUIT:
+        engine::quitRequested = true;
+        break;
+        
+      default:
+        break;
+    }
   }
-  started = true;
-  while (started) {
-    SDL_RenderPresent(renderer);
-    if (SDL_QuitRequested())
-      stop();
-  }
-}
-
-void Game::stop() {
-  started = false;
-}
-
-void Game::setScreenOptions(const ScreenOptions& screenOptions) {
-  //TODO
 }
 
 } // engine metallicar

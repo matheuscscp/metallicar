@@ -24,7 +24,7 @@ struct ScreenOptions {
   ScreenOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon);
 };
 
-class GameState {
+class GameScene {
   public:
     
 };
@@ -32,12 +32,17 @@ class GameState {
 class Game {
   public:
     static void init(const ScreenOptions& screenOptions = ScreenOptions());
-    static void close();
+    static void run(GameScene* firstScene);
     
-    static void start(GameState* firstState);
-    static void stop();
+    static void changeScene(GameScene* scene);
+    static void pushScene(GameScene* scene);
+    static void popScene(void* args);
+    static void quit();
     
     static void setScreenOptions(const ScreenOptions& screenOptions);
+    
+    static bool quitRequested();
+    static void resetQuitRequest();
 };
 
 } // engine metallicar

@@ -7,14 +7,13 @@
 
 #include "Game.hpp"
 
-class FirstState : public metallicar::engine::GameState {
+class FirstScene : public metallicar::engine::GameScene {
   public:
     
 };
 
 int main(int argc, char* argv[]) {
   metallicar::engine::Game::init();
-  metallicar::engine::Game::start(new FirstState());
-  metallicar::engine::Game::close();
+  metallicar::engine::Game::run(new FirstScene());
   return 0;
 }
