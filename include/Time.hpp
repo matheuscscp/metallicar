@@ -36,6 +36,21 @@ class DeltaTime {
     static void accumulate();
 };
 
+class Stopwatch {
+  private:
+    bool started;
+    bool paused;
+    uint32_t initialTime;
+    uint32_t pauseTime;
+  public:
+    Stopwatch();
+    void start();
+    void pause();
+    void resume();
+    void reset();
+    uint32_t time();
+};
+
 } // engine metallicar
 } // namespace metallicar
 
