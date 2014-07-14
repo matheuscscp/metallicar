@@ -6,7 +6,7 @@
  */
 
 // this
-#include "time.hpp"
+#include "metallicar_time.hpp"
 
 // lib
 #include "SDL.h"

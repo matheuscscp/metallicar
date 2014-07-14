@@ -6,7 +6,7 @@
  */
 
 // this
-#include "core.hpp"
+#include "metallicar_core.hpp"
 
 // standard
 #include <cstdlib>
@@ -16,7 +16,7 @@
 #include "SDL_image.h"
 
 // local
-#include "Time.hpp"
+#include "metallicar_time.hpp"
 #include "Log.hpp"
 #include "Path.hpp"
 

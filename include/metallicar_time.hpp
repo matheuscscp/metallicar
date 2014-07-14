@@ -1,12 +1,12 @@
 /*
- * time.hpp
+ * metallicar_time.hpp
  *
  *  Created on: Jul 14, 2014
  *      Author: Pimenta
  */
 
-#ifndef TIME_HPP_
-#define TIME_HPP_
+#ifndef METALLICAR_TIME_HPP_
+#define METALLICAR_TIME_HPP_
 
 // standard
 #include <cstdint>
@@ -54,4 +54,4 @@ class Stopwatch {
 } // namespace engine
 } // namespace metallicar
 
-#endif /* TIME_HPP_ */
+#endif /* METALLICAR_TIME_HPP_ */

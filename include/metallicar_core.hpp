@@ -1,12 +1,12 @@
 /*
- * core.hpp
+ * metallicar_core.hpp
  *
  *  Created on: Jul 13, 2014
  *      Author: Pimenta
  */
 
-#ifndef GAME_HPP_
-#define CORE_HPP_
+#ifndef METALLICAR_CORE_HPP_
+#define METALLICAR_CORE_HPP_
 
 // standard
 #include <string>
@@ -15,7 +15,7 @@
 #include <functional>
 
 // local
-#include "asset.hpp"
+#include "metallicar_asset.hpp"
 
 namespace metallicar {
 namespace engine {
@@ -106,4 +106,4 @@ class Game {
 } // namespace engine
 } // namespace metallicar
 
-#endif /* CORE_HPP_ */
+#endif /* METALLICAR_CORE_HPP_ */

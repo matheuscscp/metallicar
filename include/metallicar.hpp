@@ -9,8 +9,8 @@
 #define METALLICAR_HPP_
 
 // local
-#include "asset.hpp"
-#include "core.hpp"
-#include "time.hpp"
+#include "metallicar_asset.hpp"
+#include "metallicar_core.hpp"
+#include "metallicar_time.hpp"
 
 #endif /* METALLICAR_HPP_ */

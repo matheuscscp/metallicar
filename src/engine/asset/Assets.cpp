@@ -6,7 +6,7 @@
  */
 
 // this
-#include "asset.hpp"
+#include "metallicar_asset.hpp"
 
 using namespace std;
 

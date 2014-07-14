@@ -1,17 +1,17 @@
 /*
- * asset.hpp
+ * metallicar_util.hpp
  *
  *  Created on: Jul 14, 2014
  *      Author: Pimenta
  */
 
-#ifndef ASSET_HPP_
-#define ASSET_HPP_
+#ifndef METALLICAR_UTIL_HPP_
+#define METALLICAR_UTIL_HPP_
 
 namespace metallicar {
 namespace engine {
 
-class Assets {
+class Button {
   public:
     
 };
@@ -19,4 +19,4 @@ class Assets {
 } // namespace engine
 } // namespace metallicar
 
-#endif /* ASSET_HPP_ */
+#endif /* METALLICAR_UTIL_HPP_ */
