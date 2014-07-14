@@ -1,12 +1,12 @@
 /*
- * Util.hpp
+ * String.hpp
  *
- *  Created on: Jul 13, 2014
+ *  Created on: Jul 14, 2014
  *      Author: Pimenta
  */
 
-#ifndef UTIL_HPP_
-#define UTIL_HPP_
+#ifndef STRING_HPP_
+#define STRING_HPP_
 
 // standard
 #include <string>
@@ -14,23 +14,6 @@
 
 namespace metallicar {
 namespace util {
-
-class Path {
-  public:
-    static std::string get();
-    static std::string get(const std::string& subpath);
-    static void set(const std::string& path);
-};
-
-class Log {
-  public:
-    enum MessageLevel {
-      Error = 0,
-      Warning
-    };
-    
-    static void message(MessageLevel level, const std::string& msg);
-};
 
 class String {
   public:
@@ -54,4 +37,4 @@ class String {
 } // util metallicar
 } // namespace metallicar
 
-#endif /* UTIL_HPP_ */
+#endif /* STRING_HPP_ */

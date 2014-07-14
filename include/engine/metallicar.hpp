@@ -9,6 +9,6 @@
 #define METALLICAR_HPP_
 
 // local
-#include "Core.hpp"
+#include "core.hpp"
 
 #endif /* METALLICAR_HPP_ */

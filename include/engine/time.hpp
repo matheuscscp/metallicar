@@ -1,5 +1,5 @@
 /*
- * Time.hpp
+ * time.hpp
  *
  *  Created on: Jul 14, 2014
  *      Author: Pimenta

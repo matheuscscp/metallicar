@@ -1,5 +1,5 @@
 /*
- * Core.hpp
+ * core.hpp
  *
  *  Created on: Jul 13, 2014
  *      Author: Pimenta
@@ -12,7 +12,7 @@
 #include <string>
 
 // local
-#include "Asset.hpp"
+#include "asset.hpp"
 
 namespace metallicar {
 namespace engine {

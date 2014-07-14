@@ -10,7 +10,6 @@
 
 // standard
 #include <cstdlib>
-#include <cstdio>
 #include <list>
 
 // lib
@@ -18,7 +17,8 @@
 
 // local
 #include "Time.hpp"
-#include "Util.hpp"
+#include "Log.hpp"
+#include "Path.hpp"
 
 using namespace std;
 
