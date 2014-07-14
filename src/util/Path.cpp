@@ -20,7 +20,9 @@ string Path::get() {
 }
 
 string Path::get(const string& subpath) {
-  return subpath[0] == '/' ? path + subpath : (path + "/") + subpath;
+  if (path.size() && subpath[0] != '/')
+    return (path + "/") + subpath;
+  return path + subpath;
 }
 
 void Path::set(const string& path) {

@@ -2,3 +2,6 @@
 .project
 .settings
 Debug
+*.exe
+*.dll
+!3rd/bin/*
