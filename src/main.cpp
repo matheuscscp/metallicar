@@ -1,5 +1,5 @@
 /*
- * Main.cpp
+ * main.cpp
  *
  *  Created on: Jul 13, 2014
  *      Author: Pimenta
