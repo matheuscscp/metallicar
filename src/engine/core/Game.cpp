@@ -6,7 +6,7 @@
  */
 
 // this
-#include "Core.hpp"
+#include "core.hpp"
 
 // standard
 #include <cstdlib>
@@ -244,5 +244,5 @@ static void updateStack() {
   changeOption = ChangeOption::NA;
 }
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar

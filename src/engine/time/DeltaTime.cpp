@@ -6,7 +6,7 @@
  */
 
 // this
-#include "Time.hpp"
+#include "time.hpp"
 
 using namespace std;
 
@@ -62,5 +62,5 @@ void DeltaTime::accumulate() {
   last -= dt;
 }
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar

@@ -1,24 +1,22 @@
 /*
- * Time.cpp
+ * util.hpp
  *
  *  Created on: Jul 14, 2014
  *      Author: Pimenta
  */
 
-// this
-#include "time.hpp"
-
-// lib
-#include "SDL.h"
-
-using namespace std;
+#ifndef UTIL_HPP_
+#define UTIL_HPP_
 
 namespace metallicar {
 namespace engine {
 
-uint32_t Time::get() {
-  return SDL_GetTicks();
-}
+class Button {
+  public:
+    
+};
 
 } // namespace engine
 } // namespace metallicar
+
+#endif /* UTIL_HPP_ */

@@ -51,7 +51,7 @@ class Stopwatch {
     uint32_t time();
 };
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar
 
 #endif /* TIME_HPP_ */

@@ -6,7 +6,7 @@
  */
 
 // this
-#include "Time.hpp"
+#include "time.hpp"
 
 using namespace std;
 
@@ -51,5 +51,5 @@ uint32_t Stopwatch::time() {
   return Time::get() - initialTime;
 }
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar

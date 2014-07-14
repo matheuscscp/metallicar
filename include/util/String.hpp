@@ -34,7 +34,7 @@ class String {
     }
 };
 
-} // util metallicar
+} // namespace util
 } // namespace metallicar
 
 #endif /* STRING_HPP_ */

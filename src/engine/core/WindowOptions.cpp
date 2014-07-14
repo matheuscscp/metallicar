@@ -6,7 +6,7 @@
  */
 
 // this
-#include "Core.hpp"
+#include "core.hpp"
 
 using namespace std;
 
@@ -25,5 +25,5 @@ title(title), width(width), height(height), fullscreen(fullscreen), icon(icon)
   
 }
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar

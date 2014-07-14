@@ -24,7 +24,7 @@ class Log {
     static void message(MessageLevel level, const std::string& msg);
 };
 
-} // util metallicar
+} // namespace util
 } // namespace metallicar
 
 #endif /* LOG_HPP_ */

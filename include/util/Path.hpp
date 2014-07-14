@@ -21,7 +21,7 @@ class Path {
     static void set(const std::string& path);
 };
 
-} // util metallicar
+} // namespace util
 } // namespace metallicar
 
 #endif /* PATH_HPP_ */

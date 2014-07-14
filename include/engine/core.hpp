@@ -58,7 +58,7 @@ class Game {
     static void resetQuitRequest();
 };
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar
 
 #endif /* CORE_HPP_ */

@@ -10,7 +10,9 @@
 class FirstScene : public metallicar::engine::GameScene {
   protected:
     void update() {
-      
+      if (metallicar::engine::Game::quitRequested()) {
+        metallicar::engine::Game::quit();
+      }
     }
     
     void render() {

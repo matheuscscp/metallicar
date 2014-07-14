@@ -16,7 +16,7 @@ class Assets {
     
 };
 
-} // engine metallicar
+} // namespace engine
 } // namespace metallicar
 
 #endif /* ASSET_HPP_ */
