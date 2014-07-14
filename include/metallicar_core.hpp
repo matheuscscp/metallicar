@@ -97,7 +97,8 @@ class Game {
     static void popScene(void* args);
     static void quit();
     
-    static void setWindowOptions(const WindowOptions& windowOptions);
+    static WindowOptions getWindowOptions();
+    static void setWindowOptions(WindowOptions& windowOptions);
     
     static bool quitRequested();
     static void resetQuitRequest();

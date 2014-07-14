@@ -9,8 +9,8 @@
 #include "metallicar_core.hpp"
 
 // standard
-#include <cstdlib>
 #include <list>
+#include <cstdio>
 
 // lib
 #include "SDL_image.h"
@@ -153,18 +153,23 @@ void Game::quit() {
   changeOption = ChangeOption::QUIT;
 }
 
-void Game::setWindowOptions(const WindowOptions& windowOptions) {
-  engine::windowOptions = windowOptions;
-  
+WindowOptions Game::getWindowOptions() {
+  return windowOptions;
+}
+
+void Game::setWindowOptions(WindowOptions& windowOptions) {
   SDL_SetWindowTitle(window, windowOptions.title.c_str());
-  SDL_SetWindowFullscreen(window, windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+  SDL_SetWindowFullscreen(window, 0);
   SDL_SetWindowSize(window, windowOptions.width, windowOptions.height);
-  SDL_GetWindowSize(window, &engine::windowOptions.width, &engine::windowOptions.height);
+  SDL_SetWindowFullscreen(window, windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+  SDL_GetWindowSize(window, &windowOptions.width, &windowOptions.height);
   if (windowOptions.icon.size()) {
     SDL_Surface* iconsurface = IMG_Load(util::Path::get(windowOptions.icon).c_str());
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
+  
+  engine::windowOptions = windowOptions;
 }
 
 bool Game::quitRequested() {

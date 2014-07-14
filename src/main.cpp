@@ -5,11 +5,16 @@
  *      Author: Pimenta
  */
 
+#include <cstdio>
 #include "metallicar.hpp"
 
 using namespace metallicar::engine;
 
 class FirstScene : public GameScene {
+  public:
+    FirstScene() {
+      
+    }
   protected:
     void update() {
       if (Game::quitRequested()) {
