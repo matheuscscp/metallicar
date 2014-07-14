@@ -7,11 +7,13 @@
 
 #include "metallicar.hpp"
 
-class FirstScene : public metallicar::engine::GameScene {
+using namespace metallicar::engine;
+
+class FirstScene : public GameScene {
   protected:
     void update() {
-      if (metallicar::engine::Game::quitRequested()) {
-        metallicar::engine::Game::quit();
+      if (Game::quitRequested()) {
+        Game::quit();
       }
     }
     
@@ -25,7 +27,7 @@ class FirstScene : public metallicar::engine::GameScene {
 };
 
 int main(int argc, char* argv[]) {
-  metallicar::engine::Game::init();
-  metallicar::engine::Game::run(new FirstScene());
+  Game::init();
+  Game::run(new FirstScene());
   return 0;
 }
