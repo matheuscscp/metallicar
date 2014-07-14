@@ -65,8 +65,16 @@ class GameScene {
 };
 
 class GameObjectScene : public GameScene {
-  public:
-    
+  private:
+    std::list<GameObject*> objects;
+    std::list<GameObject*> newObjects;
+    virtual ~GameObjectScene();
+  protected:
+    void add(GameObject* object);
+  private:
+    void update();
+    void render();
+    void wakeup(void* args);
 };
 
 struct WindowOptions {
