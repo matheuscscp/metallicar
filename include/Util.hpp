@@ -22,14 +22,14 @@ class Path {
     static void set(const std::string& path);
 };
 
-class Logger {
+class Log {
   public:
-    enum Level {
-      ERROR = 0,
-      WARNING
+    enum MessageLevel {
+      Error = 0,
+      Warning
     };
     
-    static void log(Level level, const std::string& msg);
+    static void message(MessageLevel level, const std::string& msg);
 };
 
 class String {

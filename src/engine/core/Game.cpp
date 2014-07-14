@@ -66,11 +66,11 @@ void Game::init(const WindowOptions& windowOptions) {
   engine::windowOptions = windowOptions;
   
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0) {
-    util::Logger::log(util::Logger::ERROR, SDL_GetError());
+    util::Log::message(util::Log::Error, SDL_GetError());
     exit(0);
   }
   if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) != (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
-    util::Logger::log(util::Logger::ERROR, IMG_GetError());
+    util::Log::message(util::Log::Error, IMG_GetError());
     exit(0);
   }
   if ((window = SDL_CreateWindow(
@@ -81,12 +81,12 @@ void Game::init(const WindowOptions& windowOptions) {
     windowOptions.height,
     SDL_WINDOW_OPENGL | (windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
   )) == nullptr) {
-    util::Logger::log(util::Logger::ERROR, SDL_GetError());
+    util::Log::message(util::Log::Error, SDL_GetError());
     exit(0);
   }
   SDL_GetWindowSize(window, &engine::windowOptions.width, &engine::windowOptions.height);
   if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == nullptr) {
-    util::Logger::log(util::Logger::ERROR, SDL_GetError());
+    util::Log::message(util::Log::Error, SDL_GetError());
     exit(0);
   }
   if (windowOptions.icon.size()) {

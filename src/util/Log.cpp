@@ -1,5 +1,5 @@
 /*
- * Logger.cpp
+ * Log.cpp
  *
  *  Created on: Jul 13, 2014
  *      Author: Pimenta
@@ -22,7 +22,7 @@ static const char* levelmsg[] = {
   "Warning"
 };
 
-void Logger::log(Level level, const string& msg) {
+void Log::message(MessageLevel level, const string& msg) {
   string fullmsg;
   fullmsg += levelmsg[level];
   fullmsg += " on ";
