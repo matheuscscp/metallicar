@@ -14,8 +14,13 @@
 #include <map>
 #include <functional>
 
+// lib
+#include "SDL.h"
+
 // local
 #include "metallicar_asset.hpp"
+#include "Point.hpp"
+#include "Observer.hpp"
 
 namespace metallicar {
 namespace engine {
@@ -103,10 +108,34 @@ class Game {
 
 class Input {
   public:
+    class KeyEvent : public util::Event {
+      private:
+        SDL_Keycode keycode;
+      public:
+        KeyEvent(uint32_t eventType, SDL_Keycode keycode);
+        SDL_Keycode key() const;
+    };
+    
+    class ButtonEvent : public util::Event {
+      private:
+        uint8_t buttoncode;
+      public:
+        ButtonEvent(uint32_t eventType, uint8_t buttoncode);
+        uint32_t button() const;
+    };
+    
     static void update();
     
     static bool quitRequested();
     static void resetQuitRequest();
+    
+    static bool key(SDL_Keycode keycode);
+    static bool button(uint8_t buttoncode);
+    static util::Point mouse();
+    static util::Point mouseDown();
+    static util::Point mouseUp();
+    
+    static void connect(uint32_t eventType, const std::function<void(const util::Event&)>& callback);
 };
 
 } // namespace engine

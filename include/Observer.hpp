@@ -21,7 +21,7 @@ namespace util {
 protected: \
   metallicar::util::Subject subject; \
 public: \
-  metallicar::util::Connection connect(int eventType, const std::function<void(const metallicar::util::Event&)>& callback) { \
+  metallicar::util::Connection connect(uint32_t eventType, const std::function<void(const metallicar::util::Event&)>& callback) { \
     return subject.connect(eventType, callback); \
   }
 
@@ -36,10 +36,10 @@ class Connection {
 
 class Event {
   protected:
-    int type;
+    uint32_t type;
   public:
-    Event(int type);
-    int getType() const;
+    Event(uint32_t type);
+    uint32_t getType() const;
 };
 
 struct Observer {
@@ -50,9 +50,9 @@ struct Observer {
 
 class Subject {
   private:
-    std::map<int, std::list<Observer>> observers;
+    std::map<uint32_t, std::list<Observer>> observers;
   public:
-    Connection connect(int eventType, const std::function<void(const Event&)>& callback);
+    Connection connect(uint32_t eventType, const std::function<void(const Event&)>& callback);
     void broadcast(const Event& event);
 };
 

@@ -25,11 +25,11 @@ void Connection::disconnect() {
   token = nullptr;
 }
 
-Event::Event(int type) : type(type) {
+Event::Event(uint32_t type) : type(type) {
   
 }
 
-int Event::getType() const {
+uint32_t Event::getType() const {
   return type;
 }
 
@@ -39,7 +39,7 @@ callback(callback)
   
 }
 
-Connection Subject::connect(int eventType, const function<void(const Event&)>& callback) {
+Connection Subject::connect(uint32_t eventType, const function<void(const Event&)>& callback) {
   list<Observer>& eventObservers = observers[eventType];
   eventObservers.emplace_back(callback);
   return eventObservers.back().connection;
