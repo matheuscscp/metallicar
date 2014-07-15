@@ -14,7 +14,7 @@ namespace metallicar {
 namespace engine {
 
 GameScene::GameScene() : frozen(false), visible(false) {
-  
+  quitEventConnection = Input::connect(SDL_QUIT, [](const util::Event&) { Game::quit(); });
 }
 
 GameScene::~GameScene() {

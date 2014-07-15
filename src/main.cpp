@@ -8,18 +8,16 @@
 #include <cstdio>
 #include "metallicar.hpp"
 
-using namespace metallicar::engine;
+using namespace metallicar;
 
-class FirstScene : public GameScene {
+class FirstScene : public engine::GameScene {
   public:
     FirstScene() {
       
     }
   protected:
     void update() {
-      if (Input::quitRequested()) {
-        Game::quit();
-      }
+      
     }
     
     void render() {
@@ -32,7 +30,7 @@ class FirstScene : public GameScene {
 };
 
 int main(int argc, char* argv[]) {
-  Game::init();
-  Game::run(new FirstScene());
+  engine::Game::init();
+  engine::Game::run(new FirstScene());
   return 0;
 }

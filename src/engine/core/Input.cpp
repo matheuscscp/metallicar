@@ -121,8 +121,8 @@ util::Point Input::mouseUp() {
   return engine::mouseUp;
 }
 
-void Input::connect(uint32_t eventType, const function<void(const util::Event&)>& callback) {
-  subject.connect(eventType, callback);
+util::Connection Input::connect(uint32_t eventType, const function<void(const util::Event&)>& callback) {
+  return subject.connect(eventType, callback);
 }
 
 } // namespace engine

@@ -57,6 +57,7 @@ class GameObject {
 class GameScene {
   protected:
     Assets assets;
+    util::Connection quitEventConnection;
   public:
     bool frozen;
     bool visible;
@@ -135,7 +136,7 @@ class Input {
     static util::Point mouseDown();
     static util::Point mouseUp();
     
-    static void connect(uint32_t eventType, const std::function<void(const util::Event&)>& callback);
+    static util::Connection connect(uint32_t eventType, const std::function<void(const util::Event&)>& callback);
 };
 
 } // namespace engine
