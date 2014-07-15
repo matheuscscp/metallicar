@@ -9,21 +9,21 @@
 #define OBSERVER_HPP_
 
 // standard
-#include <functional>
 #include <memory>
+#include <functional>
 #include <map>
 #include <list>
 
 namespace metallicar {
 namespace util {
 
-class Event {
-  protected:
-    int type;
-  public:
-    Event(int type);
-    int getType() const;
-};
+#define SUBJECT \
+protected: \
+  metallicar::util::Subject subject; \
+public: \
+  metallicar::util::Connection connect(int eventType, const std::function<void(const metallicar::util::Event&)>& callback) { \
+    return subject.connect(eventType, callback); \
+  }
 
 class Connection {
   private:
@@ -32,6 +32,14 @@ class Connection {
     Connection();
     bool connected();
     void disconnect();
+};
+
+class Event {
+  protected:
+    int type;
+  public:
+    Event(int type);
+    int getType() const;
 };
 
 struct Observer {

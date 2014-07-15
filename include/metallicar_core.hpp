@@ -99,6 +99,11 @@ class Game {
     
     static WindowOptions getWindowOptions();
     static void setWindowOptions(WindowOptions& windowOptions);
+};
+
+class Input {
+  public:
+    static void update();
     
     static bool quitRequested();
     static void resetQuitRequest();

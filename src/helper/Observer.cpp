@@ -13,14 +13,6 @@ using namespace std;
 namespace metallicar {
 namespace util {
 
-Event::Event(int type) : type(type) {
-  
-}
-
-int Event::getType() const {
-  return type;
-}
-
 Connection::Connection() : token(new uint8_t) {
   
 }
@@ -31,6 +23,14 @@ bool Connection::connected() {
 
 void Connection::disconnect() {
   token = nullptr;
+}
+
+Event::Event(int type) : type(type) {
+  
+}
+
+int Event::getType() const {
+  return type;
 }
 
 Observer::Observer(const function<void(const Event&)>& callback) :

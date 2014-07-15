@@ -17,7 +17,7 @@ class FirstScene : public GameScene {
     }
   protected:
     void update() {
-      if (Game::quitRequested()) {
+      if (Input::quitRequested()) {
         Game::quit();
       }
     }

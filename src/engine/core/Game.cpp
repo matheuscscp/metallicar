@@ -38,7 +38,6 @@ enum ChangeOption {
 // =============================================================================
 
 static void close();
-static void input();
 static void updateStack();
 
 // =============================================================================
@@ -48,7 +47,6 @@ static void updateStack();
 static WindowOptions windowOptions;
 static SDL_Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
-static bool quitRequested = false;
 static list<GameScene*> scenes;
 static GameScene* newScene = nullptr;
 static void* popArgs = nullptr;
@@ -107,7 +105,7 @@ void Game::run(GameScene* firstScene) {
   while (scenes.size()) {
     DeltaTime::update();
     
-    input();
+    Input::update();
     
     // update scenes
     while (DeltaTime::periodReached()) {
@@ -172,14 +170,6 @@ void Game::setWindowOptions(WindowOptions& windowOptions) {
   engine::windowOptions = windowOptions;
 }
 
-bool Game::quitRequested() {
-  return engine::quitRequested;
-}
-
-void Game::resetQuitRequest() {
-  engine::quitRequested = false;
-}
-
 // =============================================================================
 // private functions
 // =============================================================================
@@ -196,20 +186,6 @@ static void close() {
   
   IMG_Quit();
   SDL_Quit();
-}
-
-static void input() {//TODO
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-      case SDL_QUIT:
-        engine::quitRequested = true;
-        break;
-        
-      default:
-        break;
-    }
-  }
 }
 
 static void updateStack() {
