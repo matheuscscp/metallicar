@@ -2,7 +2,6 @@ engine:
   asset
   util
   network
-  concurrency
   graphics
 helper:
   linear algebra
