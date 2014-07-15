@@ -6,9 +6,12 @@
  */
 
 #include <cstdio>
+
 #include "metallicar.hpp"
 
-class FirstScene : public metallicar::GameScene {
+using namespace metallicar;
+
+class FirstScene : public GameScene {
   public:
     FirstScene() {
       
@@ -28,7 +31,7 @@ class FirstScene : public metallicar::GameScene {
 };
 
 int main(int argc, char* argv[]) {
-  metallicar::Game::init();
-  metallicar::Game::run(new FirstScene());
+  Game::init();
+  Game::run(new FirstScene());
   return 0;
 }
