@@ -92,6 +92,7 @@ void Game::init(const WindowOptions& windowOptions) {
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
+  SDL_ShowCursor(windowOptions.cursor ? 1 : 0);
   DeltaTime::init();
 }
 
@@ -166,6 +167,7 @@ void Game::setWindowOptions(WindowOptions& windowOptions) {
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
+  SDL_ShowCursor(windowOptions.cursor ? 1 : 0);
   
   engine::windowOptions = windowOptions;
 }

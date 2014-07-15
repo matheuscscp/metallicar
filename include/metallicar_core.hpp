@@ -89,8 +89,9 @@ struct WindowOptions {
   int height;
   bool fullscreen;
   std::string icon;
+  bool cursor;
   WindowOptions();
-  WindowOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon);
+  WindowOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon, bool cursor);
 };
 
 class Game {
