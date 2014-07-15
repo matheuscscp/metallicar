@@ -11,7 +11,6 @@
 using namespace std;
 
 namespace metallicar {
-namespace engine {
 
 WindowOptions::WindowOptions() :
 title("metallicar game"), width(800), height(600), fullscreen(false), icon("asset/icon.png"), cursor(true)
@@ -25,5 +24,4 @@ title(title), width(width), height(height), fullscreen(fullscreen), icon(icon), 
   
 }
 
-} // namespace engine
 } // namespace metallicar

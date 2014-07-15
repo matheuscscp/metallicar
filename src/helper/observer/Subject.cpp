@@ -1,43 +1,16 @@
 /*
- * Observer.cpp
+ * Subject.cpp
  *
  *  Created on: Jul 15, 2014
  *      Author: Pimenta
  */
 
 // this
-#include "Observer.hpp"
+#include "observer.hpp"
 
 using namespace std;
 
-namespace metallicar {
-namespace util {
-
-Connection::Connection() : token(new uint8_t) {
-  
-}
-
-bool Connection::connected() {
-  return !token.unique();
-}
-
-void Connection::disconnect() {
-  token = nullptr;
-}
-
-Event::Event(uint32_t type) : type(type) {
-  
-}
-
-uint32_t Event::getType() const {
-  return type;
-}
-
-Observer::Observer(const function<void(const Event&)>& callback) :
-callback(callback)
-{
-  
-}
+namespace observer {
 
 Connection Subject::connect(uint32_t eventType, const function<void(const Event&)>& callback) {
   list<Observer>& eventObservers = observers[eventType];
@@ -58,6 +31,4 @@ void Subject::broadcast(const Event& event) {
   }
 }
 
-} // namespace util
-} // namespace metallicar
-
+} // namespace observer

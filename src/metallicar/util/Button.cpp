@@ -1,17 +1,15 @@
 /*
- * Assets.cpp
+ * Button.cpp
  *
  *  Created on: Jul 14, 2014
  *      Author: Pimenta
  */
 
 // this
-#include "metallicar_asset.hpp"
-
-using namespace std;
+#include "metallicar_util.hpp"
 
 namespace metallicar {
-namespace engine {
 
-} // namespace engine
+
+
 } // namespace metallicar

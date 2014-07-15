@@ -11,9 +11,6 @@
 // standard
 #include <string>
 
-namespace metallicar {
-namespace util {
-
 class Log {
   public:
     enum MessageLevel {
@@ -23,8 +20,5 @@ class Log {
     
     static void message(MessageLevel level, const std::string& msg);
 };
-
-} // namespace util
-} // namespace metallicar
 
 #endif /* LOG_HPP_ */

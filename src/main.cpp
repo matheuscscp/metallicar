@@ -8,9 +8,7 @@
 #include <cstdio>
 #include "metallicar.hpp"
 
-using namespace metallicar;
-
-class FirstScene : public engine::GameScene {
+class FirstScene : public metallicar::GameScene {
   public:
     FirstScene() {
       
@@ -30,7 +28,7 @@ class FirstScene : public engine::GameScene {
 };
 
 int main(int argc, char* argv[]) {
-  engine::Game::init();
-  engine::Game::run(new FirstScene());
+  metallicar::Game::init();
+  metallicar::Game::run(new FirstScene());
   return 0;
 }

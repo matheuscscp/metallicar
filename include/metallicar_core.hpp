@@ -20,10 +20,9 @@
 // local
 #include "metallicar_asset.hpp"
 #include "Point.hpp"
-#include "Observer.hpp"
+#include "observer.hpp"
 
 namespace metallicar {
-namespace engine {
 
 class GameRenderers {
   private:
@@ -57,7 +56,7 @@ class GameObject {
 class GameScene {
   protected:
     Assets assets;
-    util::Connection quitEventConnection;
+    observer::Connection quitEventConnection;
   public:
     bool frozen;
     bool visible;
@@ -106,11 +105,16 @@ class Game {
     
     static WindowOptions getWindowOptions();
     static void setWindowOptions(WindowOptions& windowOptions);
+    
+    static uint32_t getUPS();
+    static void setUPS(uint32_t ups);
+    static float getDT();
+    static uint32_t updateID();
 };
 
 class Input {
   public:
-    class KeyEvent : public util::Event {
+    class KeyEvent : public observer::Event {
       private:
         SDL_Keycode keycode;
       public:
@@ -118,7 +122,7 @@ class Input {
         SDL_Keycode key() const;
     };
     
-    class ButtonEvent : public util::Event {
+    class ButtonEvent : public observer::Event {
       private:
         uint8_t buttoncode;
       public:
@@ -133,14 +137,13 @@ class Input {
     
     static bool key(SDL_Keycode keycode);
     static bool button(uint8_t buttoncode);
-    static util::Point mouse();
-    static util::Point mouseDown();
-    static util::Point mouseUp();
+    static Point mouse();
+    static Point mouseDown();
+    static Point mouseUp();
     
-    static util::Connection connect(uint32_t eventType, const std::function<void(const util::Event&)>& callback);
+    static observer::Connection connect(uint32_t eventType, const std::function<void(const observer::Event&)>& callback);
 };
 
-} // namespace engine
 } // namespace metallicar
 
 #endif /* METALLICAR_CORE_HPP_ */

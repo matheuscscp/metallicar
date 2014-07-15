@@ -1,5 +1,5 @@
 /*
- * GameObject.cpp
+ * GameObjectScene.cpp
  *
  *  Created on: Jul 14, 2014
  *      Author: Pimenta
@@ -11,13 +11,8 @@
 using namespace std;
 
 namespace metallicar {
-namespace engine {
 
-GameObject::GameObject(): destroy(false), frozen(false), visible(false) {
-  
-}
-
-GameObject::~GameObject() {
+GameObjectScene::~GameObjectScene() {
   while (objects.size()) {
     delete objects.back();
     objects.pop_back();
@@ -28,12 +23,11 @@ GameObject::~GameObject() {
   }
 }
 
-void GameObject::add(GameObject* object) {
+void GameObjectScene::add(GameObject* object) {
   newObjects.push_back(object);
 }
 
-void GameObject::updateTree() {
-  update();
+void GameObjectScene::update() {
   for (auto object : objects) {
     if (!object->destroy && !object->frozen) {
       object->updateTree();
@@ -45,13 +39,13 @@ void GameObject::updateTree() {
   }
 }
 
-void GameObject::renderTree(GameRenderers* renderers) {
-  render(renderers);
+void GameObjectScene::render() {
+  GameRenderers renderers;
   for (auto it = objects.begin(); it != objects.end();) {
     auto object = *it;
     if (!object->destroy) {
       if (!object->frozen || (object->frozen && object->visible)) {
-        object->renderTree(renderers);
+        object->renderTree(&renderers);
       }
       it++;
     }
@@ -60,14 +54,13 @@ void GameObject::renderTree(GameRenderers* renderers) {
       objects.erase(it++);
     }
   }
+  renderers.render();
 }
 
-void GameObject::wakeupTree(void* args) {
-  wakeup(args);
+void GameObjectScene::wakeup(void* args) {
   for (auto object : objects) {
     object->wakeupTree(args);
   }
 }
 
-} // namespace engine
 } // namespace metallicar

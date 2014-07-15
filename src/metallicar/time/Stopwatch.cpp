@@ -8,10 +8,7 @@
 // this
 #include "metallicar_time.hpp"
 
-using namespace std;
-
 namespace metallicar {
-namespace engine {
 
 Stopwatch::Stopwatch() :
 started(false), paused(false), initialTime(0), pauseTime(0)
@@ -51,5 +48,4 @@ uint32_t Stopwatch::time() {
   return Time::get() - initialTime;
 }
 
-} // namespace engine
 } // namespace metallicar

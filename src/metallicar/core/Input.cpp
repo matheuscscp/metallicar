@@ -14,16 +14,15 @@
 using namespace std;
 
 namespace metallicar {
-namespace engine {
 
 static bool quitRequested = false;
 static map<SDL_Keycode, bool> keys;
 static map<uint8_t, bool> buttons;
-static util::Point mouse, mouseDown, mouseUp;
-static util::Subject subject;
+static Point mouse, mouseDown, mouseUp;
+static observer::Subject subject;
 
 Input::KeyEvent::KeyEvent(uint32_t eventType, SDL_Keycode keycode) :
-util::Event(eventType), keycode(keycode)
+observer::Event(eventType), keycode(keycode)
 {
   
 }
@@ -33,7 +32,7 @@ SDL_Keycode Input::KeyEvent::key() const {
 }
 
 Input::ButtonEvent::ButtonEvent(uint32_t eventType, uint8_t buttoncode) :
-util::Event(eventType), buttoncode(buttoncode)
+observer::Event(eventType), buttoncode(buttoncode)
 {
   
 }
@@ -45,8 +44,8 @@ uint32_t Input::ButtonEvent::button() const {
 void Input::update() {
   int x, y;
   SDL_GetMouseState(&x, &y);
-  engine::mouse.x = float(x);
-  engine::mouse.y = float(y);
+  metallicar::mouse.x = float(x);
+  metallicar::mouse.y = float(y);
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
@@ -64,19 +63,19 @@ void Input::update() {
         
       case SDL_MOUSEBUTTONDOWN:
         buttons[event.button.button] = true;
-        engine::mouseDown = engine::mouse;
+        metallicar::mouseDown = metallicar::mouse;
         subject.broadcast(ButtonEvent(SDL_MOUSEBUTTONDOWN, event.button.button));
         break;
         
       case SDL_MOUSEBUTTONUP:
         buttons[event.button.button] = false;
-        engine::mouseUp = engine::mouse;
+        metallicar::mouseUp = metallicar::mouse;
         subject.broadcast(ButtonEvent(SDL_MOUSEBUTTONUP, event.button.button));
         break;
         
       case SDL_QUIT:
-        engine::quitRequested = true;
-        subject.broadcast(util::Event(SDL_QUIT));
+        metallicar::quitRequested = true;
+        subject.broadcast(observer::Event(SDL_QUIT));
         break;
         
       default:
@@ -86,11 +85,11 @@ void Input::update() {
 }
 
 bool Input::quitRequested() {
-  return engine::quitRequested;
+  return metallicar::quitRequested;
 }
 
 void Input::resetQuitRequest() {
-  engine::quitRequested = false;
+  metallicar::quitRequested = false;
 }
 
 bool Input::key(SDL_Keycode keycode) {
@@ -109,21 +108,20 @@ bool Input::button(uint8_t buttoncode) {
   return it->second;
 }
 
-util::Point Input::mouse() {
-  return engine::mouse;
+Point Input::mouse() {
+  return metallicar::mouse;
 }
 
-util::Point Input::mouseDown() {
-  return engine::mouseDown;
+Point Input::mouseDown() {
+  return metallicar::mouseDown;
 }
 
-util::Point Input::mouseUp() {
-  return engine::mouseUp;
+Point Input::mouseUp() {
+  return metallicar::mouseUp;
 }
 
-util::Connection Input::connect(uint32_t eventType, const function<void(const util::Event&)>& callback) {
+observer::Connection Input::connect(uint32_t eventType, const function<void(const observer::Event&)>& callback) {
   return subject.connect(eventType, callback);
 }
 
-} // namespace engine
 } // namespace metallicar

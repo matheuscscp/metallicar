@@ -1,5 +1,5 @@
 /*
- * Observer.hpp
+ * observer.hpp
  *
  *  Created on: Jul 15, 2014
  *      Author: Pimenta
@@ -14,14 +14,13 @@
 #include <map>
 #include <list>
 
-namespace metallicar {
-namespace util {
+namespace observer {
 
 #define SUBJECT \
 protected: \
-  metallicar::util::Subject subject; \
+  observer::Subject subject; \
 public: \
-  metallicar::util::Connection connect(uint32_t eventType, const std::function<void(const metallicar::util::Event&)>& callback) { \
+  observer::Connection connect(uint32_t eventType, const std::function<void(const observer::Event&)>& callback) { \
     return subject.connect(eventType, callback); \
   }
 
@@ -56,7 +55,6 @@ class Subject {
     void broadcast(const Event& event);
 };
 
-} // namespace util
-} // namespace metallicar
+} // namespace observer
 
 #endif /* OBSERVER_HPP_ */

@@ -12,28 +12,10 @@
 #include <cstdint>
 
 namespace metallicar {
-namespace engine {
 
 class Time {
   public:
     static uint32_t get();
-};
-
-class DeltaTime {
-  public:
-    static uint32_t getUPS();
-    static void setUPS(uint32_t ups);
-    static float getDT();
-    static uint32_t updateID();
-    
-    /// engine's private use
-    static void init();
-    /// engine's private use
-    static void update();
-    /// engine's private use
-    static bool periodReached();
-    /// engine's private use
-    static void accumulate();
 };
 
 class Stopwatch {
@@ -51,7 +33,6 @@ class Stopwatch {
     uint32_t time();
 };
 
-} // namespace engine
 } // namespace metallicar
 
 #endif /* METALLICAR_TIME_HPP_ */

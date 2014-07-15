@@ -10,9 +10,6 @@
 
 using namespace std;
 
-namespace metallicar {
-namespace util {
-
 static string path;
 
 string Path::get() {
@@ -26,8 +23,5 @@ string Path::get(const string& subpath) {
 }
 
 void Path::set(const string& path) {
-  util::path = path;
+  ::path = path;
 }
-
-} // namespace util
-} // namespace metallicar

@@ -11,14 +11,10 @@
 // lib
 #include "SDL.h"
 
-using namespace std;
-
 namespace metallicar {
-namespace engine {
 
 uint32_t Time::get() {
   return SDL_GetTicks();
 }
 
-} // namespace engine
 } // namespace metallicar

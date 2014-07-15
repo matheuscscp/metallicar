@@ -11,7 +11,6 @@
 using namespace std;
 
 namespace metallicar {
-namespace engine {
 
 void GameRenderers::add(int z, const function<void()>& renderer) {
   renderers[z].push_back(renderer);
@@ -26,5 +25,4 @@ void GameRenderers::render() {
   }
 }
 
-} // namespace engine
 } // namespace metallicar

@@ -17,9 +17,6 @@
 
 using namespace std;
 
-namespace metallicar {
-namespace util {
-
 static const char* levelmsg[] = {
   "Error",
   "Warning"
@@ -43,6 +40,3 @@ void Log::message(MessageLevel level, const string& msg) {
   fprintf(fp, "%s", fullmsg.c_str());
   fclose(fp);
 }
-
-} // namespace util
-} // namespace metallicar
