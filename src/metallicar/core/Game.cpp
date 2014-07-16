@@ -162,6 +162,9 @@ void Game::pushScene(GameScene* scene) {
 }
 
 void Game::popScene(GameArgs* args) {
+  if (popArgs) {
+    delete popArgs;
+  }
   popArgs = args;
   changeOption = ChangeOption::POP;
 }
@@ -258,7 +261,13 @@ static void updateStack() {
     default:
       break;
   }
+  if (newScene) {
+    delete newScene;
+  }
   newScene = nullptr;
+  if (popArgs) {
+    delete popArgs;
+  }
   popArgs = nullptr;
   changeOption = ChangeOption::NA;
 }
