@@ -29,11 +29,13 @@ callback(callback), thread(nullptr), joined(false), terminated(new bool) {
 }
 
 Thread::~Thread() {
-  if (!thread)
+  if (!thread) {
     delete terminated;
+  }
 #ifdef _WIN32
-  else if (!joined)
+  else if (!joined) {
     SDL_DetachThread(thread);
+  }
 #endif
 }
 
@@ -90,14 +92,16 @@ Thread& Thread::operator=(Thread&& other) {
 }
 
 void Thread::start() {
-  if (thread || joined)
+  if (thread || joined) {
     return;
+  }
   thread = SDL_CreateThread(exec, nullptr, new ThreadInfo(callback, terminated));
 }
 
 void Thread::join() {
-  if (joined)
+  if (joined) {
     return;
+  }
   SDL_WaitThread(thread, nullptr);
   joined = true;
 }
