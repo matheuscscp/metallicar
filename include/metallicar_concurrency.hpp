@@ -38,7 +38,7 @@ class Thread {
     uint32_t getID() const;
     
     static uint32_t ID();
-    static void sleep(uint32_t ms, bool* keepCondition = nullptr);
+    static void sleep(uint32_t ms, const bool* keepCondition = nullptr);
 };
 
 class Mutex {
