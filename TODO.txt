@@ -1,9 +1,9 @@
 engine:
+  network
   asset
   util
-  network
   graphics
 helper:
   linear algebra
-  geometry
+  geometry (overlap, SAT)
   physics
