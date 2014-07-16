@@ -73,8 +73,8 @@ class GameObjectScene : public GameScene {
   private:
     std::list<GameObject*> objects;
     std::list<GameObject*> newObjects;
-    virtual ~GameObjectScene();
   protected:
+    virtual ~GameObjectScene();
     void add(GameObject* object);
   private:
     void update();

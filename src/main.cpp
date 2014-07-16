@@ -11,22 +11,25 @@
 
 using namespace metallicar;
 
-class FirstScene : public GameScene {
+class FirstScene : public GameObjectScene {
+  private:
+    class Player : public GameObject {
+      private:
+        void update() {
+          
+        }
+        
+        void render(GameRenderers* renderers) {
+          
+        }
+        
+        void wakeup(void* args) {
+          
+        }
+    };
   public:
     FirstScene() {
-      
-    }
-  protected:
-    void update() {
-      
-    }
-    
-    void render() {
-      
-    }
-    
-    void wakeup(void* args) {
-      
+      add(new Player);
     }
 };
 

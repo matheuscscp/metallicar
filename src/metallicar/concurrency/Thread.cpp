@@ -100,8 +100,19 @@ void Thread::join() {
   joined = true;
 }
 
-bool Thread::running() {
+bool Thread::running() const {
   return thread && !terminated;
+}
+
+uint32_t Thread::getID() const {
+  if (!thread || terminated) {
+    return 0;
+  }
+  return SDL_GetThreadID(thread);
+}
+
+uint32_t Thread::ID() {
+  return SDL_ThreadID();
 }
 
 void Thread::sleep(uint32_t ms, bool* keepCondition) {

@@ -34,8 +34,10 @@ class Thread {
     
     void start();
     void join();
-    bool running();
+    bool running() const;
+    uint32_t getID() const;
     
+    static uint32_t ID();
     static void sleep(uint32_t ms, bool* keepCondition = nullptr);
   private:
     static int exec(void* threadInfo);
