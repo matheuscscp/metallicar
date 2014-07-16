@@ -137,6 +137,16 @@ void Thread::sleep(uint32_t ms, const bool* keepCondition) {
   } while (now < time && *keepCondition);
 }
 
+void Thread::setPriority(Priority priority) {
+  switch (priority) {
+    case LOW:     SDL_SetThreadPriority(SDL_THREAD_PRIORITY_LOW);     break;
+    case NORMAL:  SDL_SetThreadPriority(SDL_THREAD_PRIORITY_NORMAL);  break;
+    case HIGH:    SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);    break;
+    default:
+      break;
+  }
+}
+
 static int exec(void* threadInfo) {
   auto info = (ThreadInfo*)threadInfo;
   info->callback();

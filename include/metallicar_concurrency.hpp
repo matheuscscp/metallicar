@@ -25,6 +25,10 @@ class Thread {
     bool joined;
     bool* terminated;
   public:
+    enum Priority {
+      LOW, NORMAL, HIGH
+    };
+    
     Thread(const std::function<void()>& callback);
     ~Thread();
     Thread(const Thread& other);
@@ -39,6 +43,7 @@ class Thread {
     
     static uint32_t ID();
     static void sleep(uint32_t ms, const bool* keepCondition = nullptr);
+    static void setPriority(Priority priority);
 };
 
 class Mutex {
