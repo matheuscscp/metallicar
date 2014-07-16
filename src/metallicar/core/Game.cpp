@@ -53,7 +53,7 @@ static SDL_Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
 static list<GameScene*> scenes;
 static GameScene* newScene = nullptr;
-static void* popArgs = nullptr;
+static GameArgs* popArgs = nullptr;
 static ChangeOption changeOption = ChangeOption::NA;
 
 static uint32_t last = 0;        // unit: milliseconds
@@ -146,16 +146,22 @@ void Game::run(GameScene* firstScene) {
 }
 
 void Game::changeScene(GameScene* scene) {
+  if (newScene) {
+    delete newScene;
+  }
   newScene = scene;
   changeOption = ChangeOption::CHANGE;
 }
 
 void Game::pushScene(GameScene* scene) {
+  if (newScene) {
+    delete newScene;
+  }
   newScene = scene;
   changeOption = ChangeOption::PUSH;
 }
 
-void Game::popScene(void* args) {
+void Game::popScene(GameArgs* args) {
   popArgs = args;
   changeOption = ChangeOption::POP;
 }
@@ -239,7 +245,7 @@ static void updateStack() {
       delete scenes.back();
       scenes.pop_back();
       if (scenes.size())
-        scenes.back()->wakeup(popArgs);
+        scenes.back()->wakeup(*popArgs);
       break;
       
     case ChangeOption::QUIT:

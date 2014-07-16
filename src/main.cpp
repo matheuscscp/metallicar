@@ -19,11 +19,11 @@ class FirstScene : public GameObjectScene {
           
         }
         
-        void render(GameRenderers* renderers) {
+        void render(GameRenderers& renderers) {
           
         }
         
-        void wakeup(void* args) {
+        void wakeup(const GameArgs& args) {
           
         }
     };

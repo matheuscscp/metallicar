@@ -12,6 +12,8 @@ using namespace std;
 
 namespace metallicar {
 
+static int exec(void* threadInfo);
+
 class ThreadInfo {
   public:
     function<void()> callback;
@@ -133,7 +135,7 @@ void Thread::sleep(uint32_t ms, bool* keepCondition) {
   } while (true == *keepCondition && now < time);
 }
 
-int Thread::exec(void* threadInfo) {
+static int exec(void* threadInfo) {
   auto info = (ThreadInfo*)threadInfo;
   info->callback();
   *info->terminated = true;

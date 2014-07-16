@@ -32,6 +32,13 @@ class GameRenderers {
     void render();
 };
 
+class GameArgs {
+  protected:
+    GameArgs();
+  public:
+    virtual ~GameArgs();
+};
+
 class GameObject {
   public:
     bool destroy;
@@ -45,12 +52,12 @@ class GameObject {
   public:
     virtual ~GameObject();
     virtual void update() = 0;
-    virtual void render(GameRenderers* renderers) = 0;
-    virtual void wakeup(void* args) = 0;
+    virtual void render(GameRenderers& renderers) = 0;
+    virtual void wakeup(const GameArgs& args) = 0;
     void add(GameObject* object);
     void updateTree();
-    void renderTree(GameRenderers* renderers);
-    void wakeupTree(void* args);
+    void renderTree(GameRenderers& renderers);
+    void wakeupTree(const GameArgs& args);
 };
 
 class GameScene {
@@ -66,7 +73,7 @@ class GameScene {
     virtual ~GameScene();
     virtual void update() = 0;
     virtual void render() = 0;
-    virtual void wakeup(void* args) = 0;
+    virtual void wakeup(const GameArgs& args) = 0;
 };
 
 class GameObjectScene : public GameScene {
@@ -79,7 +86,7 @@ class GameObjectScene : public GameScene {
   private:
     void update();
     void render();
-    void wakeup(void* args);
+    void wakeup(const GameArgs& args);
 };
 
 struct WindowOptions {
@@ -100,7 +107,7 @@ class Game {
     
     static void changeScene(GameScene* scene);
     static void pushScene(GameScene* scene);
-    static void popScene(void* args);
+    static void popScene(GameArgs* args);
     static void quit();
     
     static WindowOptions getWindowOptions();

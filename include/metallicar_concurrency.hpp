@@ -39,8 +39,6 @@ class Thread {
     
     static uint32_t ID();
     static void sleep(uint32_t ms, bool* keepCondition = nullptr);
-  private:
-    static int exec(void* threadInfo);
 };
 
 class Mutex {

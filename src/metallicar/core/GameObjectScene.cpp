@@ -45,7 +45,7 @@ void GameObjectScene::render() {
     auto object = *it;
     if (!object->destroy) {
       if (!object->frozen || (object->frozen && object->visible)) {
-        object->renderTree(&renderers);
+        object->renderTree(renderers);
       }
       it++;
     }
@@ -57,7 +57,7 @@ void GameObjectScene::render() {
   renderers.render();
 }
 
-void GameObjectScene::wakeup(void* args) {
+void GameObjectScene::wakeup(const GameArgs& args) {
   for (auto object : objects) {
     object->wakeupTree(args);
   }

@@ -44,7 +44,7 @@ void GameObject::updateTree() {
   }
 }
 
-void GameObject::renderTree(GameRenderers* renderers) {
+void GameObject::renderTree(GameRenderers& renderers) {
   render(renderers);
   for (auto it = objects.begin(); it != objects.end();) {
     auto object = *it;
@@ -61,7 +61,7 @@ void GameObject::renderTree(GameRenderers* renderers) {
   }
 }
 
-void GameObject::wakeupTree(void* args) {
+void GameObject::wakeupTree(const GameArgs& args) {
   wakeup(args);
   for (auto object : objects) {
     object->wakeupTree(args);
