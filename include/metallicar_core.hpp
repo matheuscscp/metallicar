@@ -129,7 +129,7 @@ class Input {
         SDL_Keycode key() const;
     };
     
-    class KeyUpEvent : public observer::Event<KeyDownEvent> {
+    class KeyUpEvent : public observer::Event<KeyUpEvent> {
       private:
         SDL_Keycode keycode;
       public:
