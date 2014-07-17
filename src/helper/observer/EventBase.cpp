@@ -1,5 +1,5 @@
 /*
- * Event.cpp
+ * EventBase.cpp
  *
  *  Created on: Jul 15, 2014
  *      Author: Pimenta
@@ -10,12 +10,10 @@
 
 namespace observer {
 
-Event::Event(uint32_t type) : type(type) {
-  
-}
+int EventBase::nextID = 0;
 
-uint32_t Event::getType() const {
-  return type;
+EventBase::~EventBase() {
+  
 }
 
 } // namespace observer

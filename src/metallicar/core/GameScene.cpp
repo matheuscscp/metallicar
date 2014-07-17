@@ -13,7 +13,9 @@ using namespace std;
 namespace metallicar {
 
 GameScene::GameScene() : frozen(false), visible(false) {
-  quitEventConnection = Input::connect(SDL_QUIT, [](const observer::Event&) { Game::quit(); });
+  quitEventConnection = Input::connect<Input::QuitEvent>(
+    [](const observer::EventBase&) { Game::quit(); }
+  );
 }
 
 GameScene::~GameScene() {

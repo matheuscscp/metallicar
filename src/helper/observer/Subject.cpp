@@ -12,14 +12,8 @@ using namespace std;
 
 namespace observer {
 
-Connection Subject::connect(uint32_t eventType, const function<void(const Event&)>& callback) {
-  list<Observer>& eventObservers = observers[eventType];
-  eventObservers.emplace_back(callback);
-  return eventObservers.back().connection;
-}
-
-void Subject::broadcast(const Event& event) {
-  list<Observer>& eventObservers = observers[event.getType()];
+void Subject::broadcast(const EventBase& event) {
+  list<Observer>& eventObservers = observers[event.eventID()];
   for (auto it = eventObservers.begin(); it != eventObservers.end();) {
     if (it->connection.connected()) {
       it->callback(event);

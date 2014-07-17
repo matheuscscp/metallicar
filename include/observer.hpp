@@ -20,8 +20,9 @@ namespace observer {
 protected: \
   observer::Subject subject; \
 public: \
-  observer::Connection connect(uint32_t eventType, const std::function<void(const observer::Event&)>& callback) { \
-    return subject.connect(eventType, callback); \
+  template <class T> \
+  observer::Connection connect(const std::function<void(const observer::EventBase&)>& callback) { \
+    return subject.connect<T>(callback); \
   }
 
 class Connection {
@@ -33,26 +34,43 @@ class Connection {
     void disconnect();
 };
 
-class Event {
-  protected:
-    uint32_t type;
+class EventBase {
+  private:
+    static int nextID;
   public:
-    Event(uint32_t type);
-    uint32_t getType() const;
+    virtual ~EventBase();
+    virtual int eventID() const = 0;
+    template <class T> static int ID() {
+      static int id = nextID++;
+      return id;
+    }
+};
+
+template <class T>
+class Event : public EventBase {
+  public:
+    int eventID() const {
+      return ID<T>();
+    }
 };
 
 struct Observer {
   Connection connection;
-  std::function<void(const Event&)> callback;
-  Observer(const std::function<void(const Event&)>& callback);
+  std::function<void(const EventBase&)> callback;
+  Observer(const std::function<void(const EventBase&)>& callback);
 };
 
 class Subject {
   private:
-    std::map<uint32_t, std::list<Observer>> observers;
+    std::map<int, std::list<Observer>> observers;
   public:
-    Connection connect(uint32_t eventType, const std::function<void(const Event&)>& callback);
-    void broadcast(const Event& event);
+    template <class T>
+    Connection connect(const std::function<void(const EventBase&)>& callback) {
+      auto& eventObservers = observers[EventBase::ID<T>()];
+      eventObservers.emplace_back(callback);
+      return eventObservers.back().connection;
+    }
+    void broadcast(const EventBase& event);
 };
 
 } // namespace observer

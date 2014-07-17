@@ -14,6 +14,10 @@ using namespace metallicar;
 class FirstScene : public GameObjectScene {
   private:
     class Player : public GameObject {
+      public:
+        Player() {
+          
+        }
       private:
         void update() {
           

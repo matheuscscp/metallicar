@@ -121,22 +121,44 @@ class Game {
 
 class Input {
   public:
-    class KeyEvent : public observer::Event {
+    class KeyDownEvent : public observer::Event<KeyDownEvent> {
       private:
         SDL_Keycode keycode;
       public:
-        KeyEvent(uint32_t eventType, SDL_Keycode keycode);
+        KeyDownEvent(SDL_Keycode keycode);
         SDL_Keycode key() const;
     };
     
-    class ButtonEvent : public observer::Event {
+    class KeyUpEvent : public observer::Event<KeyDownEvent> {
+      private:
+        SDL_Keycode keycode;
+      public:
+        KeyUpEvent(SDL_Keycode keycode);
+        SDL_Keycode key() const;
+    };
+    
+    class ButtonDownEvent : public observer::Event<ButtonDownEvent> {
       private:
         uint8_t buttoncode;
       public:
-        ButtonEvent(uint32_t eventType, uint8_t buttoncode);
+        ButtonDownEvent(uint8_t buttoncode);
         uint32_t button() const;
     };
     
+    class ButtonUpEvent : public observer::Event<ButtonUpEvent> {
+      private:
+        uint8_t buttoncode;
+      public:
+        ButtonUpEvent(uint8_t buttoncode);
+        uint32_t button() const;
+    };
+    
+    class QuitEvent : public observer::Event<QuitEvent> {
+      
+    };
+  private:
+    static observer::Subject subject;
+  public:
     static void update();
     
     static bool quitRequested();
@@ -148,7 +170,10 @@ class Input {
     static Point mouseDown();
     static Point mouseUp();
     
-    static observer::Connection connect(uint32_t eventType, const std::function<void(const observer::Event&)>& callback);
+    template <class T>
+    static observer::Connection connect(const std::function<void(const observer::EventBase&)>& callback) {
+      return subject.connect<T>(callback);
+    }
 };
 
 } // namespace metallicar

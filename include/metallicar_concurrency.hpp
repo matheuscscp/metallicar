@@ -94,7 +94,7 @@ class AtomicGlobals {
   private:
     static std::map<std::string, AtomicBase*> atomics;
   public:
-    template <typename T> inline static Atomic<T>* get(const std::string& key) {
+    template <typename T> static Atomic<T>* get(const std::string& key) {
       auto atomic = atomics.find(key);
       if (atomic == atomics.end()) {
         return nullptr;

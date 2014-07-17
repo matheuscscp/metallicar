@@ -19,25 +19,37 @@ static bool quitRequested = false;
 static map<SDL_Keycode, bool> keys;
 static map<uint8_t, bool> buttons;
 static Point mouse, mouseDown, mouseUp;
-static observer::Subject subject;
+observer::Subject Input::subject;
 
-Input::KeyEvent::KeyEvent(uint32_t eventType, SDL_Keycode keycode) :
-observer::Event(eventType), keycode(keycode)
-{
+Input::KeyDownEvent::KeyDownEvent(SDL_Keycode keycode) : keycode(keycode) {
   
 }
 
-SDL_Keycode Input::KeyEvent::key() const {
+SDL_Keycode Input::KeyDownEvent::key() const {
   return keycode;
 }
 
-Input::ButtonEvent::ButtonEvent(uint32_t eventType, uint8_t buttoncode) :
-observer::Event(eventType), buttoncode(buttoncode)
-{
+Input::KeyUpEvent::KeyUpEvent(SDL_Keycode keycode) : keycode(keycode) {
   
 }
 
-uint32_t Input::ButtonEvent::button() const {
+SDL_Keycode Input::KeyUpEvent::key() const {
+  return keycode;
+}
+
+Input::ButtonDownEvent::ButtonDownEvent(uint8_t buttoncode) : buttoncode(buttoncode) {
+  
+}
+
+uint32_t Input::ButtonDownEvent::button() const {
+  return buttoncode;
+}
+
+Input::ButtonUpEvent::ButtonUpEvent(uint8_t buttoncode) : buttoncode(buttoncode) {
+  
+}
+
+uint32_t Input::ButtonUpEvent::button() const {
   return buttoncode;
 }
 
@@ -52,30 +64,30 @@ void Input::update() {
       case SDL_KEYDOWN:
         if (!event.key.repeat) {
           keys[event.key.keysym.sym] = true;
-          subject.broadcast(KeyEvent(SDL_KEYDOWN, event.key.keysym.sym));
+          subject.broadcast(KeyDownEvent(event.key.keysym.sym));
         }
         break;
         
       case SDL_KEYUP:
         keys[event.key.keysym.sym] = false;
-        subject.broadcast(KeyEvent(SDL_KEYUP, event.key.keysym.sym));
+        subject.broadcast(KeyUpEvent(event.key.keysym.sym));
         break;
         
       case SDL_MOUSEBUTTONDOWN:
         buttons[event.button.button] = true;
         metallicar::mouseDown = metallicar::mouse;
-        subject.broadcast(ButtonEvent(SDL_MOUSEBUTTONDOWN, event.button.button));
+        subject.broadcast(ButtonDownEvent(event.button.button));
         break;
         
       case SDL_MOUSEBUTTONUP:
         buttons[event.button.button] = false;
         metallicar::mouseUp = metallicar::mouse;
-        subject.broadcast(ButtonEvent(SDL_MOUSEBUTTONUP, event.button.button));
+        subject.broadcast(ButtonUpEvent(event.button.button));
         break;
         
       case SDL_QUIT:
         metallicar::quitRequested = true;
-        subject.broadcast(observer::Event(SDL_QUIT));
+        subject.broadcast(QuitEvent());
         break;
         
       default:
@@ -118,10 +130,6 @@ Point Input::mouseDown() {
 
 Point Input::mouseUp() {
   return metallicar::mouseUp;
-}
-
-observer::Connection Input::connect(uint32_t eventType, const function<void(const observer::Event&)>& callback) {
-  return subject.connect(eventType, callback);
 }
 
 } // namespace metallicar

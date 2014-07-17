@@ -12,7 +12,7 @@ using namespace std;
 
 namespace observer {
 
-Observer::Observer(const function<void(const Event&)>& callback) :
+Observer::Observer(const function<void(const EventBase&)>& callback) :
 callback(callback)
 {
   
