@@ -19,11 +19,15 @@ Mutex::~Mutex() {
 }
 
 void Mutex::lock() {
-  SDL_mutexP(mutex);
+  SDL_LockMutex(mutex);
 }
 
 void Mutex::unlock() {
-  SDL_mutexV(mutex);
+  SDL_UnlockMutex(mutex);
+}
+
+bool Mutex::tryLock() {
+  return SDL_TryLockMutex(mutex) == 0;
 }
 
 } // namespace metallicar

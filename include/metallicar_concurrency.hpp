@@ -54,6 +54,22 @@ class Mutex {
     ~Mutex();
     void lock();
     void unlock();
+    bool tryLock();
+};
+
+class Semaphore {
+  private:
+    uint32_t initial_value;
+    SDL_sem* semaphore;
+  public:
+    Semaphore(uint32_t initialValue);
+    ~Semaphore();
+    void wait();
+    void post();
+    bool tryWait();
+    bool waitTimeout(uint32_t ms);
+    uint32_t value() const;
+    uint32_t initialValue() const;
 };
 
 class AtomicBase {
