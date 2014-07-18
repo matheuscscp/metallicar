@@ -72,6 +72,18 @@ class Semaphore {
     uint32_t initialValue() const;
 };
 
+class Condition {
+  private:
+    SDL_cond* condition;
+  public:
+    Condition();
+    ~Condition();
+    void wait(Mutex& mutex);
+    void signal();
+    bool waitTimeout(Mutex& mutex, uint32_t ms);
+    void broadcast();
+};
+
 class AtomicBase {
   protected:
     AtomicBase();
