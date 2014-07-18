@@ -10,8 +10,8 @@
 
 namespace metallicar {
 
-Mutex::Mutex() {
-  mutex = SDL_CreateMutex();
+Mutex::Mutex() : mutex(SDL_CreateMutex()) {
+  
 }
 
 Mutex::~Mutex() {

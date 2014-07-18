@@ -24,7 +24,8 @@ class ThreadInfo {
 };
 
 Thread::Thread(const function<void()>& callback) :
-callback(callback), thread(nullptr), joined(false), terminated(new bool) {
+callback(callback), thread(nullptr), joined(false), terminated(new bool)
+{
   *terminated = false;
 }
 

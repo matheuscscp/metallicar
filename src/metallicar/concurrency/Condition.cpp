@@ -10,8 +10,8 @@
 
 namespace metallicar {
 
-Condition::Condition() {
-  condition = SDL_CreateCond();
+Condition::Condition() : condition(SDL_CreateCond()) {
+  
 }
 
 Condition::~Condition() {

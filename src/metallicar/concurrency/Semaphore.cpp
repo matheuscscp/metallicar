@@ -10,9 +10,10 @@
 
 namespace metallicar {
 
-Semaphore::Semaphore(uint32_t initialValue) {
-  initial_value = initialValue != 0 ? initialValue : 1;
-  semaphore = SDL_CreateSemaphore(initial_value);
+Semaphore::Semaphore(uint32_t initialValue) :
+initial_value(initialValue), semaphore(SDL_CreateSemaphore(initialValue))
+{
+  
 }
 
 Semaphore::~Semaphore() {
