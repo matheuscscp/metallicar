@@ -97,7 +97,7 @@ class Atomic : public AtomicBase {
     std::unique_ptr<T> val;
     Mutex mutex;
   public:
-    Atomic(T* val) : val(val) {
+    Atomic(T* val = nullptr) : val(val ? val : new T) {
       
     }
     
