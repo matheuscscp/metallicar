@@ -39,6 +39,6 @@ class FirstScene : public GameObjectScene {
 
 int main(int argc, char* argv[]) {
   Game::init();
-  Game::run(new FirstScene());
+  Game::run(new FirstScene);
   return 0;
 }
