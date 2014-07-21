@@ -1,5 +1,4 @@
 engine:
-  network
   asset
   util
   graphics

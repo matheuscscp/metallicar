@@ -14,6 +14,7 @@
 
 // lib
 #include "SDL_image.h"
+#include "SDL_net.h"
 
 // local
 #include "metallicar_time.hpp"
@@ -80,6 +81,10 @@ void Game::init(const WindowOptions& windowOptions) {
   }
   if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) != (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
     Log::message(Log::Error, IMG_GetError());
+    exit(0);
+  }
+  if (SDLNet_Init()) {
+    Log::message(Log::Error, SDLNet_GetError());
     exit(0);
   }
   if ((window = SDL_CreateWindow(
@@ -225,6 +230,7 @@ static void close() {
   SDL_DestroyWindow(window);
   window = nullptr;
   
+  SDLNet_Quit();
   IMG_Quit();
   SDL_Quit();
 }
