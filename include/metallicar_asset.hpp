@@ -10,6 +10,11 @@
 
 namespace metallicar {
 
+class Asset {
+  public:
+    virtual ~Asset();
+};
+
 class Assets {
   public:
     
