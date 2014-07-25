@@ -18,7 +18,7 @@ namespace metallicar {
 static bool quitRequested = false;
 static map<SDL_Keycode, bool> keys;
 static map<uint8_t, bool> buttons;
-static Point mouse, mouseDown, mouseUp;
+static Point2 mouse, mouseDown, mouseUp;
 observer::Subject Input::subject;
 
 Input::KeyDownEvent::KeyDownEvent(SDL_Keycode keycode) : keycode(keycode) {
@@ -120,15 +120,15 @@ bool Input::button(uint8_t buttoncode) {
   return it->second;
 }
 
-Point Input::mouse() {
+Point2 Input::mouse() {
   return metallicar::mouse;
 }
 
-Point Input::mouseDown() {
+Point2 Input::mouseDown() {
   return metallicar::mouseDown;
 }
 
-Point Input::mouseUp() {
+Point2 Input::mouseUp() {
   return metallicar::mouseUp;
 }
 

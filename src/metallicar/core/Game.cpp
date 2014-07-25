@@ -9,7 +9,6 @@
 #include "metallicar_core.hpp"
 
 // standard
-#include <list>
 #include <cstdio>
 
 // lib
@@ -19,7 +18,6 @@
 // local
 #include "metallicar_time.hpp"
 #include "Log.hpp"
-#include "Path.hpp"
 
 using namespace std;
 
@@ -49,9 +47,6 @@ static void accumulateDT();
 // private globals
 // =============================================================================
 
-static WindowOptions windowOptions;
-static SDL_Window* window = nullptr;
-static SDL_Renderer* renderer = nullptr;
 static list<GameScene*> scenes;
 static GameScene* newScene = nullptr;
 static GameArgs* popArgs = nullptr;
@@ -69,46 +64,35 @@ static uint32_t updateID = 0;
 // =============================================================================
 
 void Game::init(const WindowOptions& windowOptions) {
-  if (window) {
+  static bool initialized = false;
+  if (initialized) {
     return;
   }
+  initialized = true;
   
-  metallicar::windowOptions = windowOptions;
-  
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0) {
+  // SDL
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
     Log::message(Log::Error, SDL_GetError());
     exit(0);
   }
-  if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) != (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
-    Log::message(Log::Error, IMG_GetError());
-    exit(0);
+  
+  // IMG
+  {
+    int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF;
+    if (IMG_Init(flags) != flags) {
+      Log::message(Log::Error, IMG_GetError());
+      exit(0);
+    }
   }
+  
+  // SDLNet
   if (SDLNet_Init()) {
     Log::message(Log::Error, SDLNet_GetError());
     exit(0);
   }
-  if ((window = SDL_CreateWindow(
-    windowOptions.title.c_str(),
-    SDL_WINDOWPOS_CENTERED,
-    SDL_WINDOWPOS_CENTERED,
-    windowOptions.width,
-    windowOptions.height,
-    SDL_WINDOW_OPENGL | (windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
-  )) == nullptr) {
-    Log::message(Log::Error, SDL_GetError());
-    exit(0);
-  }
-  SDL_GetWindowSize(window, &metallicar::windowOptions.width, &metallicar::windowOptions.height);
-  if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == nullptr) {
-    Log::message(Log::Error, SDL_GetError());
-    exit(0);
-  }
-  if (windowOptions.icon.size()) {
-    SDL_Surface* iconsurface = IMG_Load(Path::get(windowOptions.icon).c_str());
-    SDL_SetWindowIcon(window, iconsurface);
-    SDL_FreeSurface(iconsurface);
-  }
-  SDL_ShowCursor(windowOptions.cursor ? 1 : 0);
+  
+  Window::init(windowOptions);
+  
   initDT();
 }
 
@@ -141,8 +125,7 @@ void Game::run(GameScene* firstScene) {
       }
     }
     
-    // update window
-    SDL_RenderPresent(renderer);
+    Window::update();
     
     updateStack();
   }
@@ -178,26 +161,6 @@ void Game::quit() {
   changeOption = ChangeOption::QUIT;
 }
 
-WindowOptions Game::getWindowOptions() {
-  return windowOptions;
-}
-
-void Game::setWindowOptions(WindowOptions& windowOptions) {
-  SDL_SetWindowTitle(window, windowOptions.title.c_str());
-  SDL_SetWindowFullscreen(window, 0);
-  SDL_SetWindowSize(window, windowOptions.width, windowOptions.height);
-  SDL_SetWindowFullscreen(window, windowOptions.fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
-  SDL_GetWindowSize(window, &windowOptions.width, &windowOptions.height);
-  if (windowOptions.icon.size()) {
-    SDL_Surface* iconsurface = IMG_Load(Path::get(windowOptions.icon).c_str());
-    SDL_SetWindowIcon(window, iconsurface);
-    SDL_FreeSurface(iconsurface);
-  }
-  SDL_ShowCursor(windowOptions.cursor ? 1 : 0);
-  
-  metallicar::windowOptions = windowOptions;
-}
-
 uint32_t Game::getUPS() {
   return ups;
 }
@@ -221,14 +184,7 @@ uint32_t Game::updateID() {
 // =============================================================================
 
 static void close() {
-  if (!window) {
-    return;
-  }
-  
-  SDL_DestroyRenderer(renderer);
-  renderer = nullptr;
-  SDL_DestroyWindow(window);
-  window = nullptr;
+  Window::close();
   
   SDLNet_Quit();
   IMG_Quit();

@@ -9,18 +9,13 @@
 #define METALLICAR_CORE_HPP_
 
 // standard
-#include <string>
 #include <list>
 #include <map>
 #include <functional>
 
-// lib
-#include "SDL.h"
-
 // local
 #include "metallicar_asset.hpp"
-#include "Point.hpp"
-#include "observer.hpp"
+#include "metallicar_io.hpp"
 
 namespace metallicar {
 
@@ -89,17 +84,6 @@ class GameObjectScene : public GameScene {
     void wakeup(const GameArgs& args);
 };
 
-struct WindowOptions {
-  std::string title;
-  int width;
-  int height;
-  bool fullscreen;
-  std::string icon;
-  bool cursor;
-  WindowOptions();
-  WindowOptions(const std::string& title, int width, int height, bool fullscreen, const std::string& icon, bool cursor);
-};
-
 class Game {
   public:
     static void init(const WindowOptions& windowOptions = WindowOptions());
@@ -110,70 +94,10 @@ class Game {
     static void popScene(GameArgs* args);
     static void quit();
     
-    static WindowOptions getWindowOptions();
-    static void setWindowOptions(WindowOptions& windowOptions);
-    
     static uint32_t getUPS();
     static void setUPS(uint32_t ups);
     static float getDT();
     static uint32_t updateID();
-};
-
-class Input {
-  public:
-    class KeyDownEvent : public observer::Event<KeyDownEvent> {
-      private:
-        SDL_Keycode keycode;
-      public:
-        KeyDownEvent(SDL_Keycode keycode);
-        SDL_Keycode key() const;
-    };
-    
-    class KeyUpEvent : public observer::Event<KeyUpEvent> {
-      private:
-        SDL_Keycode keycode;
-      public:
-        KeyUpEvent(SDL_Keycode keycode);
-        SDL_Keycode key() const;
-    };
-    
-    class ButtonDownEvent : public observer::Event<ButtonDownEvent> {
-      private:
-        uint8_t buttoncode;
-      public:
-        ButtonDownEvent(uint8_t buttoncode);
-        uint32_t button() const;
-    };
-    
-    class ButtonUpEvent : public observer::Event<ButtonUpEvent> {
-      private:
-        uint8_t buttoncode;
-      public:
-        ButtonUpEvent(uint8_t buttoncode);
-        uint32_t button() const;
-    };
-    
-    class QuitEvent : public observer::Event<QuitEvent> {
-      
-    };
-  private:
-    static observer::Subject subject;
-  public:
-    static void update();
-    
-    static bool quitRequested();
-    static void resetQuitRequest();
-    
-    static bool key(SDL_Keycode keycode);
-    static bool button(uint8_t buttoncode);
-    static Point mouse();
-    static Point mouseDown();
-    static Point mouseUp();
-    
-    template <class T>
-    static observer::Connection connect(const std::function<void(const observer::EventBase&)>& callback) {
-      return subject.connect<T>(callback);
-    }
 };
 
 } // namespace metallicar
