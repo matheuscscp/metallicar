@@ -37,13 +37,14 @@ struct WindowOptions {
 
 class Window {
   public:
-    static SDL_GLContext* glContext;
-    
     static void init(const WindowOptions& options = WindowOptions());
     static void close();
     
     static WindowOptions getOptions();
     static void setOptions(const WindowOptions& options);
+    
+    static SDL_GLContext getOpenGLContext();
+    static void setOpenGLContext(SDL_GLContext glContext);
     
     static void update();
 };

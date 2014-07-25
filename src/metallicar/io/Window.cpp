@@ -26,6 +26,7 @@ namespace metallicar {
 // =============================================================================
 
 static void initLegacyOpenGL();
+static void setLegacyOpenGLProjection();
 
 // =============================================================================
 // private globals
@@ -33,17 +34,16 @@ static void initLegacyOpenGL();
 
 static WindowOptions options;
 static SDL_Window* window = nullptr;
+static SDL_GLContext glContext = nullptr;
 
 // =============================================================================
 // public methods
 // =============================================================================
 
 void Window::init(const WindowOptions& options) {
-  static bool initialized = false;
-  if (initialized) {
+  if (window) {
     return;
   }
-  initialized = true;
   
   metallicar::options = options;
   
@@ -54,7 +54,9 @@ void Window::init(const WindowOptions& options) {
     SDL_WINDOWPOS_CENTERED,
     options.width,
     options.height,
-    SDL_WINDOW_OPENGL |(options.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
+    SDL_WINDOW_OPENGL |
+    SDL_WINDOW_SHOWN |
+    (options.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
   )) == nullptr) {
     Log::message(Log::Error, SDL_GetError());
     exit(0);
@@ -70,13 +72,26 @@ void Window::init(const WindowOptions& options) {
   SDL_ShowCursor(options.cursor ? 1 : 0);
   
   // context
-  //TODO
-  
+  if ((glContext = SDL_GL_CreateContext(window)) == nullptr) {
+    Log::message(Log::Error, SDL_GetError());
+    exit(0);
+  }
+  if (SDL_GL_SetSwapInterval(1) < 0) {
+    Log::message(Log::Error, SDL_GetError());
+    exit(0);
+  }
   initLegacyOpenGL();
 }
 
 void Window::close() {
+  if (!window) {
+    return;
+  }
   
+  SDL_GL_DeleteContext(glContext);
+  glContext = nullptr;
+  SDL_DestroyWindow(window);
+  window = nullptr;
 }
 
 WindowOptions Window::getOptions() {
@@ -86,6 +101,7 @@ WindowOptions Window::getOptions() {
 void Window::setOptions(const WindowOptions& options) {
   metallicar::options = options;
   
+  // window
   SDL_SetWindowTitle(window, options.title.c_str());
   SDL_SetWindowFullscreen(window, 0);
   SDL_SetWindowSize(window, options.width, options.height);
@@ -101,10 +117,26 @@ void Window::setOptions(const WindowOptions& options) {
     SDL_FreeSurface(iconsurface);
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
+  
+  // context
+  setLegacyOpenGLProjection();
+}
+
+SDL_GLContext Window::getOpenGLContext() {
+  return glContext;
+}
+
+void Window::setOpenGLContext(SDL_GLContext glContext) {
+  if (!glContext) {
+    Log::message(Log::Error, "Trying to set null OpenGL context");
+    exit(0);
+  }
+  metallicar::glContext = glContext;
 }
 
 void Window::update() {
-  //TODO
+  SDL_GL_SwapWindow(window);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // =============================================================================
@@ -119,6 +151,10 @@ static void initLegacyOpenGL() {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
+  setLegacyOpenGLProjection();
+}
+
+static void setLegacyOpenGLProjection() {
   // backbuffer size
   glViewport(0, 0, options.width, options.height);
   

@@ -93,6 +93,8 @@ void Game::init(const WindowOptions& windowOptions) {
   
   Window::init(windowOptions);
   
+  SDL_StartTextInput();
+  
   initDT();
 }
 
@@ -184,6 +186,8 @@ uint32_t Game::updateID() {
 // =============================================================================
 
 static void close() {
+  SDL_StopTextInput();
+  
   Window::close();
   
   SDLNet_Quit();
