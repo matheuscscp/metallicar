@@ -104,7 +104,7 @@ void Window::setOptions(const WindowOptions& options) {
 }
 
 void Window::update() {
-  
+  //TODO
 }
 
 // =============================================================================
