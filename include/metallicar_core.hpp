@@ -10,94 +10,108 @@
 
 // standard
 #include <list>
-#include <map>
 #include <functional>
+#include <vector>
 
 // local
 #include "metallicar_asset.hpp"
 #include "metallicar_io.hpp"
+#include "FieldTable.hpp"
 
 namespace metallicar {
-
-class GameRenderers {
-  private:
-    std::map<int, std::list<std::function<void()>>> renderers;
-  public:
-    void add(int z, const std::function<void()>& renderer);
-    void render();
-};
-
-class GameArgs {
-  protected:
-    GameArgs();
-  public:
-    virtual ~GameArgs();
-};
-
-class GameObject {
-  public:
-    bool destroy;
-    bool frozen;
-    bool visible;
-  private:
-    std::list<GameObject*> objects;
-    std::list<GameObject*> newObjects;
-  protected:
-    GameObject();
-  public:
-    virtual ~GameObject();
-    virtual void update() = 0;
-    virtual void render(GameRenderers& renderers) = 0;
-    virtual void wakeup(const GameArgs& args) = 0;
-    void add(GameObject* object);
-    void updateTree();
-    void renderTree(GameRenderers& renderers);
-    void wakeupTree(const GameArgs& args);
-};
-
-class GameScene {
-  protected:
-    Assets assets;
-    observer::Connection quitEventConnection;
-  public:
-    bool frozen;
-    bool visible;
-  protected:
-    GameScene();
-  public:
-    virtual ~GameScene();
-    virtual void update() = 0;
-    virtual void render() = 0;
-    virtual void wakeup(const GameArgs& args) = 0;
-};
-
-class GameObjectScene : public GameScene {
-  private:
-    std::list<GameObject*> objects;
-    std::list<GameObject*> newObjects;
-  protected:
-    virtual ~GameObjectScene();
-    void add(GameObject* object);
-  private:
-    void update();
-    void render();
-    void wakeup(const GameArgs& args);
-};
 
 class Game {
   public:
     static void init(const WindowOptions& windowOptions = WindowOptions());
-    static void run(GameScene* firstScene);
+    static void run();
     
-    static void changeScene(GameScene* scene);
-    static void pushScene(GameScene* scene);
-    static void popScene(GameArgs* args);
     static void quit();
     
     static uint32_t getUPS();
     static void setUPS(uint32_t ups);
     static float getDT();
     static uint32_t updateID();
+};
+
+class GameScene {
+  private:
+    Assets assets;
+  protected:
+    observer::Connection quitEventConnection;
+    
+    GameScene();
+  public:
+    virtual ~GameScene();
+    virtual void update() = 0;
+    virtual void render() = 0;
+    
+    static GameScene& instance();
+    static void change();
+    static void close();
+};
+
+class GameRenderers {
+  public:
+    static void add(double order, const std::function<void()>& renderer);
+    static void render();
+    static void clear();
+};
+
+class GameObject {
+  public:
+    virtual ~GameObject();
+    virtual void update() = 0;
+    virtual void render() = 0;
+    virtual bool destroy() = 0;
+};
+
+class GameObjectScene : public GameScene {
+  protected:
+    std::list<GameObject*> objects;
+    std::list<GameObject*> newObjects;
+    FieldTable fieldTable;
+  public:
+    GameObjectScene(const std::vector<GameObject*>& objects = {});
+    virtual ~GameObjectScene();
+    virtual void update();
+    virtual void render();
+    
+    virtual void addObject(GameObject* object);
+    virtual FieldTable& fields();
+    
+    static GameObjectScene& instance();
+};
+
+class CompositeGameObject;
+class GameObjectComponent {
+  friend class CompositeGameObject;
+  protected:
+    CompositeGameObject* object;
+  public:
+    virtual ~GameObjectComponent();
+    virtual std::string family() const = 0;
+    virtual std::vector<std::string> depends() const;
+    virtual void init() = 0;
+    virtual void update() = 0;
+    virtual bool destroy() = 0;
+};
+
+class CompositeGameObject : public GameObject {
+  protected:
+    std::list<GameObjectComponent*> components;
+    std::list<GameObjectComponent*> newComponents;
+    FieldTable fieldTable;
+  public:
+    CompositeGameObject(
+      const std::vector<GameObjectComponent*>& components = {}
+    );
+    virtual ~CompositeGameObject();
+    virtual void update();
+    virtual void render();
+    virtual bool destroy();
+    
+    virtual void addComponent(GameObjectComponent* component);
+    virtual FieldTable& fields();
 };
 
 } // namespace metallicar

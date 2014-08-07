@@ -17,7 +17,9 @@ class Asset {
 
 class Assets {
   public:
+    Assets();
     
+    static Assets& instance(Assets* newInstance = nullptr);
 };
 
 } // namespace metallicar

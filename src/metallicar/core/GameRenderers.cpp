@@ -12,17 +12,22 @@ using namespace std;
 
 namespace metallicar {
 
-void GameRenderers::add(int z, const function<void()>& renderer) {
-  renderers[z].push_back(renderer);
+static map<double, list<function<void()>>> renderers;
+
+void GameRenderers::add(double order, const function<void()>& renderer) {
+  renderers[order].push_back(renderer);
 }
 
 void GameRenderers::render() {
-  for (auto it = renderers.begin(); it != renderers.end(); renderers.erase(it++)) {
-    while (it->second.size()) {
-      it->second.back()();
-      it->second.pop_back();
+  for (auto& kv : renderers) {
+    for (auto& renderer : kv.second) {
+      renderer();
     }
   }
+}
+
+void GameRenderers::clear() {
+  renderers.clear();
 }
 
 } // namespace metallicar

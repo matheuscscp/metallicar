@@ -24,19 +24,10 @@ using namespace std;
 namespace metallicar {
 
 // =============================================================================
-// private types
-// =============================================================================
-
-enum ChangeOption {
-  NA, CHANGE, PUSH, POP, QUIT
-};
-
-// =============================================================================
 // private function declarations
 // =============================================================================
 
 static void close();
-static void updateStack();
 
 static void initDT();
 static void updateDT();
@@ -47,10 +38,7 @@ static void accumulateDT();
 // private globals
 // =============================================================================
 
-static list<GameScene*> scenes;
-static GameScene* newScene = nullptr;
-static GameArgs* popArgs = nullptr;
-static ChangeOption changeOption = ChangeOption::NA;
+static bool quit = false;
 
 static uint32_t last = 0;        // unit: milliseconds
 static uint32_t ups = 32;        // unit: updates/second
@@ -96,69 +84,34 @@ void Game::init(const WindowOptions& windowOptions) {
   initDT();
 }
 
-void Game::run(GameScene* firstScene) {
-  if (scenes.size()) {
-    return;
-  }
+void Game::run() {
+  GameScene::change();
   
-  scenes.push_back(firstScene);
-  
-  while (scenes.size()) {
+  while (!metallicar::quit) {
+    GameScene& currentScene = GameScene::instance();
+    
+    // update
     updateDT();
-    
-    Input::update();
-    
-    // update scenes
     while (reachedDT()) {
-      for (auto scene : scenes) {
-        if (!scene->frozen) {
-          scene->update();
-        }
-      }
+      GameRenderers::clear();
+      Input::update();
+      currentScene.update();
+      currentScene.render();
     }
     accumulateDT();
     
-    // render scenes
-    for (auto scene : scenes) {
-      if (!scene->frozen || (scene->frozen && scene->visible)) {
-        scene->render();
-      }
-    }
-    
+    // render
+    GameRenderers::render();
     Window::update();
     
-    updateStack();
+    GameScene::change();
   }
   
   close();
 }
 
-void Game::changeScene(GameScene* scene) {
-  if (newScene) {
-    delete newScene;
-  }
-  newScene = scene;
-  changeOption = ChangeOption::CHANGE;
-}
-
-void Game::pushScene(GameScene* scene) {
-  if (newScene) {
-    delete newScene;
-  }
-  newScene = scene;
-  changeOption = ChangeOption::PUSH;
-}
-
-void Game::popScene(GameArgs* args) {
-  if (popArgs) {
-    delete popArgs;
-  }
-  popArgs = args;
-  changeOption = ChangeOption::POP;
-}
-
 void Game::quit() {
-  changeOption = ChangeOption::QUIT;
+  metallicar::quit = true;
 }
 
 uint32_t Game::getUPS() {
@@ -184,54 +137,13 @@ uint32_t Game::updateID() {
 // =============================================================================
 
 static void close() {
+  GameScene::close();
+  
   Window::close();
   
   SDLNet_Quit();
   IMG_Quit();
   SDL_Quit();
-}
-
-static void updateStack() {
-  switch (changeOption) {
-    case ChangeOption::NA:
-      break;
-      
-    case ChangeOption::CHANGE:
-      delete scenes.back();
-      scenes.pop_back();
-      scenes.push_back(newScene);
-      break;
-      
-    case ChangeOption::PUSH:
-      scenes.push_back(newScene);
-      break;
-      
-    case ChangeOption::POP:
-      delete scenes.back();
-      scenes.pop_back();
-      if (scenes.size())
-        scenes.back()->wakeup(*popArgs);
-      break;
-      
-    case ChangeOption::QUIT:
-      while (scenes.size()) {
-        delete scenes.back();
-        scenes.pop_back();
-      }
-      break;
-      
-    default:
-      break;
-  }
-  if (newScene) {
-    delete newScene;
-  }
-  newScene = nullptr;
-  if (popArgs) {
-    delete popArgs;
-  }
-  popArgs = nullptr;
-  changeOption = ChangeOption::NA;
 }
 
 static void initDT() {

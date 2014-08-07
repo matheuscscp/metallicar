@@ -12,6 +12,12 @@ using namespace std;
 
 namespace metallicar {
 
+GameObjectScene::GameObjectScene(const vector<GameObject*>& objects) {
+  for (auto object : objects) {
+    addObject(object);
+  }
+}
+
 GameObjectScene::~GameObjectScene() {
   while (objects.size()) {
     delete objects.back();
@@ -23,44 +29,39 @@ GameObjectScene::~GameObjectScene() {
   }
 }
 
-void GameObjectScene::add(GameObject* object) {
-  newObjects.push_back(object);
-}
-
 void GameObjectScene::update() {
-  for (auto object : objects) {
-    if (!object->destroy && !object->frozen) {
-      object->updateTree();
-    }
-  }
   while (newObjects.size()) {
     objects.push_back(newObjects.front());
     newObjects.pop_front();
   }
+  for (auto it = objects.begin(); it != objects.end();) {
+    if ((*it)->destroy()) {
+      delete *it;
+      objects.erase(it++);
+    }
+    else {
+      (*it)->update();
+      it++;
+    }
+  }
 }
 
 void GameObjectScene::render() {
-  GameRenderers renderers;
-  for (auto it = objects.begin(); it != objects.end();) {
-    auto object = *it;
-    if (!object->destroy) {
-      if (!object->frozen || (object->frozen && object->visible)) {
-        object->renderTree(renderers);
-      }
-      it++;
-    }
-    else {
-      delete object;
-      objects.erase(it++);
-    }
+  for (auto object : objects) {
+    object->render();
   }
-  renderers.render();
 }
 
-void GameObjectScene::wakeup(const GameArgs& args) {
-  for (auto object : objects) {
-    object->wakeupTree(args);
-  }
+void GameObjectScene::addObject(GameObject* object) {
+  newObjects.push_back(object);
+}
+
+FieldTable& GameObjectScene::fields() {
+  return fieldTable;
+}
+
+GameObjectScene& GameObjectScene::instance() {
+  return (GameObjectScene&)GameScene::instance();
 }
 
 } // namespace metallicar

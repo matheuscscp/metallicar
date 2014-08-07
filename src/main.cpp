@@ -9,36 +9,52 @@
 
 #include "metallicar.hpp"
 
+using namespace std;
 using namespace metallicar;
 
-class FirstScene : public GameObjectScene {
+class Space2D : public GameObjectComponent {
   private:
-    class Player : public GameObject {
-      public:
-        Player() {
-          
-        }
-      private:
-        void update() {
-          
-        }
-        
-        void render(GameRenderers& renderers) {
-          
-        }
-        
-        void wakeup(const GameArgs& args) {
-          
-        }
-    };
+    string family() const {
+      return "spatial";
+    }
+    void init() {
+      object->fields().write("x", 400.0f);
+      object->fields().write("y", 300.0f);
+    }
+    void update() {
+      
+    }
+    bool destroy() {
+      return false;
+    }
+};
+
+class Renderer : public GameObjectComponent {
   public:
-    FirstScene() {
-      add(new Player);
+    Renderer() {
+      
+    }
+  private:
+    string family() const {
+      return "renderer";
+    }
+    vector<string> depends() const {
+      return {"spatial"};
+    }
+    void init() {
+      
+    }
+    void update() {
+      
+    }
+    bool destroy() {
+      return false;
     }
 };
 
 int main(int argc, char* argv[]) {
   Game::init();
-  Game::run(new FirstScene);
+  new GameObjectScene({new CompositeGameObject({new Space2D, new Renderer})});
+  Game::run();
   return 0;
 }
