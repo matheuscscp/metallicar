@@ -57,7 +57,7 @@ class Renderer : public GameObjectComponent {
 };
 
 int main(int argc, char* argv[]) {
-  Game::init(WindowOptions("metallicar test", 1280, 720));
+  Game::init();
   (new GameObjectScene())->addObjects({
     new CompositeGameObject({new Space2D, new Renderer})
   });
