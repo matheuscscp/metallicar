@@ -18,11 +18,8 @@ class Space2D : public GameObjectComponent {
       return "spatial";
     }
     void init() {
-      //FIXME
-      object->fields().write("x", 400.0f);
-      object->fields().write("y", 300.0f);
-      printf("%f %f\n", object->fields().read<float>("x"), object->fields().read<float>("y"));
-      fflush(stdout);
+      object->fields().write("x", 640.0f);
+      object->fields().write("y", 360.0f);
     }
     void update() {
       
@@ -50,8 +47,8 @@ class Renderer : public GameObjectComponent {
     }
     void update() {
       GameRenderers::add(0.0, [this]() {
-        //spr.render(object->fields().read<float>("x"), object->fields().read<float>("y"), Corner::CENTER);
-        spr.render(640,360,Corner::CENTER);
+        //glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+        spr.render(object->fields().read<float>("x"), object->fields().read<float>("y"), Corner::CENTER);
       });
     }
     bool destroy() {
@@ -60,7 +57,7 @@ class Renderer : public GameObjectComponent {
 };
 
 int main(int argc, char* argv[]) {
-  Game::init(WindowOptions("teste", 1280, 720));
+  Game::init(WindowOptions("metallicar test", 1280, 720));
   (new GameObjectScene())->addObjects({
     new CompositeGameObject({new Space2D, new Renderer})
   });

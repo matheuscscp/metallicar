@@ -67,7 +67,7 @@ class FieldTable {
     }
     
     template <typename T> void write(const std::string& field, const T& value) {
-      std::pair<Field, observer::Subject> fieldPair = fields[field];
+      auto& fieldPair = fields[field];
       fieldPair.first.write(value);
       fieldPair.second.broadcast(WriteEvent(field));
     }
