@@ -49,7 +49,7 @@ class Renderer : public GameObjectComponent {
       GameRenderers::add(0.0, [this]() {
         bg.render();
         spr.render(object->fields().read<float>("x"), object->fields().read<float>("y"), Corner::CENTER);
-        spr2.render(0,0,Corner::TOP_LEFT,1,0,1,1,Color::WHITE,Input::key(SDLK_h));
+        spr2.render();
       });
     }
     bool destroy() {
@@ -59,9 +59,55 @@ class Renderer : public GameObjectComponent {
 
 class ProjUpdater : public GameObjectComponent {
   public:
-    float scale;
-    ProjUpdater() : scale(1) {
-      
+    observer::Connection conn;
+    ProjUpdater() {
+      conn = Input::connect<Input::KeyDownEvent>([this](const observer::EventBase& event) {
+        const Input::KeyDownEvent& keyEvent = (const Input::KeyDownEvent&)event;
+        switch (keyEvent.key()) {
+          case SDLK_a: {
+            WindowOptions opts = Window::getOptions();
+            opts.width = 480;
+            opts.height = 640;
+            Window::setOptions(opts);
+            break;
+          }
+          
+          case SDLK_s: {
+            WindowOptions opts = Window::getOptions();
+            opts.width = 800;
+            opts.height = 600;
+            Window::setOptions(opts);
+            break;
+          }
+          
+          case SDLK_d: {
+            WindowOptions opts = Window::getOptions();
+            opts.width = 1024;
+            opts.height = 768;
+            Window::setOptions(opts);
+            break;
+          }
+          
+          case SDLK_f: {
+            WindowOptions opts = Window::getOptions();
+            opts.width = 1280;
+            opts.height = 720;
+            Window::setOptions(opts);
+            break;
+          }
+          
+          case SDLK_g: {
+            WindowOptions opts = Window::getOptions();
+            opts.width = 1920;
+            opts.height = 1080;
+            Window::setOptions(opts);
+            break;
+          }
+          
+          default:
+            break;
+        }
+      });
     }
   private:
     string family() const {
@@ -71,16 +117,7 @@ class ProjUpdater : public GameObjectComponent {
       
     }
     void update() {
-      if (Input::key(SDLK_a)) {
-        scale += Game::getDT();
-      }
-      if (Input::key(SDLK_s)) {
-        scale -= Game::getDT();
-      }
-      WindowOptions opts = Window::getOptions();
-      opts.width = opts.gameWidth*scale;
-      opts.height = opts.gameHeight*scale;
-      Window::setOptions(opts);
+      
     }
     bool destroy() {
       return false;

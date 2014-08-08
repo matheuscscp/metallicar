@@ -16,7 +16,6 @@
 #include "SDL_opengl.h"
 
 // local
-#include "metallicar_graphics.hpp"
 #include "Log.hpp"
 #include "Path.hpp"
 
@@ -27,7 +26,7 @@ namespace metallicar {
 // =============================================================================
 
 static void initLegacyOpenGL();
-static void setLegacyOpenGLProjection();
+static void updateProjection();
 
 // =============================================================================
 // private globals
@@ -119,8 +118,7 @@ void Window::setOptions(const WindowOptions& options) {
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
   
-  // context
-  setLegacyOpenGLProjection();
+  updateProjection();
 }
 
 SDL_GLContext Window::getOpenGLContext() {
@@ -138,16 +136,7 @@ void Window::setOpenGLContext(SDL_GLContext glContext) {
 void Window::update() {
   SDL_GL_SwapWindow(window);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
-  // projection
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0, options.width, options.height, 0, -1, 1);
-  glScalef(float(options.width)/options.gameWidth, float(options.height)/options.gameHeight, 0.0f);
-  
-  // modelview
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  updateProjection();
 }
 
 // =============================================================================
@@ -162,12 +151,34 @@ static void initLegacyOpenGL() {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
-  setLegacyOpenGLProjection();
+  updateProjection();
 }
 
-static void setLegacyOpenGLProjection() {
-  // backbuffer size
-  glViewport(0, 0, options.width, options.height);
+static void updateProjection() {
+  // viewport
+  int x = 0, y = 0;
+  int w = options.width, h = options.height;
+  float gameRatio = float(options.gameWidth)/options.gameHeight;
+  float ratio = float(options.width)/options.height;
+  if (ratio > gameRatio) {
+    w = h*gameRatio;
+    x = (options.width - w)/2;
+  }
+  else if (ratio < gameRatio) {
+    h = w/gameRatio;
+    y = (options.height - h)/2;
+  }
+  glViewport(x, y, w, h);
+  
+  // projection
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, w, h, 0, -1, 1);
+  glScalef(float(w)/options.gameWidth, float(h)/options.gameHeight, 0.0f);
+  
+  // modelview
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 }
 
 } // namespace metallicar
