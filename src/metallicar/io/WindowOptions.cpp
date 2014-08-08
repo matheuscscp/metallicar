@@ -16,6 +16,8 @@ WindowOptions::WindowOptions(
   const string& title,
   int width,
   int height,
+  int gameWidth,
+  int gameHeight,
   bool fullscreen,
   const string& icon,
   bool cursor
@@ -23,6 +25,8 @@ WindowOptions::WindowOptions(
 title(title),
 width(width),
 height(height),
+gameWidth(gameWidth),
+gameHeight(gameHeight),
 fullscreen(fullscreen),
 icon(icon),
 cursor(cursor)

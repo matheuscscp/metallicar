@@ -8,12 +8,6 @@
 // this
 #include "metallicar_asset.hpp"
 
-// lib
-#include "SDL_opengl.h"
-
-// local
-#include "metallicar_graphics.hpp"
-
 using namespace std;
 
 namespace metallicar {
@@ -87,24 +81,25 @@ void Sprite::render(
       break;
   }
   
-  // transform
-  glLoadIdentity();
-  glTranslatef(x, y, 0.0f);
-  glRotatef(angle, 0.0f, 0.0f, 1.0f);
-  glScalef(scaleX, scaleY, 0.0f);
-  Graphics::performTransformations();
-  
-  // render
-  glBegin(GL_QUADS);
-    glTexCoord2f(texCoordX0, texCoordY0);
-    glVertex2f(vertexCoordX0, vertexCoordY0);
-    glTexCoord2f(texCoordX1, texCoordY0);
-    glVertex2f(vertexCoordX1, vertexCoordY0);
-    glTexCoord2f(texCoordX1, texCoordY1);
-    glVertex2f(vertexCoordX1, vertexCoordY1);
-    glTexCoord2f(texCoordX0, texCoordY1);
-    glVertex2f(vertexCoordX0, vertexCoordY1);
-  glEnd();
+  glPushMatrix();
+    // transform
+    glLoadIdentity();
+    glTranslatef(x, y, 0.0f);
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
+    glScalef(scaleX, scaleY, 0.0f);
+    
+    // render
+    glBegin(GL_QUADS);
+      glTexCoord2f(texCoordX0, texCoordY0);
+      glVertex2f(vertexCoordX0, vertexCoordY0);
+      glTexCoord2f(texCoordX1, texCoordY0);
+      glVertex2f(vertexCoordX1, vertexCoordY0);
+      glTexCoord2f(texCoordX1, texCoordY1);
+      glVertex2f(vertexCoordX1, vertexCoordY1);
+      glTexCoord2f(texCoordX0, texCoordY1);
+      glVertex2f(vertexCoordX0, vertexCoordY1);
+    glEnd();
+  glPopMatrix();
 }
 
 void Sprite::clip(float x, float y, float w, float h) {

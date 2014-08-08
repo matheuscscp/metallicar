@@ -16,6 +16,7 @@
 #include "SDL_opengl.h"
 
 // local
+#include "metallicar_graphics.hpp"
 #include "Log.hpp"
 #include "Path.hpp"
 
@@ -137,6 +138,16 @@ void Window::setOpenGLContext(SDL_GLContext glContext) {
 void Window::update() {
   SDL_GL_SwapWindow(window);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
+  // projection
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, options.width, options.height, 0, -1, 1);
+  glScalef(float(options.width)/options.gameWidth, float(options.height)/options.gameHeight, 0.0f);
+  
+  // modelview
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 }
 
 // =============================================================================
@@ -157,15 +168,6 @@ static void initLegacyOpenGL() {
 static void setLegacyOpenGLProjection() {
   // backbuffer size
   glViewport(0, 0, options.width, options.height);
-  
-  // setup projection
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0, options.width, options.height, 0, -1, 1);
-  
-  // clears matrix
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
 }
 
 } // namespace metallicar

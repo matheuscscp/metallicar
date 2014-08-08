@@ -14,8 +14,7 @@ namespace metallicar {
 
 class Graphics {
   public:
-    static void setTransformations(const std::function<void()>& transfs);
-    static void performTransformations();
+    
 };
 
 } // namespace metallicar
