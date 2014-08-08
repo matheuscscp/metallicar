@@ -12,12 +12,6 @@ using namespace std;
 
 namespace metallicar {
 
-GameObjectScene::GameObjectScene(const vector<GameObject*>& objects) {
-  for (auto object : objects) {
-    addObject(object);
-  }
-}
-
 GameObjectScene::~GameObjectScene() {
   while (objects.size()) {
     delete objects.back();
@@ -52,8 +46,10 @@ void GameObjectScene::render() {
   }
 }
 
-void GameObjectScene::addObject(GameObject* object) {
-  newObjects.push_back(object);
+void GameObjectScene::addObjects(const vector<GameObject*>& objects) {
+  for (auto object : objects) {
+    newObjects.push_back(object);
+  }
 }
 
 FieldTable& GameObjectScene::fields() {

@@ -58,7 +58,7 @@ void Window::init(const WindowOptions& options) {
     SDL_WINDOW_SHOWN |
     (options.fullscreen ? SDL_WINDOW_FULLSCREEN : 0)
   )) == nullptr) {
-    Log::message(Log::Error, SDL_GetError());
+    Log::message(Log::Error, "Window could not be created");
     exit(0);
   }
   SDL_GetWindowSize(

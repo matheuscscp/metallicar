@@ -11,6 +11,7 @@
 // standard
 #include <string>
 #include <sstream>
+#include <cstdio>
 
 class String {
   public:
@@ -25,9 +26,23 @@ class String {
     template <typename T> static std::string from(T value) {
       std::stringstream ss;
       ss << value;
-      std::string tmp;
-      ss >> tmp;
-      return tmp;
+      return ss.str();
+    }
+    
+    template <typename... Args>
+    static std::string from(const char* fmt, Args&&... args) {
+      for (int scale = 1; ; scale *= 2) {
+        size_t size = BUFSIZ*scale;
+        char* buf = new char[size];
+        if (snprintf(buf, size, fmt, std::forward<Args>(args)...) < size) {
+          std::string tmp(buf);
+          delete[] buf;
+          return tmp;
+        }
+        else {
+          delete[] buf;
+        }
+      }
     }
 };
 

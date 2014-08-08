@@ -8,6 +8,8 @@
 // this
 #include "metallicar_asset.hpp"
 
+using namespace std;
+
 namespace metallicar {
 
 static Assets* instance = nullptr;
@@ -16,10 +18,13 @@ Assets::Assets() {
   metallicar::instance = this;
 }
 
-Assets& Assets::instance(Assets* newInstance) {
-  if (newInstance) {
-    metallicar::instance = newInstance;
+Assets::~Assets() {
+  for (auto& kv : assets) {
+    delete kv.second;
   }
+}
+
+Assets& Assets::instance() {
   return *metallicar::instance;
 }
 

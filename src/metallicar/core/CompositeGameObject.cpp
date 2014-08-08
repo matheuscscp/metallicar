@@ -18,9 +18,7 @@ namespace metallicar {
 CompositeGameObject::CompositeGameObject(
   const vector<GameObjectComponent*>& components
 ) {
-  for (auto component : components) {
-    addComponent(component);
-  }
+  addComponents(components);
 }
 
 CompositeGameObject::~CompositeGameObject() {
@@ -77,9 +75,13 @@ bool CompositeGameObject::destroy() {
   return fieldTable.read<bool>("destroy");
 }
 
-void CompositeGameObject::addComponent(GameObjectComponent* component) {
-  component->object = this;
-  newComponents.push_back(component);
+void CompositeGameObject::addComponents(
+  const vector<GameObjectComponent*>& components
+) {
+  for (auto component : components) {
+    component->object = this;
+    newComponents.push_back(component);
+  }
 }
 
 FieldTable& CompositeGameObject::fields() {

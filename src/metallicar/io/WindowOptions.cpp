@@ -12,17 +12,6 @@ using namespace std;
 
 namespace metallicar {
 
-WindowOptions::WindowOptions() :
-title("metallicar game"),
-width(800),
-height(600),
-fullscreen(false),
-icon("asset/icon.png"),
-cursor(true)
-{
-  
-}
-
 WindowOptions::WindowOptions(
   const string& title,
   int width,

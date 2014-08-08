@@ -24,14 +24,13 @@ struct WindowOptions {
   bool fullscreen;
   std::string icon;
   bool cursor;
-  WindowOptions();
   WindowOptions(
-    const std::string& title,
-    int width,
-    int height,
-    bool fullscreen,
-    const std::string& icon,
-    bool cursor
+    const std::string& title = "metallicar game",
+    int width = 1280,
+    int height = 720,
+    bool fullscreen = false,
+    const std::string& icon = "asset/icon.png",
+    bool cursor = true
   );
 };
 

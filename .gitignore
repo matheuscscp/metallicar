@@ -5,3 +5,4 @@ Debug
 *.exe
 *.dll
 !3rd/bin/*
+metallicar_log.txt

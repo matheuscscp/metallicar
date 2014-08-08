@@ -71,12 +71,11 @@ class GameObjectScene : public GameScene {
     std::list<GameObject*> newObjects;
     FieldTable fieldTable;
   public:
-    GameObjectScene(const std::vector<GameObject*>& objects = {});
     virtual ~GameObjectScene();
     virtual void update();
     virtual void render();
     
-    virtual void addObject(GameObject* object);
+    virtual void addObjects(const std::vector<GameObject*>& objects);
     virtual FieldTable& fields();
     
     static GameObjectScene& instance();
@@ -102,15 +101,15 @@ class CompositeGameObject : public GameObject {
     std::list<GameObjectComponent*> newComponents;
     FieldTable fieldTable;
   public:
-    CompositeGameObject(
-      const std::vector<GameObjectComponent*>& components = {}
-    );
+    CompositeGameObject(const std::vector<GameObjectComponent*>& components);
     virtual ~CompositeGameObject();
     virtual void update();
     virtual void render();
     virtual bool destroy();
     
-    virtual void addComponent(GameObjectComponent* component);
+    virtual void addComponents(
+      const std::vector<GameObjectComponent*>& components
+    );
     virtual FieldTable& fields();
 };
 

@@ -27,7 +27,8 @@ void Log::message(MessageLevel level, const string& msg) {
   fullmsg += levelmsg[level];
   fullmsg += " on ";
   { time_t rawtime = time(nullptr); fullmsg += ctime(&rawtime); }
-  fullmsg += ": ";
+  fullmsg = fullmsg.substr(0, fullmsg.size() - 1);
+  fullmsg += " - ";
   fullmsg += msg;
   fullmsg += "\n";
   
