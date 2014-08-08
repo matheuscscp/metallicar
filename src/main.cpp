@@ -31,8 +31,8 @@ class Space2D : public GameObjectComponent {
 
 class Renderer : public GameObjectComponent {
   public:
-    Sprite spr;
-    Renderer() : spr("asset/metallicar.png") {
+    Sprite bg, spr;
+    Renderer() : bg("asset/background.png"), spr("asset/metallicar.png") {
       
     }
   private:
@@ -47,7 +47,7 @@ class Renderer : public GameObjectComponent {
     }
     void update() {
       GameRenderers::add(0.0, [this]() {
-        //glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+        bg.render();
         spr.render(object->fields().read<float>("x"), object->fields().read<float>("y"), Corner::CENTER);
       });
     }
@@ -58,6 +58,10 @@ class Renderer : public GameObjectComponent {
 
 int main(int argc, char* argv[]) {
   Game::init();
+  Graphics::setTransformations([]() {
+    glRotatef(30,0,0,1);
+    glScalef(0.7,0.7,1);
+  });
   (new GameObjectScene())->addObjects({
     new CompositeGameObject({new Space2D, new Renderer})
   });

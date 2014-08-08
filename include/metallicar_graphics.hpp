@@ -8,11 +8,14 @@
 #ifndef METALLICAR_GRAPHICS_HPP_
 #define METALLICAR_GRAPHICS_HPP_
 
+#include <functional>
+
 namespace metallicar {
 
 class Graphics {
   public:
-    
+    static void setTransformations(const std::function<void()>& transfs);
+    static void performTransformations();
 };
 
 } // namespace metallicar
