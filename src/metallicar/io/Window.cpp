@@ -25,7 +25,7 @@ namespace metallicar {
 // private function declarations
 // =============================================================================
 
-static void initLegacyOpenGL();
+static void initOpenGL();
 static void updateProjection();
 
 // =============================================================================
@@ -71,7 +71,7 @@ void Window::init(const WindowOptions& options) {
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
   
-  // context
+  // gl context
   if ((glContext = SDL_GL_CreateContext(window)) == nullptr) {
     Log::message(Log::Error, SDL_GetError());
     exit(0);
@@ -80,7 +80,7 @@ void Window::init(const WindowOptions& options) {
     Log::message(Log::Error, SDL_GetError());
     exit(0);
   }
-  initLegacyOpenGL();
+  initOpenGL();
 }
 
 void Window::close() {
@@ -88,8 +88,10 @@ void Window::close() {
     return;
   }
   
-  SDL_GL_DeleteContext(glContext);
-  glContext = nullptr;
+  if (glContext) {
+    SDL_GL_DeleteContext(glContext);
+    glContext = nullptr;
+  }
   SDL_DestroyWindow(window);
   window = nullptr;
 }
@@ -99,6 +101,10 @@ WindowOptions Window::getOptions() {
 }
 
 void Window::setOptions(const WindowOptions& options) {
+  if (!window) {
+    return;
+  }
+  
   metallicar::options = options;
   
   // window
@@ -117,8 +123,6 @@ void Window::setOptions(const WindowOptions& options) {
     SDL_FreeSurface(iconsurface);
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
-  
-  updateProjection();
 }
 
 SDL_GLContext Window::getOpenGLContext() {
@@ -143,15 +147,13 @@ void Window::update() {
 // private functions
 // =============================================================================
 
-static void initLegacyOpenGL() {
+static void initOpenGL() {
   // enable texture
   glEnable(GL_TEXTURE_2D);
   
   // enable blend
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  
-  updateProjection();
 }
 
 static void updateProjection() {

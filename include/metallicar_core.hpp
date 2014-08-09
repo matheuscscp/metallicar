@@ -15,14 +15,15 @@
 
 // local
 #include "metallicar_asset.hpp"
-#include "metallicar_io.hpp"
 #include "FieldTable.hpp"
 
 namespace metallicar {
 
 class Game {
   public:
-    static void init(const WindowOptions& windowOptions = WindowOptions());
+    static void init();
+    static void close();
+    
     static void run();
     
     static void quit();
@@ -45,6 +46,7 @@ class GameScene {
     virtual void update() = 0;
     virtual void render() = 0;
     
+    static bool loaded();
     static GameScene& instance();
     static void change();
     static void close();

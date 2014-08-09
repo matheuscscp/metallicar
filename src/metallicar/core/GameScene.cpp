@@ -8,6 +8,9 @@
 // this
 #include "metallicar_core.hpp"
 
+// local
+#include "metallicar_io.hpp"
+
 using namespace std;
 
 namespace metallicar {
@@ -28,6 +31,10 @@ GameScene::GameScene() {
 
 GameScene::~GameScene() {
   
+}
+
+bool GameScene::loaded() {
+  return metallicar::instance != nullptr;
 }
 
 GameScene& GameScene::instance() {

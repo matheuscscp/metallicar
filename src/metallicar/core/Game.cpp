@@ -8,16 +8,15 @@
 // this
 #include "metallicar_core.hpp"
 
-// standard
-#include <cstdio>
-
 // lib
 #include "SDL_image.h"
 #include "SDL_net.h"
 
 // local
 #include "metallicar_time.hpp"
+#include "metallicar_io.hpp"
 #include "Log.hpp"
+#include "StaticInitializer.hpp"
 
 using namespace std;
 
@@ -26,8 +25,6 @@ namespace metallicar {
 // =============================================================================
 // private function declarations
 // =============================================================================
-
-static void close();
 
 static void initDT();
 static void updateDT();
@@ -38,24 +35,37 @@ static void accumulateDT();
 // private globals
 // =============================================================================
 
-static bool quit = false;
+static bool initialized;
+static bool quit;
 
-static uint32_t last = 0;        // unit: milliseconds
-static uint32_t ups = 32;        // unit: updates/second
-static float dtFloat = 0.03125f; // unit: seconds
-static uint32_t dtFixed = 31;    // unit: milliseconds
-static uint32_t dt = 0;          // unit: milliseconds
-static uint32_t updateID = 0;
+static uint32_t last;     // unit: milliseconds
+static uint32_t ups;      // unit: updates/second
+static float dtFloat;     // unit: seconds
+static uint32_t dtFixed;  // unit: milliseconds
+static uint32_t dt;       // unit: milliseconds
+static uint32_t updateID;
+
+static void initGlobals() {
+  metallicar::initialized = false;
+  metallicar::quit = false;
+  
+  metallicar::last = 0;           // unit: milliseconds
+  metallicar::ups = 32;           // unit: updates/second
+  metallicar::dtFloat = 0.03125f; // unit: seconds
+  metallicar::dtFixed = 31;       // unit: milliseconds
+  metallicar::dt = 0;             // unit: milliseconds
+  metallicar::updateID = 0;
+}
 
 // =============================================================================
 // public methods
 // =============================================================================
 
-void Game::init(const WindowOptions& windowOptions) {
-  static bool initialized = false;
+void Game::init() {
   if (initialized) {
     return;
   }
+  initGlobals();
   initialized = true;
   
   // SDL
@@ -79,15 +89,30 @@ void Game::init(const WindowOptions& windowOptions) {
     exit(0);
   }
   
-  Window::init(windowOptions);
-  
   initDT();
 }
 
+void Game::close() {
+  if (!initialized) {
+    return;
+  }
+  initialized = false;
+  
+  GameScene::close();
+  
+  SDLNet_Quit();
+  IMG_Quit();
+  SDL_Quit();
+}
+
 void Game::run() {
+  if (!initialized) {
+    return;
+  }
+  
   GameScene::change();
   
-  while (!metallicar::quit) {
+  while (!metallicar::quit && GameScene::loaded()) {
     GameScene& currentScene = GameScene::instance();
     
     // update
@@ -106,8 +131,6 @@ void Game::run() {
     
     GameScene::change();
   }
-  
-  close();
 }
 
 void Game::quit() {
@@ -119,6 +142,10 @@ uint32_t Game::getUPS() {
 }
 
 void Game::setUPS(uint32_t ups) {
+  if (!ups) {
+    return;
+  }
+  
   metallicar::ups = ups;
   dtFloat = 1/(float)ups;
   dtFixed = 1000/ups;
@@ -135,16 +162,6 @@ uint32_t Game::updateID() {
 // =============================================================================
 // private functions
 // =============================================================================
-
-static void close() {
-  GameScene::close();
-  
-  Window::close();
-  
-  SDLNet_Quit();
-  IMG_Quit();
-  SDL_Quit();
-}
 
 static void initDT() {
   last = Time::get() - dtFixed;

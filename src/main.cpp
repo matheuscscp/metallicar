@@ -126,9 +126,12 @@ class ProjUpdater : public GameObjectComponent {
 
 int main(int argc, char* argv[]) {
   Game::init();
+  Window::init();
   (new GameObjectScene())->addObjects({
     new CompositeGameObject({new Space2D, new Renderer, new ProjUpdater})
   });
   Game::run();
+  Window::close();
+  Game::close();
   return 0;
 }
