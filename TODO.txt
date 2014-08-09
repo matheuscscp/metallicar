@@ -1,7 +1,10 @@
 engine:
-  asset
-  util
-  graphics
+  asset: text
+  asset: audio
+  other assets (animation, tile set, tile map, etc.)
+  util (button, text input, countdown->time)
+  graphics (2d shapes)
+  vamo explorar o 3d agora
 helper:
   linear algebra
   geometry (overlap, SAT)
