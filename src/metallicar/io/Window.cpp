@@ -117,6 +117,11 @@ void Window::setOptions(const WindowOptions& options) {
   SDL_ShowCursor(options.cursor ? 1 : 0);
 }
 
+void Window::setOpenGLVersion(int major, int minor) {
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
+}
+
 SDL_GLContext Window::createOpenGLContext() {
   if (!window) {
     return nullptr;

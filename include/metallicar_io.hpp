@@ -46,6 +46,8 @@ class Window {
     static WindowOptions getOptions();
     static void setOptions(const WindowOptions& options);
     
+    static void setOpenGLVersion(int major, int minor);
+    
     static SDL_GLContext createOpenGLContext();
     static void setOpenGLContext(SDL_GLContext glContext);
     static SDL_GLContext getOpenGLContext();
