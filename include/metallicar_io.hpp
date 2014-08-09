@@ -46,15 +46,10 @@ class Window {
     static WindowOptions getOptions();
     static void setOptions(const WindowOptions& options);
     
-    /**
-     * You must know what you're doing...
-     */
-    static SDL_GLContext getOpenGLContext();
-    
-    /**
-     * You must know what you're doing...
-     */
+    static SDL_GLContext createOpenGLContext();
     static void setOpenGLContext(SDL_GLContext glContext);
+    static SDL_GLContext getOpenGLContext();
+    static void destroyOpenGLContext(SDL_GLContext glContext);
     
     static void update();
 };

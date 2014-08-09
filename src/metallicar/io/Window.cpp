@@ -22,13 +22,6 @@
 namespace metallicar {
 
 // =============================================================================
-// private function declarations
-// =============================================================================
-
-static void initOpenGL();
-static void updateProjection();
-
-// =============================================================================
 // private globals
 // =============================================================================
 
@@ -80,7 +73,6 @@ void Window::init(const WindowOptions& options) {
     Log::message(Log::Error, SDL_GetError());
     exit(0);
   }
-  initOpenGL();
 }
 
 void Window::close() {
@@ -125,62 +117,34 @@ void Window::setOptions(const WindowOptions& options) {
   SDL_ShowCursor(options.cursor ? 1 : 0);
 }
 
+SDL_GLContext Window::createOpenGLContext() {
+  if (!window) {
+    return nullptr;
+  }
+  return SDL_GL_CreateContext(window);
+}
+
+void Window::setOpenGLContext(SDL_GLContext glContext) {
+  if (window) {
+    metallicar::glContext = glContext;
+    SDL_GL_MakeCurrent(window, glContext);
+  }
+}
+
 SDL_GLContext Window::getOpenGLContext() {
   return glContext;
 }
 
-void Window::setOpenGLContext(SDL_GLContext glContext) {
-  if (!glContext) {
-    Log::message(Log::Error, "Trying to set null OpenGL context");
-    exit(0);
+void Window::destroyOpenGLContext(SDL_GLContext glContext) {
+  if (window) {
+    SDL_GL_DeleteContext(glContext);
   }
-  metallicar::glContext = glContext;
 }
 
 void Window::update() {
-  SDL_GL_SwapWindow(window);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  updateProjection();
-}
-
-// =============================================================================
-// private functions
-// =============================================================================
-
-static void initOpenGL() {
-  // enable texture
-  glEnable(GL_TEXTURE_2D);
-  
-  // enable blend
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-}
-
-static void updateProjection() {
-  // viewport
-  int x = 0, y = 0;
-  int w = options.width, h = options.height;
-  float gameRatio = float(options.gameWidth)/options.gameHeight;
-  float ratio = float(options.width)/options.height;
-  if (ratio > gameRatio) {
-    w = h*gameRatio;
-    x = (options.width - w)/2;
+  if (window) {
+    SDL_GL_SwapWindow(window);
   }
-  else if (ratio < gameRatio) {
-    h = w/gameRatio;
-    y = (options.height - h)/2;
-  }
-  glViewport(x, y, w, h);
-  
-  // projection
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0, w, h, 0, -1, 1);
-  glScalef(float(w)/options.gameWidth, float(h)/options.gameHeight, 0.0f);
-  
-  // modelview
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
 }
 
 } // namespace metallicar

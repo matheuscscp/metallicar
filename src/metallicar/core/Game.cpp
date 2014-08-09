@@ -15,8 +15,8 @@
 // local
 #include "metallicar_time.hpp"
 #include "metallicar_io.hpp"
+#include "metallicar_graphics.hpp"
 #include "Log.hpp"
-#include "StaticInitializer.hpp"
 
 using namespace std;
 
@@ -126,7 +126,9 @@ void Game::run() {
     accumulateDT();
     
     // render
+    Graphics::prepareFrame();
     GameRenderers::render();
+    Graphics::finalizeFrame();
     Window::update();
     
     GameScene::change();
