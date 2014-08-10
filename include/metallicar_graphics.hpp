@@ -17,9 +17,11 @@ class Graphics {
   public:
     static void initDefault();
     
+    static void setProjectionUpdater(const std::function<void()>& updater);
     static void setFramePreparation(const std::function<void()>& preparation);
     static void setFrameFinalization(const std::function<void()>& finalization);
     
+    static void updateProjection();
     static void prepareFrame();
     static void finalizeFrame();
 };

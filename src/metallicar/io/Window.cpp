@@ -16,6 +16,7 @@
 #include "SDL_opengl.h"
 
 // local
+#include "metallicar_graphics.hpp"
 #include "Log.hpp"
 #include "Path.hpp"
 
@@ -115,6 +116,8 @@ void Window::setOptions(const WindowOptions& options) {
     SDL_FreeSurface(iconsurface);
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
+  
+  Graphics::updateProjection();
 }
 
 void Window::setOpenGLVersion(int major, int minor) {

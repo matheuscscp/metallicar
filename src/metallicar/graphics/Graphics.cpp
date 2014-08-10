@@ -18,20 +18,12 @@ using namespace std;
 
 namespace metallicar {
 
+static function<void()> updateProjection([]() {});
 static function<void()> prepareFrame([]() {});
 static function<void()> finalizeFrame([]() {});
 
 void Graphics::initDefault() {
-  // enable texture
-  glEnable(GL_TEXTURE_2D);
-  
-  // enable blend
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  
-  metallicar::prepareFrame = []() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+  metallicar::updateProjection = []() {
     // viewport
     WindowOptions options = Window::getOptions();
     int x = 0, y = 0;
@@ -54,14 +46,30 @@ void Graphics::initDefault() {
     glOrtho(0, w, h, 0, -1, 1);
     glScalef(float(w)/options.gameWidth, float(h)/options.gameHeight, 0.0f);
     
-    // modelview
     glMatrixMode(GL_MODELVIEW);
+  };
+  
+  metallicar::prepareFrame = []() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
   };
   
   metallicar::finalizeFrame = []() {
     
   };
+  
+  // enable texture
+  glEnable(GL_TEXTURE_2D);
+  
+  // enable blend
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  
+  metallicar::updateProjection();
+}
+
+void Graphics::setProjectionUpdater(const function<void()>& updater) {
+  metallicar::updateProjection = updater;
 }
 
 void Graphics::setFramePreparation(const function<void()>& preparation) {
@@ -70,6 +78,10 @@ void Graphics::setFramePreparation(const function<void()>& preparation) {
 
 void Graphics::setFrameFinalization(const function<void()>& finalization) {
   metallicar::finalizeFrame = finalization;
+}
+
+void Graphics::updateProjection() {
+  metallicar::updateProjection();
 }
 
 void Graphics::prepareFrame() {
