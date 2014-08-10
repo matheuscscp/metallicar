@@ -13,16 +13,13 @@ using namespace std;
 using namespace metallicar;
 
 class Space2D : public GameObjectComponent {
-  private:
+  public:
     string family() const {
       return "spatial";
     }
     void init() {
       object->fields().write("x", 640.0f);
       object->fields().write("y", 360.0f);
-    }
-    void update() {
-      
     }
 };
 
@@ -32,7 +29,6 @@ class Renderer : public GameObjectComponent {
     Renderer() : bg("asset/background.png"), spr("asset/metallicar.png"), spr2("asset/icon.png") {
       
     }
-  private:
     vector<string> depends() const {
       return {"spatial"};
     }
@@ -96,10 +92,6 @@ class ProjUpdater : public GameObjectComponent {
             break;
         }
       });
-    }
-  private:
-    void update() {
-      
     }
 };
 

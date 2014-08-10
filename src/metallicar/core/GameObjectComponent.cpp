@@ -28,6 +28,10 @@ void GameObjectComponent::init() {
   
 }
 
+void GameObjectComponent::update() {
+  
+}
+
 bool GameObjectComponent::destroy() {
   return false;
 }

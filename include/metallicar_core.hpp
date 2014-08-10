@@ -43,8 +43,8 @@ class GameScene {
     GameScene();
     virtual ~GameScene();
   public:
-    virtual void update() = 0;
-    virtual void render() = 0;
+    virtual void update();
+    virtual void render();
     
     static bool loaded();
     static GameScene& runningInstance();
@@ -62,8 +62,8 @@ class GameRenderers {
 class GameObject {
   public:
     virtual ~GameObject();
-    virtual void update() = 0;
-    virtual void render() = 0;
+    virtual void update();
+    virtual void render();
     virtual bool destroy();
 };
 
@@ -94,7 +94,7 @@ class GameObjectComponent {
     virtual std::string family() const;
     virtual std::vector<std::string> depends() const;
     virtual void init();
-    virtual void update() = 0;
+    virtual void update();
     virtual bool destroy();
 };
 

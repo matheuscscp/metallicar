@@ -16,6 +16,14 @@ GameObject::~GameObject() {
   
 }
 
+void GameObject::update() {
+  
+}
+
+void GameObject::render() {
+  
+}
+
 bool GameObject::destroy() {
   return false;
 }

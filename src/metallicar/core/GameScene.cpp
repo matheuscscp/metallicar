@@ -33,6 +33,14 @@ GameScene::~GameScene() {
   
 }
 
+void GameScene::update() {
+  
+}
+
+void GameScene::render() {
+  
+}
+
 bool GameScene::loaded() {
   return metallicar::instance != nullptr;
 }
