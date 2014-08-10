@@ -37,7 +37,7 @@ bool GameScene::loaded() {
   return metallicar::instance != nullptr;
 }
 
-GameScene& GameScene::instance() {
+GameScene& GameScene::runningInstance() {
   return *metallicar::instance;
 }
 

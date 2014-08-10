@@ -41,13 +41,13 @@ class GameScene {
     observer::Connection quitEventConnection;
     
     GameScene();
-  public:
     virtual ~GameScene();
+  public:
     virtual void update() = 0;
     virtual void render() = 0;
     
     static bool loaded();
-    static GameScene& instance();
+    static GameScene& runningInstance();
     static void change();
     static void close();
 };
@@ -64,7 +64,7 @@ class GameObject {
     virtual ~GameObject();
     virtual void update() = 0;
     virtual void render() = 0;
-    virtual bool destroy() = 0;
+    virtual bool destroy();
 };
 
 class GameObjectScene : public GameScene {
@@ -72,15 +72,16 @@ class GameObjectScene : public GameScene {
     std::list<GameObject*> objects;
     std::list<GameObject*> newObjects;
     FieldTable fieldTable;
-  public:
+    
     virtual ~GameObjectScene();
+  public:
     virtual void update();
     virtual void render();
     
     virtual void addObjects(const std::vector<GameObject*>& objects);
     virtual FieldTable& fields();
     
-    static GameObjectScene& instance();
+    static GameObjectScene& runningInstance();
 };
 
 class CompositeGameObject;
@@ -90,11 +91,11 @@ class GameObjectComponent {
     CompositeGameObject* object;
   public:
     virtual ~GameObjectComponent();
-    virtual std::string family() const = 0;
+    virtual std::string family() const;
     virtual std::vector<std::string> depends() const;
-    virtual void init() = 0;
+    virtual void init();
     virtual void update() = 0;
-    virtual bool destroy() = 0;
+    virtual bool destroy();
 };
 
 class CompositeGameObject : public GameObject {

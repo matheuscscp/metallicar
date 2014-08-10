@@ -56,8 +56,8 @@ FieldTable& GameObjectScene::fields() {
   return fieldTable;
 }
 
-GameObjectScene& GameObjectScene::instance() {
-  return (GameObjectScene&)GameScene::instance();
+GameObjectScene& GameObjectScene::runningInstance() {
+  return (GameObjectScene&)GameScene::runningInstance();
 }
 
 } // namespace metallicar

@@ -16,8 +16,20 @@ GameObjectComponent::~GameObjectComponent() {
   
 }
 
+string GameObjectComponent::family() const {
+  return "";
+}
+
 vector<string> GameObjectComponent::depends() const {
   return {};
+}
+
+void GameObjectComponent::init() {
+  
+}
+
+bool GameObjectComponent::destroy() {
+  return false;
 }
 
 } // namespace metallicar

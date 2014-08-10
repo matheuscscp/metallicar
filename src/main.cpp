@@ -24,9 +24,6 @@ class Space2D : public GameObjectComponent {
     void update() {
       
     }
-    bool destroy() {
-      return false;
-    }
 };
 
 class Renderer : public GameObjectComponent {
@@ -36,14 +33,8 @@ class Renderer : public GameObjectComponent {
       
     }
   private:
-    string family() const {
-      return "renderer";
-    }
     vector<string> depends() const {
       return {"spatial"};
-    }
-    void init() {
-      
     }
     void update() {
       GameRenderers::add(0.0, [this]() {
@@ -51,9 +42,6 @@ class Renderer : public GameObjectComponent {
         spr.render(object->fields().read<float>("x"), object->fields().read<float>("y"), Corner::CENTER);
         spr2.render();
       });
-    }
-    bool destroy() {
-      return false;
     }
 };
 
@@ -110,17 +98,8 @@ class ProjUpdater : public GameObjectComponent {
       });
     }
   private:
-    string family() const {
-      return "projection";
-    }
-    void init() {
-      
-    }
     void update() {
       
-    }
-    bool destroy() {
-      return false;
     }
 };
 

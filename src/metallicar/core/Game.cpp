@@ -113,7 +113,7 @@ void Game::run() {
   GameScene::change();
   
   while (!metallicar::quit && GameScene::loaded()) {
-    GameScene& currentScene = GameScene::instance();
+    GameScene& currentScene = GameScene::runningInstance();
     
     // update
     updateDT();

@@ -16,4 +16,8 @@ GameObject::~GameObject() {
   
 }
 
+bool GameObject::destroy() {
+  return false;
+}
+
 } // namespace metallicar
