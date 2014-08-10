@@ -11,6 +11,7 @@
 
 using namespace std;
 using namespace metallicar;
+using namespace geometry;
 
 class Space2D : public GameObjectComponent {
   public:
@@ -26,8 +27,12 @@ class Space2D : public GameObjectComponent {
 class Renderer : public GameObjectComponent {
   public:
     Sprite bg, spr, spr2;
-    Renderer() : bg("asset/background.png"), spr("asset/metallicar.png"), spr2("asset/icon.png") {
-      
+    Renderer() :
+    bg(Assets::get<Texture2D>("asset/background.png", "asset/background.png")),
+    spr(Assets::get<Texture2D>("asset/metallicar.png", "asset/metallicar.png")),
+    spr2(Assets::get<Texture2D>("asset/icon.png", "asset/icon.png"))
+    {
+      spr.setCorner(Corner::CENTER);
     }
     vector<string> depends() const {
       return {"spatial"};
@@ -35,7 +40,8 @@ class Renderer : public GameObjectComponent {
     void update() {
       GameRenderers::add(0.0, [this]() {
         bg.render();
-        spr.render(object->fields().read<float>("x"), object->fields().read<float>("y"), Corner::CENTER);
+        spr.setPosition(Point2(object->fields().read<float>("x"), object->fields().read<float>("y")));
+        spr.render();
         spr2.render();
       });
     }

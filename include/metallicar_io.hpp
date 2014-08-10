@@ -13,7 +13,7 @@
 
 // local
 #include "observer.hpp"
-#include "Point2.hpp"
+#include "geometry.hpp"
 
 namespace metallicar {
 
@@ -103,9 +103,9 @@ class Input {
     
     static bool key(SDL_Keycode keycode);
     static bool button(uint8_t buttoncode);
-    static Point2 mouse();
-    static Point2 mouseDown();
-    static Point2 mouseUp();
+    static geometry::Point2 mouse();
+    static geometry::Point2 mouseDown();
+    static geometry::Point2 mouseUp();
     
     template <class T>
     static observer::Connection connect(

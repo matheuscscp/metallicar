@@ -12,20 +12,16 @@ using namespace std;
 
 namespace metallicar {
 
-static Assets* instance = nullptr;
+Assets* Assets::instance = nullptr;
 
 Assets::Assets() {
-  metallicar::instance = this;
+  instance = this;
 }
 
 Assets::~Assets() {
   for (auto& kv : assets) {
     delete kv.second;
   }
-}
-
-Assets& Assets::instance() {
-  return *metallicar::instance;
 }
 
 } // namespace metallicar

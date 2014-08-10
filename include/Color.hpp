@@ -24,6 +24,7 @@ struct Color {
   static const Color MAGENTA;
   static const Color YELLOW;
   
+  Color();
   Color(float r, float g, float b, float a = 1.0f);
   Color(int r, int g, int b, int a = 255);
   Color(uint32_t hex);

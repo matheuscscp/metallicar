@@ -12,12 +12,16 @@ using namespace std;
 
 namespace metallicar {
 
-Sprite::Sprite(const string& path) :
-texture(Assets::instance().get<Texture>(path)),
+Sprite::Sprite(Texture2D* texture) :
+texture(texture),
 widthTexture(float(texture->width())),
 heightTexture(float(texture->height())),
-width(texture->width()),
-height(texture->height())
+filter(GL_LINEAR),
+color(Color::WHITE),
+position(geometry::Point2(0.0f, 0.0f)),
+corner(Corner::TOP_LEFT),
+angle(0.0f),
+scale(geometry::Point2(1.0f, 1.0f))
 {
   resetClip();
 }
@@ -26,93 +30,111 @@ Sprite::~Sprite() {
   
 }
 
-int Sprite::getWidth() const {
-  return width;
+int Sprite::width() const {
+  return texture->width();
 }
 
-int Sprite::getHeight() const {
-  return height;
+int Sprite::height() const {
+  return texture->height();
 }
 
-void Sprite::render(
-  float x,
-  float y,
-  Corner corner,
-  float opacity,
-  float angle,
-  float scaleX,
-  float scaleY,
-  const Color& color,
-  bool linearFilter
-) {
-  // texture stuff
-  {
-    GLint param = linearFilter ? GL_LINEAR : GL_NEAREST;
-    glBindTexture(GL_TEXTURE_2D, texture->id());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
-  }
-  
-  glColor4f(color.r, color.g, color.b, opacity);
-  
-  // check corner
+GLuint Sprite::textureID() const {
+  return texture->id();
+}
+
+void Sprite::setFilter(bool linear) {
+  filter = linear ? GL_LINEAR : GL_NEAREST;
+}
+
+void Sprite::setColor(const Color& color) {
+  float opacity = this->color.a;
+  this->color = color;
+  this->color.a = opacity;
+}
+
+void Sprite::setOpacity(float opacity) {
+  color.a = opacity;
+}
+
+void Sprite::setPosition(const geometry::Point2& position) {
+  this->position = position;
+  adjustPosition();
+}
+
+void Sprite::setCorner(Corner corner) {
+  this->corner = corner;
+  adjustPosition();
+}
+
+void Sprite::setAngle(float angle) {
+  this->angle = angle;
+}
+
+void Sprite::setScale(const geometry::Point2& scale) {
+  this->scale = scale;
+}
+
+void Sprite::clip(const geometry::Rectangle& clipRect) {
+  clipHalfWidth = clipRect.w/2;
+  clipHalfHeight = clipRect.h/2;
+  texCoordX0 = clipRect.x/widthTexture;
+  texCoordX1 = (clipRect.x + clipRect.w)/widthTexture;
+  texCoordY0 = clipRect.y/heightTexture;
+  texCoordY1 = (clipRect.y + clipRect.h)/heightTexture;
+  vertexCoordX0 = -clipHalfWidth;
+  vertexCoordX1 = clipHalfWidth;
+  vertexCoordY0 = -clipHalfHeight;
+  vertexCoordY1 = clipHalfHeight;
+  adjustPosition();
+}
+
+void Sprite::resetClip() {
+  clip(geometry::Rectangle(0.0f, 0.0f, widthTexture, heightTexture));
+}
+
+void Sprite::render() {
+  texture->render2D(
+    filter,
+    color,
+    position,
+    angle,
+    scale,
+    texCoordX0,
+    texCoordX1,
+    texCoordY0,
+    texCoordY1,
+    vertexCoordX0,
+    vertexCoordX1,
+    vertexCoordY0,
+    vertexCoordY1
+  );
+}
+
+void Sprite::adjustPosition() {
   switch (corner) {
     case TOP_LEFT:
-      x += halfWidth;
-      y += halfHeight;
+      this->position.x += clipHalfWidth;
+      this->position.y += clipHalfHeight;
       break;
       
     case TOP_RIGHT:
-      x -= halfWidth;
-      y += halfHeight;
+      this->position.x -= clipHalfWidth;
+      this->position.y += clipHalfHeight;
       break;
       
     case BOTTOM_LEFT:
-      x += halfWidth;
-      y -= halfHeight;
+      this->position.x += clipHalfWidth;
+      this->position.y -= clipHalfHeight;
       break;
       
     case BOTTOM_RIGHT:
-      x -= halfWidth;
-      y -= halfHeight;
+      this->position.x -= clipHalfWidth;
+      this->position.y -= clipHalfHeight;
       break;
       
     default:
       break;
   }
-  
-  glPushMatrix();
-    // transform
-    glLoadIdentity();
-    glTranslatef(x, y, 0.0f);
-    glRotatef(angle, 0.0f, 0.0f, 1.0f);
-    glScalef(scaleX, scaleY, 0.0f);
-    
-    // render
-    glBegin(GL_QUADS);
-      glTexCoord2f(texCoordX0, texCoordY0);
-      glVertex2f(vertexCoordX0, vertexCoordY0);
-      glTexCoord2f(texCoordX1, texCoordY0);
-      glVertex2f(vertexCoordX1, vertexCoordY0);
-      glTexCoord2f(texCoordX1, texCoordY1);
-      glVertex2f(vertexCoordX1, vertexCoordY1);
-      glTexCoord2f(texCoordX0, texCoordY1);
-      glVertex2f(vertexCoordX0, vertexCoordY1);
-    glEnd();
-  glPopMatrix();
-}
-
-void Sprite::clip(float x, float y, float w, float h) {
-  halfWidth = w/2;
-  halfHeight = h/2;
-  texCoordX0 = x/widthTexture; texCoordX1 = (x + w)/widthTexture;
-  texCoordY0 = y/heightTexture; texCoordY1 = (y + h)/heightTexture;
-  vertexCoordX0 = -halfWidth; vertexCoordX1 = halfWidth;
-  vertexCoordY0 = -halfHeight; vertexCoordY1 = halfHeight;
-}
-
-void Sprite::resetClip() {
-  clip(0.0f, 0.0f, widthTexture, heightTexture);
 }
 
 } // namespace metallicar
