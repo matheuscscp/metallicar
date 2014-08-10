@@ -26,7 +26,7 @@ class Space2D : public GameObjectComponent {
 
 class Renderer : public GameObjectComponent {
   public:
-    Sprite bg, spr, spr2;
+    TextureRenderer2D bg, spr, spr2;
     Renderer() :
     bg(Assets::get<Texture2D>("asset/background.png", "asset/background.png")),
     spr(Assets::get<Texture2D>("asset/metallicar.png", "asset/metallicar.png")),

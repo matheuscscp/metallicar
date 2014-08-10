@@ -77,47 +77,4 @@ GLuint Texture2D::id() const {
   return texture;
 }
 
-void Texture2D::render2D(
-  GLint filter,
-  const Color& color,
-  const geometry::Point2& position,
-  float angle,
-  const geometry::Point2& scale,
-  float texCoordX0,
-  float texCoordX1,
-  float texCoordY0,
-  float texCoordY1,
-  float vertexCoordX0,
-  float vertexCoordX1,
-  float vertexCoordY0,
-  float vertexCoordY1
-) const {
-  // bind
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-  
-  glColor4f(color.r, color.g, color.b, color.a);
-  
-  glPushMatrix();
-    // transform
-    glLoadIdentity();
-    glTranslatef(position.x, position.y, 0.0f);
-    glRotatef(angle, 0.0f, 0.0f, 1.0f);
-    glScalef(scale.x, scale.y, 1.0f);
-    
-    // render
-    glBegin(GL_QUADS);
-      glTexCoord2f(texCoordX0, texCoordY0);
-      glVertex2f(vertexCoordX0, vertexCoordY0);
-      glTexCoord2f(texCoordX1, texCoordY0);
-      glVertex2f(vertexCoordX1, vertexCoordY0);
-      glTexCoord2f(texCoordX1, texCoordY1);
-      glVertex2f(vertexCoordX1, vertexCoordY1);
-      glTexCoord2f(texCoordX0, texCoordY1);
-      glVertex2f(vertexCoordX0, vertexCoordY1);
-    glEnd();
-  glPopMatrix();
-}
-
 } // namespace metallicar

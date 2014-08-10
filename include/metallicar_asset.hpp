@@ -57,24 +57,9 @@ class Texture2D : public Asset {
     virtual int width() const;
     virtual int height() const;
     virtual GLuint id() const;
-    virtual void render2D(
-      GLint filter,
-      const Color& color,
-      const geometry::Point2& position,
-      float angle,
-      const geometry::Point2& scale,
-      float texCoordX0,
-      float texCoordX1,
-      float texCoordY0,
-      float texCoordY1,
-      float vertexCoordX0,
-      float vertexCoordX1,
-      float vertexCoordY0,
-      float vertexCoordY1
-    ) const;
 };
 
-class Sprite {
+class TextureRenderer2D {
   protected:
     Texture2D* texture;
     float widthTexture, heightTexture;
@@ -90,8 +75,8 @@ class Sprite {
     float vertexCoordX0, vertexCoordX1;
     float vertexCoordY0, vertexCoordY1;
   public:
-    Sprite(Texture2D* texture);
-    virtual ~Sprite();
+    TextureRenderer2D(Texture2D* texture);
+    virtual ~TextureRenderer2D();
     virtual int width() const;
     virtual int height() const;
     virtual GLuint textureID() const;
@@ -104,7 +89,7 @@ class Sprite {
     virtual void setScale(const geometry::Point2& scale);
     virtual void clip(const geometry::Rectangle& clipRect);
     virtual void resetClip();
-    virtual void render();
+    virtual void render() const;
   protected:
     virtual void adjustPosition();
 };
