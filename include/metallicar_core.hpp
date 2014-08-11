@@ -32,6 +32,8 @@ class Game {
     static void setUPS(uint32_t ups);
     static float getDT();
     static uint32_t updateID();
+    
+    static float getFrameRate();
 };
 
 class GameScene {

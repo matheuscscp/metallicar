@@ -8,6 +8,7 @@
 #include <cstdio>
 
 #include "metallicar.hpp"
+#include "String.hpp"
 
 using namespace std;
 using namespace metallicar;

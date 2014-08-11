@@ -31,6 +31,8 @@ static void updateDT();
 static bool reachedDT();
 static void accumulateDT();
 
+static void updateFrameRate();
+
 // =============================================================================
 // private globals
 // =============================================================================
@@ -38,12 +40,15 @@ static void accumulateDT();
 static bool initialized;
 static bool quit;
 
-static uint32_t last;     // unit: milliseconds
-static uint32_t ups;      // unit: updates/second
-static float dtFloat;     // unit: seconds
-static uint32_t dtFixed;  // unit: milliseconds
-static uint32_t dt;       // unit: milliseconds
+static uint32_t last;       // unit: milliseconds
+static uint32_t ups;        // unit: updates/second
+static float dtFloat;       // unit: seconds
+static uint32_t dtFixed;    // unit: milliseconds
+static uint32_t dt;         // unit: milliseconds
 static uint32_t updateID;
+
+static float frameRate;     // unit: frames/second
+static uint32_t lastFrame;  // unit: milliseconds
 
 static void initGlobals() {
   metallicar::initialized = false;
@@ -55,6 +60,9 @@ static void initGlobals() {
   metallicar::dtFixed = 31;       // unit: milliseconds
   metallicar::dt = 0;             // unit: milliseconds
   metallicar::updateID = 0;
+  
+  metallicar::frameRate = 0.0f;   // unit: frames/second
+  metallicar::lastFrame = 0;      // unit: milliseconds
 }
 
 // =============================================================================
@@ -113,9 +121,10 @@ void Game::run() {
   GameScene::change();
   
   while (!metallicar::quit && GameScene::loaded()) {
-    GameScene& currentScene = GameScene::runningInstance();
+    updateFrameRate();
     
     // update
+    GameScene& currentScene = GameScene::runningInstance();
     updateDT();
     while (reachedDT()) {
       GameRenderers::clear();
@@ -161,6 +170,10 @@ uint32_t Game::updateID() {
   return metallicar::updateID;
 }
 
+float Game::getFrameRate() {
+  return frameRate;
+}
+
 // =============================================================================
 // private functions
 // =============================================================================
@@ -187,6 +200,12 @@ static bool reachedDT() {
 
 static void accumulateDT() {
   last -= dt;
+}
+
+static void updateFrameRate() {
+  uint32_t now = Time::get();
+  frameRate = frameRate*0.95f + 0.05f*1000.0f/(now - lastFrame);
+  lastFrame = now;
 }
 
 } // namespace metallicar
