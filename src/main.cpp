@@ -27,26 +27,32 @@ class Space2D : public GameObjectComponent {
 class Renderer : public GameObjectComponent {
   public:
     TextureRenderer2D bg, spr, spr2;
-    observer::Connection flipConn;
+    observer::Connection keyDownConn;
     bool flipH, flipV;
+    float angle;
     Renderer() :
     bg(Image::createTexture("asset/background.png")),
     spr(Image::createTexture("asset/metallicar.png")),
     spr2(Image::createTexture("asset/icon.png")),
     flipH(false),
-    flipV(false)
+    flipV(false),
+    angle(0.0f)
     {
       spr.setSpot(geometry::Rectangle::Spot::CENTER);
-      //spr2.setScale(Point2(0.3,0.3));
-      flipConn = Input::connect<Input::KeyDownEvent>([this](const observer::EventBase& event) {
+      keyDownConn = Input::connect<Input::KeyDownEvent>([this](const observer::EventBase& event) {
         Input::KeyDownEvent& keyEvent = (Input::KeyDownEvent&)event;
         if (keyEvent.key() == SDLK_h) {
           flipH = !flipH;
+          spr2.setFlip(flipH, flipV);
         }
         else if (keyEvent.key() == SDLK_v) {
           flipV = !flipV;
+          spr2.setFlip(flipH, flipV);
         }
-        spr2.setFlip(flipH, flipV);
+        else if (keyEvent.key() == SDLK_z) {
+          angle += 10.0f;
+          spr2.setAngle(angle);
+        }
       });
     }
     vector<string> depends() const {

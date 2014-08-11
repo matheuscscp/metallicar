@@ -16,7 +16,7 @@ widthTexture(float(texture->width())),
 heightTexture(float(texture->height())),
 filter(GL_LINEAR),
 color(Color::WHITE),
-position(geometry::Point2(0.0f, 0.0f)),
+rawPosition(geometry::Point2(0.0f, 0.0f)),
 spot(geometry::Rectangle::Spot::TOP_LEFT),
 angle(0.0f),
 scale(geometry::Point2(1.0f, 1.0f)),
@@ -57,7 +57,7 @@ void TextureRenderer2D::setOpacity(float opacity) {
 }
 
 void TextureRenderer2D::setPosition(const geometry::Point2& position) {
-  this->position = position;
+  rawPosition = position;
   adjustPosition();
 }
 
@@ -72,6 +72,7 @@ void TextureRenderer2D::setAngle(float angle) {
 
 void TextureRenderer2D::setScale(const geometry::Point2& scale) {
   this->scale = scale;
+  adjustPosition();
 }
 
 void TextureRenderer2D::setFlip(bool horizontal, bool vertical) {
@@ -129,25 +130,26 @@ void TextureRenderer2D::render() const {
 }
 
 void TextureRenderer2D::adjustPosition() {
+  position = rawPosition;
   switch (spot) {
     case geometry::Rectangle::Spot::TOP_LEFT:
-      this->position.x += clipHalfWidth;
-      this->position.y += clipHalfHeight;
+      this->position.x += clipHalfWidth*scale.x;
+      this->position.y += clipHalfHeight*scale.y;
       break;
       
     case geometry::Rectangle::Spot::TOP_RIGHT:
-      this->position.x -= clipHalfWidth;
-      this->position.y += clipHalfHeight;
+      this->position.x -= clipHalfWidth*scale.x;
+      this->position.y += clipHalfHeight*scale.y;
       break;
       
     case geometry::Rectangle::Spot::BOTTOM_LEFT:
-      this->position.x += clipHalfWidth;
-      this->position.y -= clipHalfHeight;
+      this->position.x += clipHalfWidth*scale.x;
+      this->position.y -= clipHalfHeight*scale.y;
       break;
       
     case geometry::Rectangle::Spot::BOTTOM_RIGHT:
-      this->position.x -= clipHalfWidth;
-      this->position.y -= clipHalfHeight;
+      this->position.x -= clipHalfWidth*scale.x;
+      this->position.y -= clipHalfHeight*scale.y;
       break;
       
     default:

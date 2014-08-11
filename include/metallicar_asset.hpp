@@ -66,7 +66,7 @@ class TextureRenderer2D {
     float widthTexture, heightTexture;
     GLint filter;
     Color color;
-    geometry::Point2 position;
+    geometry::Point2 rawPosition, position;
     geometry::Rectangle::Spot spot;
     float angle;
     geometry::Point2 scale;
