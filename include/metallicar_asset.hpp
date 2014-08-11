@@ -11,9 +11,11 @@
 // standard
 #include <map>
 #include <string>
+#include <memory>
 
 // lib
 #include "SDL_opengl.h"
+#include "SDL_surface.h"
 
 // local
 #include "Color.hpp"
@@ -29,20 +31,31 @@ class Asset {
 
 class Assets {
   private:
-    std::map<std::string, Asset*> assets;
+    std::map<std::string, std::shared_ptr<Asset>> assets;
     
     static Assets* instance;
   public:
     Assets();
-    ~Assets();
     
     template <class AssetClass, typename... Args>
-    static AssetClass* get(const std::string& name, Args&&... args) {
+    static std::shared_ptr<AssetClass> put(
+      const std::string& name,
+      Args&&... args
+    ) {
       auto& asset = instance->assets[name];
-      if (!asset) {
-        asset = new AssetClass(std::forward<Args>(args)...);
+      asset = std::shared_ptr<Asset>(
+        new AssetClass(std::forward<Args>(args)...)
+      );
+      return std::dynamic_pointer_cast<AssetClass>(asset);
+    }
+    
+    template <class AssetClass>
+    static std::shared_ptr<AssetClass> get(const std::string& name) {
+      auto asset = instance->assets.find(name);
+      if (asset == instance->assets.end()) {
+        return nullptr;
       }
-      return (AssetClass*)asset;
+      return std::dynamic_pointer_cast<AssetClass>(asset->second);
     }
 };
 
@@ -51,8 +64,7 @@ class Texture2D : public Asset {
     int w, h;
     GLuint texture;
   public:
-    Texture2D(const std::string& path);
-    Texture2D(int w, int h, GLuint texture);
+    Texture2D(GLenum format, int w, int h, void* pixels);
     virtual ~Texture2D();
     virtual int width() const;
     virtual int height() const;
@@ -92,6 +104,18 @@ class TextureRenderer2D {
     virtual void render() const;
   protected:
     virtual void adjustPosition();
+};
+
+class Image : public Asset {
+  protected:
+    std::string path;
+    SDL_Surface* image;
+  public:
+    Image(const std::string& path);
+    virtual ~Image();
+    virtual Texture2D* generateTexture() const;
+    
+    static Texture2D* createTexture(const std::string& path);
 };
 
 } // namespace metallicar

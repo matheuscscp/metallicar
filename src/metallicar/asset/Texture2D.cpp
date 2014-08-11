@@ -8,57 +8,14 @@
 // this
 #include "metallicar_asset.hpp"
 
-// lib
-#include "SDL_image.h"
-
-// local
-#include "Path.hpp"
-#include "Log.hpp"
-#include "String.hpp"
-
-using namespace std;
-using namespace geometry;
-
 namespace metallicar {
 
-Texture2D::Texture2D(const std::string& path) {
-  // load image
-  SDL_Surface* image = IMG_Load(Path::get(path).c_str());
-  if (!image) {
-    Log::message(Log::Error, String::from("Image \"%s\" could not be loaded", Path::get(path).c_str()));
-    exit(0);
-  }
-  w = image->w;
-  h = image->h;
-  
-  // check format
-  GLenum texFormat;
-  if (image->format->BytesPerPixel == 4) {
-    texFormat = (SDL_BYTEORDER == SDL_BIG_ENDIAN) ? GL_BGRA : GL_RGBA;
-  }
-  else if (image->format->BytesPerPixel == 3) {
-    texFormat = (SDL_BYTEORDER == SDL_BIG_ENDIAN) ? GL_BGR : GL_RGB;
-  }
-  else {
-    Log::message(Log::Error, String::from("Image \"%s\": %d byte(s) per pixel format is not supported", Path::get(path).c_str(), image->format->BytesPerPixel));
-    exit(0);
-  }
-  
-  // generate texture
+Texture2D::Texture2D(GLenum format, int w, int h, void* pixels) : w(w), h(h) {
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
   glTexImage2D(
-    GL_TEXTURE_2D, 0, texFormat, w, h, 0,
-    texFormat, GL_UNSIGNED_BYTE, image->pixels
+    GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE, pixels
   );
-  
-  SDL_FreeSurface(image);
-}
-
-Texture2D::Texture2D(int w, int h, GLuint texture) :
-w(w), h(h), texture(texture)
-{
-  
 }
 
 Texture2D::~Texture2D() {

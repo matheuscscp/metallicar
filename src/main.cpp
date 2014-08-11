@@ -28,9 +28,9 @@ class Renderer : public GameObjectComponent {
   public:
     TextureRenderer2D bg, spr, spr2;
     Renderer() :
-    bg(Assets::get<Texture2D>("asset/background.png", "asset/background.png")),
-    spr(Assets::get<Texture2D>("asset/metallicar.png", "asset/metallicar.png")),
-    spr2(Assets::get<Texture2D>("asset/icon.png", "asset/icon.png"))
+    bg(Image::createTexture("asset/background.png")),
+    spr(Image::createTexture("asset/metallicar.png")),
+    spr2(Image::createTexture("asset/icon.png"))
     {
       spr.setCorner(Corner::CENTER);
     }
