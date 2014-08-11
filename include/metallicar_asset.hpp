@@ -75,6 +75,7 @@ class TextureRenderer2D {
     float texCoordY0, texCoordY1;
     float vertexCoordX0, vertexCoordX1;
     float vertexCoordY0, vertexCoordY1;
+    float horizontalFlip, verticalFlip;
   public:
     TextureRenderer2D(Texture2D* texture);
     virtual ~TextureRenderer2D();
@@ -88,6 +89,7 @@ class TextureRenderer2D {
     virtual void setSpot(geometry::Rectangle::Spot spot);
     virtual void setAngle(float angle);
     virtual void setScale(const geometry::Point2& scale);
+    virtual void setFlip(bool horizontal, bool vertical);
     virtual void clip(const geometry::Rectangle& clipRect);
     virtual void resetClip();
     virtual void render() const;

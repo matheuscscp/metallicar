@@ -27,20 +27,35 @@ class Space2D : public GameObjectComponent {
 class Renderer : public GameObjectComponent {
   public:
     TextureRenderer2D bg, spr, spr2;
+    observer::Connection flipConn;
+    bool flipH, flipV;
     Renderer() :
     bg(Image::createTexture("asset/background.png")),
     spr(Image::createTexture("asset/metallicar.png")),
-    spr2(Image::createTexture("asset/icon.png"))
+    spr2(Image::createTexture("asset/icon.png")),
+    flipH(false),
+    flipV(false)
     {
       spr.setSpot(geometry::Rectangle::Spot::CENTER);
+      //spr2.setScale(Point2(0.3,0.3));
+      flipConn = Input::connect<Input::KeyDownEvent>([this](const observer::EventBase& event) {
+        Input::KeyDownEvent& keyEvent = (Input::KeyDownEvent&)event;
+        if (keyEvent.key() == SDLK_h) {
+          flipH = !flipH;
+        }
+        else if (keyEvent.key() == SDLK_v) {
+          flipV = !flipV;
+        }
+        spr2.setFlip(flipH, flipV);
+      });
     }
     vector<string> depends() const {
       return {"spatial"};
     }
     void update() {
+      spr.setPosition(Point2(object->fields().read<float>("x"), object->fields().read<float>("y")));
       GameRenderers::add(0.0, [this]() {
         bg.render();
-        spr.setPosition(Point2(object->fields().read<float>("x"), object->fields().read<float>("y")));
         spr.render();
         spr2.render();
       });

@@ -19,7 +19,9 @@ color(Color::WHITE),
 position(geometry::Point2(0.0f, 0.0f)),
 spot(geometry::Rectangle::Spot::TOP_LEFT),
 angle(0.0f),
-scale(geometry::Point2(1.0f, 1.0f))
+scale(geometry::Point2(1.0f, 1.0f)),
+horizontalFlip(0.0f),
+verticalFlip(0.0f)
 {
   resetClip();
 }
@@ -72,6 +74,11 @@ void TextureRenderer2D::setScale(const geometry::Point2& scale) {
   this->scale = scale;
 }
 
+void TextureRenderer2D::setFlip(bool horizontal, bool vertical) {
+  horizontalFlip = horizontal ? 180.0f : 0.0f;
+  verticalFlip = vertical ? 180.0f : 0.0f;
+}
+
 void TextureRenderer2D::clip(const geometry::Rectangle& clipRect) {
   clipHalfWidth = clipRect.w/2;
   clipHalfHeight = clipRect.h/2;
@@ -103,6 +110,8 @@ void TextureRenderer2D::render() const {
     glLoadIdentity();
     glTranslatef(position.x, position.y, 0.0f);
     glRotatef(angle, 0.0f, 0.0f, 1.0f);
+    glRotatef(horizontalFlip, 0.0f, 1.0f, 0.0f);
+    glRotatef(verticalFlip, 1.0f, 0.0f, 0.0f);
     glScalef(scale.x, scale.y, 1.0f);
     
     // render
