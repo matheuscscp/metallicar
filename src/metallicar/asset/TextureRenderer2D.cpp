@@ -8,8 +8,6 @@
 // this
 #include "metallicar_asset.hpp"
 
-using namespace std;
-
 namespace metallicar {
 
 TextureRenderer2D::TextureRenderer2D(Texture2D* texture) :

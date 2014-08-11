@@ -37,17 +37,7 @@ class Assets {
   public:
     Assets();
     
-    template <class AssetClass, typename... Args>
-    static std::shared_ptr<AssetClass> put(
-      const std::string& name,
-      Args&&... args
-    ) {
-      auto& asset = instance->assets[name];
-      asset = std::shared_ptr<Asset>(
-        new AssetClass(std::forward<Args>(args)...)
-      );
-      return std::dynamic_pointer_cast<AssetClass>(asset);
-    }
+    static void put(const std::string& name, Asset* asset);
     
     template <class AssetClass>
     static std::shared_ptr<AssetClass> get(const std::string& name) {
