@@ -19,7 +19,6 @@
 
 // local
 #include "Color.hpp"
-#include "Corner.hpp"
 #include "geometry.hpp"
 
 namespace metallicar {
@@ -68,7 +67,7 @@ class TextureRenderer2D {
     GLint filter;
     Color color;
     geometry::Point2 position;
-    Corner corner;
+    geometry::Rectangle::Spot spot;
     float angle;
     geometry::Point2 scale;
     float clipHalfWidth, clipHalfHeight;
@@ -86,7 +85,7 @@ class TextureRenderer2D {
     virtual void setColor(const Color& color);
     virtual void setOpacity(float opacity);
     virtual void setPosition(const geometry::Point2& position);
-    virtual void setCorner(Corner corner);
+    virtual void setSpot(geometry::Rectangle::Spot spot);
     virtual void setAngle(float angle);
     virtual void setScale(const geometry::Point2& scale);
     virtual void clip(const geometry::Rectangle& clipRect);

@@ -17,7 +17,7 @@ heightTexture(float(texture->height())),
 filter(GL_LINEAR),
 color(Color::WHITE),
 position(geometry::Point2(0.0f, 0.0f)),
-corner(Corner::TOP_LEFT),
+spot(geometry::Rectangle::Spot::TOP_LEFT),
 angle(0.0f),
 scale(geometry::Point2(1.0f, 1.0f))
 {
@@ -59,8 +59,8 @@ void TextureRenderer2D::setPosition(const geometry::Point2& position) {
   adjustPosition();
 }
 
-void TextureRenderer2D::setCorner(Corner corner) {
-  this->corner = corner;
+void TextureRenderer2D::setSpot(geometry::Rectangle::Spot spot) {
+  this->spot = spot;
   adjustPosition();
 }
 
@@ -120,23 +120,23 @@ void TextureRenderer2D::render() const {
 }
 
 void TextureRenderer2D::adjustPosition() {
-  switch (corner) {
-    case TOP_LEFT:
+  switch (spot) {
+    case geometry::Rectangle::Spot::TOP_LEFT:
       this->position.x += clipHalfWidth;
       this->position.y += clipHalfHeight;
       break;
       
-    case TOP_RIGHT:
+    case geometry::Rectangle::Spot::TOP_RIGHT:
       this->position.x -= clipHalfWidth;
       this->position.y += clipHalfHeight;
       break;
       
-    case BOTTOM_LEFT:
+    case geometry::Rectangle::Spot::BOTTOM_LEFT:
       this->position.x += clipHalfWidth;
       this->position.y -= clipHalfHeight;
       break;
       
-    case BOTTOM_RIGHT:
+    case geometry::Rectangle::Spot::BOTTOM_RIGHT:
       this->position.x -= clipHalfWidth;
       this->position.y -= clipHalfHeight;
       break;

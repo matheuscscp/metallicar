@@ -32,7 +32,7 @@ class Renderer : public GameObjectComponent {
     spr(Image::createTexture("asset/metallicar.png")),
     spr2(Image::createTexture("asset/icon.png"))
     {
-      spr.setCorner(Corner::CENTER);
+      spr.setSpot(geometry::Rectangle::Spot::CENTER);
     }
     vector<string> depends() const {
       return {"spatial"};

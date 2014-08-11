@@ -16,6 +16,7 @@ struct Point2 {
 };
 
 struct Rectangle {
+  enum Spot { TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER };
   float x, y, w, h;
   Rectangle(float x = 0.0f, float y = 0.0f, float w = 0.0f, float h = 0.0f);
 };
