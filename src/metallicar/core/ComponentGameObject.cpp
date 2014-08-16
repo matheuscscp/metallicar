@@ -1,5 +1,5 @@
 /*
- * CompositeGameObject.cpp
+ * ComponentGameObject.cpp
  *
  *  Created on: Aug 6, 2014
  *      Author: Pimenta
@@ -15,13 +15,13 @@ using namespace std;
 
 namespace metallicar {
 
-CompositeGameObject::CompositeGameObject(
+ComponentGameObject::ComponentGameObject(
   const vector<GameObjectComponent*>& components
 ) {
   addComponents(components);
 }
 
-CompositeGameObject::~CompositeGameObject() {
+ComponentGameObject::~ComponentGameObject() {
   while (components.size()) {
     delete components.back();
     components.pop_back();
@@ -32,7 +32,7 @@ CompositeGameObject::~CompositeGameObject() {
   }
 }
 
-void CompositeGameObject::update() {
+void ComponentGameObject::update() {
   set<string> newCompsFamilies;
   for (auto comp : newComponents) {
     components.push_back(comp);
@@ -67,15 +67,15 @@ void CompositeGameObject::update() {
   }
 }
 
-void CompositeGameObject::render() {
+void ComponentGameObject::render() {
   
 }
 
-bool CompositeGameObject::destroy() {
+bool ComponentGameObject::destroy() {
   return fieldTable.read<bool>("destroy");
 }
 
-void CompositeGameObject::addComponents(
+void ComponentGameObject::addComponents(
   const vector<GameObjectComponent*>& components
 ) {
   for (auto component : components) {
@@ -84,7 +84,7 @@ void CompositeGameObject::addComponents(
   }
 }
 
-FieldTable& CompositeGameObject::fields() {
+FieldTable& ComponentGameObject::fields() {
   return fieldTable;
 }
 

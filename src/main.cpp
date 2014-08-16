@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
   Window::init();
   Graphics::initDefault();
   (new GameObjectScene())->addObjects({
-    new CompositeGameObject({new Space2D, new Renderer, new ProjUpdater})
+    new ComponentGameObject({new Space2D, new Renderer, new ProjUpdater})
   });
   Game::run();
   Window::close();

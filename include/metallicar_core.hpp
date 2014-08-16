@@ -86,11 +86,11 @@ class GameObjectScene : public GameScene {
     static GameObjectScene& runningInstance();
 };
 
-class CompositeGameObject;
+class ComponentGameObject;
 class GameObjectComponent {
-  friend class CompositeGameObject;
+  friend class ComponentGameObject;
   protected:
-    CompositeGameObject* object;
+    ComponentGameObject* object;
   public:
     virtual ~GameObjectComponent();
     virtual std::string family() const;
@@ -100,14 +100,14 @@ class GameObjectComponent {
     virtual bool destroy();
 };
 
-class CompositeGameObject : public GameObject {
+class ComponentGameObject : public GameObject {
   protected:
     std::list<GameObjectComponent*> components;
     std::list<GameObjectComponent*> newComponents;
     FieldTable fieldTable;
   public:
-    CompositeGameObject(const std::vector<GameObjectComponent*>& components);
-    virtual ~CompositeGameObject();
+    ComponentGameObject(const std::vector<GameObjectComponent*>& components);
+    virtual ~ComponentGameObject();
     virtual void update();
     virtual void render();
     virtual bool destroy();
