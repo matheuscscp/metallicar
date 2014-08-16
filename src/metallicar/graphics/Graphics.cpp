@@ -22,7 +22,7 @@ static function<void()> updateProjection([]() {});
 static function<void()> prepareFrame([]() {});
 static function<void()> finalizeFrame([]() {});
 
-void Graphics::initDefault() {
+void Graphics::initDefaultFunctions() {
   metallicar::updateProjection = []() {
     // viewport
     WindowOptions options = Window::getOptions();

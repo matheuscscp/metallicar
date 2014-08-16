@@ -126,7 +126,7 @@ class ProjUpdater : public ComponentGameObject::Component {
 int main(int argc, char* argv[]) {
   Game::init();
   Window::init();
-  Graphics::initDefault();
+  Graphics::initDefaultFunctions();
   (new GameObjectScene())->addObjects({
     new ComponentGameObject({new Space2D, new Renderer, new ProjUpdater})
   });
