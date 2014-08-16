@@ -1,6 +1,3 @@
-angulo de renderizacao
-comunicacao atraves da tabela de parametros mesmo??
-
 engine:
   asset: font and text
   asset: audio
