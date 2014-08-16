@@ -129,10 +129,12 @@ int main(int argc, char* argv[]) {
   Graphics::initDefaultFunctions();
   
   GameObjectScene* scene = new GameObjectScene();
+  
   shared_ptr<GameObject> player(new ComponentGameObject({
     new Space2D, new Renderer, new ProjUpdater
   }));
-  scene->addObjects({player});
+  shared_ptr<GameObject> moon(new CompositeGameObject({player}));
+  scene->addObjects({player, moon});
   
   Game::run();
   
