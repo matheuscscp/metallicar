@@ -19,9 +19,7 @@ FieldTable::Field::Field() : rawField(nullptr) {
 }
 
 FieldTable::Field::~Field() {
-  if (rawField) {
-    delete rawField;
-  }
+  delete rawField;
 }
 
 FieldTable::WriteEvent::WriteEvent(const string& fieldName) :

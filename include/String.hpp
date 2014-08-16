@@ -32,7 +32,7 @@ class String {
     template <typename... Args>
     static std::string from(const char* fmt, Args&&... args) {
       for (int scale = 1; ; scale *= 2) {
-        size_t size = BUFSIZ*scale;
+        size_t size = 512*scale;
         char* buf = new char[size];
         if (snprintf(buf, size, fmt, std::forward<Args>(args)...) < size) {
           std::string tmp(buf);

@@ -76,9 +76,7 @@ static void initGlobals() {
 // =============================================================================
 
 Game::Game() {
-  if (newInstance) {
-    delete newInstance;
-  }
+  delete newInstance;
   newInstance = this;
   
   quitEventConnection = Input::connect<Input::QuitEvent>(
@@ -104,9 +102,7 @@ Game& Game::runningInstance() {
 
 void Game::changeInstance() {
   if (newInstance) {
-    if (instance) {
-      delete instance;
-    }
+    delete instance;
     instance = newInstance;
     newInstance = nullptr;
   }
@@ -150,13 +146,9 @@ void Game::close() {
   initialized = false;
   
   // cleaning instance
-  if (newInstance) {
-    delete newInstance;
-  }
+  delete newInstance;
   newInstance = nullptr;
-  if (instance) {
-    delete instance;
-  }
+  delete instance;
   instance = nullptr;
   
   // libs

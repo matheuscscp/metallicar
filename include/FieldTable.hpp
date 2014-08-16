@@ -45,9 +45,7 @@ class FieldTable {
         }
         
         template <typename T> void write(const T& value) {
-          if (rawField) {
-            delete rawField;
-          }
+          delete rawField;
           rawField = new RawField<T>(value);
         }
     };
