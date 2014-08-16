@@ -40,6 +40,9 @@ class Renderer : public ComponentGameObject::Component {
     angle(0.0f)
     {
       spr.setSpot(geometry::Rectangle::Spot::CENTER);
+      spr2.setSpot(geometry::Rectangle::Spot::BOTTOM_RIGHT);
+      spr2.setScale(Point2(0.2,0.2));
+      spr2.setAngle(45);
       keyDownConn = Input::connect<Input::KeyDownEvent>([this](const observer::EventBase& event) {
         Input::KeyDownEvent& keyEvent = (Input::KeyDownEvent&)event;
         if (keyEvent.key() == SDLK_h) {
@@ -61,6 +64,7 @@ class Renderer : public ComponentGameObject::Component {
     }
     void update() {
       spr.setPosition(Point2(object->fields().read<float>("x"), object->fields().read<float>("y")));
+      spr2.setPosition(Point2(Input::mouse().x, Input::mouse().y));
       Game::addRenderer(0.0, [this]() {
         bg.render();
         spr.render();
