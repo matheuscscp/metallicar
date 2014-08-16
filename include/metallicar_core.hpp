@@ -48,6 +48,8 @@ class Game {
 };
 
 class GameObject {
+  protected:
+    GameObject();
   public:
     virtual ~GameObject();
     virtual void update();
@@ -60,8 +62,9 @@ class GameObjectScene : public Game {
     std::list<std::shared_ptr<GameObject>> objects;
     std::list<std::shared_ptr<GameObject>> newObjects;
     FieldTable fieldTable;
-    
-    virtual ~GameObjectScene();
+  protected:
+    ~GameObjectScene();
+  private:
     void update();
     void render();
   public:
@@ -79,6 +82,7 @@ class ComponentGameObject : public GameObject {
         ComponentGameObject* object;
       public:
         virtual ~Component();
+      protected:
         virtual std::string family() const;
         virtual std::vector<std::string> depends() const;
         virtual void init();
@@ -86,8 +90,8 @@ class ComponentGameObject : public GameObject {
         virtual bool destroy();
     };
   protected:
-    std::list<Component*> components;
-    std::list<Component*> newComponents;
+    std::list<std::unique_ptr<Component>> components;
+    std::list<std::unique_ptr<Component>> newComponents;
     FieldTable fieldTable;
   public:
     ComponentGameObject(const std::vector<Component*>& components);

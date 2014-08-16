@@ -52,24 +52,18 @@ ComponentGameObject::ComponentGameObject(const vector<Component*>& components) {
 }
 
 ComponentGameObject::~ComponentGameObject() {
-  while (components.size()) {
-    delete components.back();
-    components.pop_back();
-  }
-  while (newComponents.size()) {
-    delete newComponents.back();
-    newComponents.pop_back();
-  }
+  
 }
 
 void ComponentGameObject::update() {
   set<string> newCompsFamilies;
-  for (auto comp : newComponents) {
-    components.push_back(comp);
+  for (auto& comp : newComponents) {
+    components.emplace_back(comp.get());
     newCompsFamilies.insert(comp->family());
   }
   while (newComponents.size()) {
-    auto comp = newComponents.front(); newComponents.pop_front();
+    Component* comp = newComponents.front().release();
+    newComponents.pop_front();
     auto depends = comp->depends();
     auto alreadyInit = depends.size(); alreadyInit = 0;
     for (auto dep : depends) {
@@ -82,12 +76,11 @@ void ComponentGameObject::update() {
       newCompsFamilies.erase(comp->family());
     }
     else {
-      newComponents.push_back(comp);
+      newComponents.emplace_back(comp);
     }
   }
   for (auto it = components.begin(); it != components.end();) {
     if ((*it)->destroy()) {
-      delete *it;
       components.erase(it++);
     }
     else {
@@ -108,7 +101,7 @@ bool ComponentGameObject::dead() {
 void ComponentGameObject::addComponents(const vector<Component*>& components) {
   for (auto component : components) {
     component->object = this;
-    newComponents.push_back(component);
+    newComponents.emplace_back(component);
   }
 }
 

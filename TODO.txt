@@ -1,3 +1,8 @@
+usar shared_ptr ou unique_ptr nos containers
+fazer o composite object
+angulo de renderizacao
+comunicacao atraves da tabela de parametros mesmo??
+
 engine:
   asset: font and text
   asset: audio

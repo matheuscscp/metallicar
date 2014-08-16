@@ -12,6 +12,10 @@ using namespace std;
 
 namespace metallicar {
 
+GameObject::GameObject() {
+  
+}
+
 GameObject::~GameObject() {
   
 }
