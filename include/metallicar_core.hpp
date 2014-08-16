@@ -46,7 +46,6 @@ class Game {
     
     static float fps();
 };
-typedef Game GameScene;
 
 class GameObject {
   public:
@@ -56,7 +55,7 @@ class GameObject {
     virtual bool destroy();
 };
 
-class GameObjectScene : public GameScene {
+class GameObjectScene : public Game {
   private:
     std::list<GameObject*> objects;
     std::list<GameObject*> newObjects;
