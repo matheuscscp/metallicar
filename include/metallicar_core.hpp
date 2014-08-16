@@ -86,35 +86,32 @@ class GameObjectScene : public GameScene {
     static GameObjectScene& runningInstance();
 };
 
-class ComponentGameObject;
-class GameObjectComponent {
-  friend class ComponentGameObject;
-  protected:
-    ComponentGameObject* object;
-  public:
-    virtual ~GameObjectComponent();
-    virtual std::string family() const;
-    virtual std::vector<std::string> depends() const;
-    virtual void init();
-    virtual void update();
-    virtual bool destroy();
-};
-
 class ComponentGameObject : public GameObject {
+  public:
+    class Component {
+      friend class ComponentGameObject;
+      protected:
+        ComponentGameObject* object;
+      public:
+        virtual ~Component();
+        virtual std::string family() const;
+        virtual std::vector<std::string> depends() const;
+        virtual void init();
+        virtual void update();
+        virtual bool destroy();
+    };
   protected:
-    std::list<GameObjectComponent*> components;
-    std::list<GameObjectComponent*> newComponents;
+    std::list<Component*> components;
+    std::list<Component*> newComponents;
     FieldTable fieldTable;
   public:
-    ComponentGameObject(const std::vector<GameObjectComponent*>& components);
+    ComponentGameObject(const std::vector<Component*>& components);
     virtual ~ComponentGameObject();
     virtual void update();
     virtual void render();
     virtual bool destroy();
     
-    virtual void addComponents(
-      const std::vector<GameObjectComponent*>& components
-    );
+    virtual void addComponents(const std::vector<Component*>& components);
     virtual FieldTable& fields();
 };
 

@@ -15,9 +15,39 @@ using namespace std;
 
 namespace metallicar {
 
-ComponentGameObject::ComponentGameObject(
-  const vector<GameObjectComponent*>& components
-) {
+// =============================================================================
+// ComponentGameObject::Component
+// =============================================================================
+
+ComponentGameObject::Component::~Component() {
+  
+}
+
+string ComponentGameObject::Component::family() const {
+  return "";
+}
+
+vector<string> ComponentGameObject::Component::depends() const {
+  return {};
+}
+
+void ComponentGameObject::Component::init() {
+  
+}
+
+void ComponentGameObject::Component::update() {
+  
+}
+
+bool ComponentGameObject::Component::destroy() {
+  return false;
+}
+
+// =============================================================================
+// ComponentGameObject
+// =============================================================================
+
+ComponentGameObject::ComponentGameObject(const vector<Component*>& components) {
   addComponents(components);
 }
 
@@ -75,9 +105,7 @@ bool ComponentGameObject::destroy() {
   return fieldTable.read<bool>("destroy");
 }
 
-void ComponentGameObject::addComponents(
-  const vector<GameObjectComponent*>& components
-) {
+void ComponentGameObject::addComponents(const vector<Component*>& components) {
   for (auto component : components) {
     component->object = this;
     newComponents.push_back(component);

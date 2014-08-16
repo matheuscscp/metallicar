@@ -14,7 +14,7 @@ using namespace std;
 using namespace metallicar;
 using namespace geometry;
 
-class Space2D : public GameObjectComponent {
+class Space2D : public ComponentGameObject::Component {
   public:
     string family() const {
       return "spatial";
@@ -25,7 +25,7 @@ class Space2D : public GameObjectComponent {
     }
 };
 
-class Renderer : public GameObjectComponent {
+class Renderer : public ComponentGameObject::Component {
   public:
     TextureRenderer2D bg, spr, spr2;
     observer::Connection keyDownConn;
@@ -69,7 +69,7 @@ class Renderer : public GameObjectComponent {
     }
 };
 
-class ProjUpdater : public GameObjectComponent {
+class ProjUpdater : public ComponentGameObject::Component {
   public:
     observer::Connection conn;
     ProjUpdater() {
