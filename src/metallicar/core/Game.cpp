@@ -31,7 +31,7 @@ static void updateDT();
 static bool reachedDT();
 static void accumulateDT();
 
-static void updateFrameRate();
+static void updateFPS();
 
 // =============================================================================
 // private globals
@@ -40,29 +40,25 @@ static void updateFrameRate();
 static bool initialized;
 static bool quit;
 
-static uint32_t last;       // unit: milliseconds
-static uint32_t ups;        // unit: updates/second
-static float dtFloat;       // unit: seconds
-static uint32_t dtFixed;    // unit: milliseconds
-static uint32_t dt;         // unit: milliseconds
-static uint32_t updateID;
+static float dt;                // unit: seconds
+static uint32_t updateInterval; // unit: milliseconds
+static uint32_t lastUpdate;     // unit: milliseconds
+static uint32_t timeElapsed;    // unit: milliseconds
 
-static float frameRate;     // unit: frames/second
-static uint32_t lastFrame;  // unit: milliseconds
+static float fps;               // unit: hertz
+static uint32_t lastFrame;      // unit: milliseconds
 
 static void initGlobals() {
   metallicar::initialized = false;
   metallicar::quit = false;
   
-  metallicar::last = 0;           // unit: milliseconds
-  metallicar::ups = 32;           // unit: updates/second
-  metallicar::dtFloat = 0.03125f; // unit: seconds
-  metallicar::dtFixed = 31;       // unit: milliseconds
-  metallicar::dt = 0;             // unit: milliseconds
-  metallicar::updateID = 0;
+  metallicar::dt = 31/1000.0f;      // unit: seconds
+  metallicar::updateInterval = 31;  // unit: milliseconds
+  metallicar::lastUpdate = 0;       // unit: milliseconds
+  metallicar::timeElapsed = 0;      // unit: milliseconds
   
-  metallicar::frameRate = 0.0f;   // unit: frames/second
-  metallicar::lastFrame = 0;      // unit: milliseconds
+  metallicar::fps = 60.0f;           // unit: hertz
+  metallicar::lastFrame = 0;        // unit: milliseconds
 }
 
 // =============================================================================
@@ -121,7 +117,7 @@ void Game::run() {
   GameScene::change();
   
   while (!metallicar::quit && GameScene::loaded()) {
-    updateFrameRate();
+    updateFPS();
     
     // update
     GameScene& currentScene = GameScene::runningInstance();
@@ -148,30 +144,20 @@ void Game::quit() {
   metallicar::quit = true;
 }
 
-uint32_t Game::getUPS() {
-  return ups;
+float Game::dt() {
+  return metallicar::dt;
 }
 
-void Game::setUPS(uint32_t ups) {
-  if (!ups) {
+void Game::setUpdateInterval(uint32_t updateInterval) {
+  if (!updateInterval) {
     return;
   }
-  
-  metallicar::ups = ups;
-  dtFloat = 1/(float)ups;
-  dtFixed = 1000/ups;
+  metallicar::updateInterval = updateInterval;
+  metallicar::dt = updateInterval/1000.0f;
 }
 
-float Game::getDT() {
-  return dtFloat;
-}
-
-uint32_t Game::updateID() {
-  return metallicar::updateID;
-}
-
-float Game::getFrameRate() {
-  return frameRate;
+float Game::fps() {
+  return metallicar::fps;
 }
 
 // =============================================================================
@@ -179,32 +165,30 @@ float Game::getFrameRate() {
 // =============================================================================
 
 static void initDT() {
-  last = Time::get() - dtFixed;
+  lastUpdate = Time::get() - updateInterval;
 }
 
 static void updateDT() {
   uint32_t now = Time::get();
-  dt = now - last;
-  last = now;
-  metallicar::updateID = now - 1;
+  timeElapsed = now - lastUpdate;
+  lastUpdate = now;
 }
 
 static bool reachedDT() {
-  if (dt >= dtFixed) {
-    dt -= dtFixed;
-    metallicar::updateID++;
+  if (timeElapsed >= updateInterval) {
+    timeElapsed -= updateInterval;
     return true;
   }
   return false;
 }
 
 static void accumulateDT() {
-  last -= dt;
+  lastUpdate -= timeElapsed;
 }
 
-static void updateFrameRate() {
+static void updateFPS() {
   uint32_t now = Time::get();
-  frameRate = frameRate*0.95f + 0.05f*1000.0f/(now - lastFrame);
+  fps = fps*0.95f + 0.05f*(1000.0f/(now - lastFrame));
   lastFrame = now;
 }
 

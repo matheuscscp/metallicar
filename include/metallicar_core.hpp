@@ -28,12 +28,10 @@ class Game {
     
     static void quit();
     
-    static uint32_t getUPS();
-    static void setUPS(uint32_t ups);
-    static float getDT();
-    static uint32_t updateID();
+    static float dt();
+    static void setUpdateInterval(uint32_t updateInterval);
     
-    static float getFrameRate();
+    static float fps();
 };
 
 class GameScene {
@@ -70,18 +68,17 @@ class GameObject {
 };
 
 class GameObjectScene : public GameScene {
-  protected:
+  private:
     std::list<GameObject*> objects;
     std::list<GameObject*> newObjects;
     FieldTable fieldTable;
     
     virtual ~GameObjectScene();
+    void update();
+    void render();
   public:
-    virtual void update();
-    virtual void render();
-    
-    virtual void addObjects(const std::vector<GameObject*>& objects);
-    virtual FieldTable& fields();
+    void addObjects(const std::vector<GameObject*>& objects);
+    FieldTable& fields();
     
     static GameObjectScene& runningInstance();
 };
@@ -113,6 +110,16 @@ class ComponentGameObject : public GameObject {
     
     virtual void addComponents(const std::vector<Component*>& components);
     virtual FieldTable& fields();
+};
+
+class CompositeGameObject : public GameObject {
+  protected:
+    std::list<std::shared_ptr<GameObject>> objects;
+  public:
+    virtual ~CompositeGameObject();
+    virtual void update();
+    virtual void render();
+    virtual bool destroy();
 };
 
 } // namespace metallicar
