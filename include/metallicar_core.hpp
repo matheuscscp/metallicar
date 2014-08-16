@@ -104,15 +104,23 @@ class ComponentGameObject : public GameObject {
     FieldTable& fields();
 };
 
-/*class CompositeGameObject : public GameObject {
-  protected:
+class CompositeGameObject : public GameObject {
+  private:
     std::list<std::shared_ptr<GameObject>> objects;
+    std::list<std::shared_ptr<GameObject>> newObjects;
+    FieldTable fieldTable;
   public:
-    virtual ~CompositeGameObject();
-    virtual void update();
-    virtual void render();
-    virtual bool dead();
-};*/
+    CompositeGameObject(
+      const std::vector<std::shared_ptr<GameObject>>& objects
+    );
+    ~CompositeGameObject();
+    void update();
+    void render();
+    bool dead();
+    
+    void addObjects(const std::vector<std::shared_ptr<GameObject>>& objects);
+    FieldTable& fields();
+};
 
 } // namespace metallicar
 
