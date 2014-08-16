@@ -61,7 +61,7 @@ class Renderer : public ComponentGameObject::Component {
     }
     void update() {
       spr.setPosition(Point2(object->fields().read<float>("x"), object->fields().read<float>("y")));
-      GameRenderers::add(0.0, [this]() {
+      Game::addRenderer(0.0, [this]() {
         bg.render();
         spr.render();
         spr2.render();

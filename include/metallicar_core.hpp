@@ -38,6 +38,7 @@ class Game {
     static void close();
     static void run();
     
+    static void addRenderer(double z, const std::function<void()>& renderer);
     static void quit();
     
     static float dt();
@@ -46,13 +47,6 @@ class Game {
     static float fps();
 };
 typedef Game GameScene;
-
-class GameRenderers {
-  public:
-    static void add(double order, const std::function<void()>& renderer);
-    static void render();
-    static void clear();
-};
 
 class GameObject {
   public:

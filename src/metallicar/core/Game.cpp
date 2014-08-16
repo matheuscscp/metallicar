@@ -37,6 +37,8 @@ static void updateFPS();
 // private globals
 // =============================================================================
 
+static map<double, list<function<void()>>> renderers;
+
 static Game* instance;
 static Game* newInstance;
 
@@ -52,6 +54,8 @@ static float fps;               // unit: hertz
 static uint32_t lastFrame;      // unit: milliseconds
 
 static void initGlobals() {
+  metallicar::renderers.clear();
+  
   metallicar::instance = nullptr;
   metallicar::newInstance = nullptr;
   
@@ -172,24 +176,31 @@ void Game::run() {
     updateFPS();
     
     // update
-    GameScene& currentScene = GameScene::runningInstance();
     updateDT();
     while (reachedDT()) {
-      GameRenderers::clear();
+      renderers.clear();
       Input::update();
-      currentScene.update();
-      currentScene.render();
+      instance->update();
+      instance->render();
     }
     accumulateDT();
     
     // render
     Graphics::prepareFrame();
-    GameRenderers::render();
+    for (auto& kv : renderers) {
+      for (auto& renderer : kv.second) {
+        renderer();
+      }
+    }
     Graphics::finalizeFrame();
     Window::update();
     
     changeInstance();
   }
+}
+
+void Game::addRenderer(double z, const function<void()>& renderer) {
+  renderers[z].push_back(renderer);
 }
 
 void Game::quit() {
