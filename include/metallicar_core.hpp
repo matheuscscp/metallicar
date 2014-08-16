@@ -20,10 +20,22 @@
 namespace metallicar {
 
 class Game {
+  private:
+    Assets assets;
+  protected:
+    observer::Connection quitEventConnection;
+    
+    Game();
+    virtual ~Game();
+    virtual void update();
+    virtual void render();
+    
+    static Game& runningInstance();
+  private:
+    static void changeInstance();
   public:
     static void init();
     static void close();
-    
     static void run();
     
     static void quit();
@@ -33,24 +45,7 @@ class Game {
     
     static float fps();
 };
-
-class GameScene {
-  private:
-    Assets assets;
-  protected:
-    observer::Connection quitEventConnection;
-    
-    GameScene();
-    virtual ~GameScene();
-  public:
-    virtual void update();
-    virtual void render();
-    
-    static bool loaded();
-    static GameScene& runningInstance();
-    static void change();
-    static void close();
-};
+typedef Game GameScene;
 
 class GameRenderers {
   public:

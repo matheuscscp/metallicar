@@ -37,6 +37,9 @@ static void updateFPS();
 // private globals
 // =============================================================================
 
+static Game* instance;
+static Game* newInstance;
+
 static bool initialized;
 static bool quit;
 
@@ -49,6 +52,9 @@ static float fps;               // unit: hertz
 static uint32_t lastFrame;      // unit: milliseconds
 
 static void initGlobals() {
+  metallicar::instance = nullptr;
+  metallicar::newInstance = nullptr;
+  
   metallicar::initialized = false;
   metallicar::quit = false;
   
@@ -64,6 +70,43 @@ static void initGlobals() {
 // =============================================================================
 // public methods
 // =============================================================================
+
+Game::Game() {
+  if (newInstance) {
+    delete newInstance;
+  }
+  newInstance = this;
+  
+  quitEventConnection = Input::connect<Input::QuitEvent>(
+    [](const observer::EventBase&) { Game::quit(); }
+  );
+}
+
+Game::~Game() {
+  
+}
+
+void Game::update() {
+  
+}
+
+void Game::render() {
+  
+}
+
+Game& Game::runningInstance() {
+  return *instance;
+}
+
+void Game::changeInstance() {
+  if (newInstance) {
+    if (instance) {
+      delete instance;
+    }
+    instance = newInstance;
+    newInstance = nullptr;
+  }
+}
 
 void Game::init() {
   if (initialized) {
@@ -102,8 +145,17 @@ void Game::close() {
   }
   initialized = false;
   
-  GameScene::close();
+  // cleaning instance
+  if (newInstance) {
+    delete newInstance;
+  }
+  newInstance = nullptr;
+  if (instance) {
+    delete instance;
+  }
+  instance = nullptr;
   
+  // libs
   SDLNet_Quit();
   IMG_Quit();
   SDL_Quit();
@@ -114,9 +166,9 @@ void Game::run() {
     return;
   }
   
-  GameScene::change();
+  changeInstance();
   
-  while (!metallicar::quit && GameScene::loaded()) {
+  while (!metallicar::quit && instance) {
     updateFPS();
     
     // update
@@ -136,7 +188,7 @@ void Game::run() {
     Graphics::finalizeFrame();
     Window::update();
     
-    GameScene::change();
+    changeInstance();
   }
 }
 
