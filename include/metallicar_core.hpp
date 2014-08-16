@@ -89,19 +89,19 @@ class ComponentGameObject : public GameObject {
         virtual void update();
         virtual bool destroy();
     };
-  protected:
+  private:
     std::list<std::unique_ptr<Component>> components;
     std::list<std::unique_ptr<Component>> newComponents;
     FieldTable fieldTable;
   public:
     ComponentGameObject(const std::vector<Component*>& components);
-    virtual ~ComponentGameObject();
-    virtual void update();
-    virtual void render();
-    virtual bool dead();
+    ~ComponentGameObject();
+    void update();
+    void render();
+    bool dead();
     
-    virtual void addComponents(const std::vector<Component*>& components);
-    virtual FieldTable& fields();
+    void addComponents(const std::vector<Component*>& components);
+    FieldTable& fields();
 };
 
 /*class CompositeGameObject : public GameObject {

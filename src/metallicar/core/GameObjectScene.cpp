@@ -41,7 +41,7 @@ void GameObjectScene::render() {
 void GameObjectScene::addObjects(
   const vector<shared_ptr<GameObject>>& objects
 ) {
-  for (auto object : objects) {
+  for (auto& object : objects) {
     newObjects.push_back(object);
   }
 }
