@@ -101,8 +101,8 @@ void ComponentGameObject::render() {
   
 }
 
-bool ComponentGameObject::destroy() {
-  return fieldTable.read<bool>("destroy");
+bool ComponentGameObject::dead() {
+  return fieldTable.read<bool>("dead");
 }
 
 void ComponentGameObject::addComponents(const vector<Component*>& components) {

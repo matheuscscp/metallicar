@@ -24,7 +24,7 @@ void GameObject::render() {
   
 }
 
-bool GameObject::destroy() {
+bool GameObject::dead() {
   return false;
 }
 

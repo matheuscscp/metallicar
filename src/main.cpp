@@ -127,10 +127,15 @@ int main(int argc, char* argv[]) {
   Game::init();
   Window::init();
   Graphics::initDefaultFunctions();
-  (new GameObjectScene())->addObjects({
-    new ComponentGameObject({new Space2D, new Renderer, new ProjUpdater})
-  });
+  
+  GameObjectScene* scene = new GameObjectScene();
+  shared_ptr<GameObject> player(new ComponentGameObject({
+    new Space2D, new Renderer, new ProjUpdater
+  }));
+  scene->addObjects({player});
+  
   Game::run();
+  
   Window::close();
   Game::close();
   return 0;

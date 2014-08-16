@@ -13,14 +13,7 @@ using namespace std;
 namespace metallicar {
 
 GameObjectScene::~GameObjectScene() {
-  while (objects.size()) {
-    delete objects.back();
-    objects.pop_back();
-  }
-  while (newObjects.size()) {
-    delete newObjects.back();
-    newObjects.pop_back();
-  }
+  
 }
 
 void GameObjectScene::update() {
@@ -29,8 +22,7 @@ void GameObjectScene::update() {
     newObjects.pop_front();
   }
   for (auto it = objects.begin(); it != objects.end();) {
-    if ((*it)->destroy()) {
-      delete *it;
+    if ((*it)->dead()) {
       objects.erase(it++);
     }
     else {
@@ -41,12 +33,14 @@ void GameObjectScene::update() {
 }
 
 void GameObjectScene::render() {
-  for (auto object : objects) {
+  for (auto& object : objects) {
     object->render();
   }
 }
 
-void GameObjectScene::addObjects(const vector<GameObject*>& objects) {
+void GameObjectScene::addObjects(
+  const vector<shared_ptr<GameObject>>& objects
+) {
   for (auto object : objects) {
     newObjects.push_back(object);
   }

@@ -52,20 +52,20 @@ class GameObject {
     virtual ~GameObject();
     virtual void update();
     virtual void render();
-    virtual bool destroy();
+    virtual bool dead();
 };
 
 class GameObjectScene : public Game {
   private:
-    std::list<GameObject*> objects;
-    std::list<GameObject*> newObjects;
+    std::list<std::shared_ptr<GameObject>> objects;
+    std::list<std::shared_ptr<GameObject>> newObjects;
     FieldTable fieldTable;
     
     virtual ~GameObjectScene();
     void update();
     void render();
   public:
-    void addObjects(const std::vector<GameObject*>& objects);
+    void addObjects(const std::vector<std::shared_ptr<GameObject>>& objects);
     FieldTable& fields();
     
     static GameObjectScene& runningInstance();
@@ -94,21 +94,21 @@ class ComponentGameObject : public GameObject {
     virtual ~ComponentGameObject();
     virtual void update();
     virtual void render();
-    virtual bool destroy();
+    virtual bool dead();
     
     virtual void addComponents(const std::vector<Component*>& components);
     virtual FieldTable& fields();
 };
 
-class CompositeGameObject : public GameObject {
+/*class CompositeGameObject : public GameObject {
   protected:
     std::list<std::shared_ptr<GameObject>> objects;
   public:
     virtual ~CompositeGameObject();
     virtual void update();
     virtual void render();
-    virtual bool destroy();
-};
+    virtual bool dead();
+};*/
 
 } // namespace metallicar
 
