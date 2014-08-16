@@ -62,7 +62,10 @@ class TCPConnection : public TCPSocket {
     
     TCPConnection& send(const ByteQueue& data);
     TCPConnection& send(const void* data, uint32_t maxlen);
-    TCPConnection& send(const std::string& data, bool withoutNullTermination = false);
+    TCPConnection& send(
+      const std::string& data,
+      bool withoutNullTermination = false
+    );
     template <typename T> TCPConnection& send(T data) {
       return send((const void*)&data, sizeof(T));
     }
@@ -92,11 +95,15 @@ class TCPConnection : public TCPSocket {
     }
 };
 
-template <> inline TCPConnection& TCPConnection::send<std::string>(std::string data) {
+template <>
+inline TCPConnection& TCPConnection::send<std::string>(std::string data) {
   return send(data, false);
 }
 
-template <> inline TCPConnection& TCPConnection::send<std::string>(const std::vector<std::string>& data) {
+template <>
+inline TCPConnection& TCPConnection::send<std::string>(
+  const std::vector<std::string>& data
+) {
   if (sd) {
     uint32_t tmp = data.size();
     SDLNet_TCP_Send(sd, (const void*)&tmp, sizeof(uint32_t));
@@ -115,7 +122,10 @@ template <> inline std::string TCPConnection::recv<std::string>() {
   return data;
 }
 
-template <> inline std::vector<std::string> TCPConnection::recv<std::string>(uint32_t* size) {
+template <>
+inline std::vector<std::string> TCPConnection::recv<std::string>(
+  uint32_t* size
+) {
   std::vector<std::string> data(recv<uint32_t>());
   if (size)
     *size = data.size();
