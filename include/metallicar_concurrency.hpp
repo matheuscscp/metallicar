@@ -84,15 +84,8 @@ class Condition {
     void broadcast();
 };
 
-class AtomicBase {
-  protected:
-    AtomicBase();
-  public:
-    virtual ~AtomicBase();
-};
-
 template <class T>
-class Atomic : public AtomicBase {
+class Atomic {
   private:
     std::unique_ptr<T> val;
     Mutex mutex;
@@ -116,21 +109,6 @@ class Atomic : public AtomicBase {
     T& value() const {
       return *(val.get());
     }
-};
-
-class AtomicGlobals {
-  private:
-    static std::map<std::string, AtomicBase*> atomics;
-  public:
-    template <typename T> static Atomic<T>* get(const std::string& key) {
-      auto atomic = atomics.find(key);
-      if (atomic == atomics.end()) {
-        return nullptr;
-      }
-      return (Atomic<T>*)atomic->second;
-    }
-    static void put(const std::string& key, AtomicBase* value);
-    static void erase(const std::string& key);
 };
 
 } // namespace metallicar
