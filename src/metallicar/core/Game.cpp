@@ -16,6 +16,7 @@
 #include "metallicar_time.hpp"
 #include "metallicar_io.hpp"
 #include "metallicar_graphics.hpp"
+#include "metallicar_asset.hpp"
 #include "Log.hpp"
 
 using namespace std;
@@ -105,6 +106,7 @@ void Game::changeInstance() {
     delete instance;
     instance = newInstance;
     newInstance = nullptr;
+    Assets::clear();
   }
 }
 

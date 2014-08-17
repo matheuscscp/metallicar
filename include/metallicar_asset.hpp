@@ -30,29 +30,27 @@ class Asset {
 
 class Assets {
   private:
-    std::map<std::string, std::shared_ptr<Asset>> assets;
-    
-    static Assets* instance;
+    static std::map<std::string, std::shared_ptr<Asset>> assets;
   public:
-    Assets();
-    
     template <class AssetClass>
     static std::shared_ptr<AssetClass> put(
       const std::string& name,
       const std::shared_ptr<AssetClass>& asset
     ) {
-      instance->assets[name] = asset;
+      assets[name] = asset;
       return asset;
     }
     
     template <class AssetClass>
     static std::shared_ptr<AssetClass> get(const std::string& name) {
-      auto asset = instance->assets.find(name);
-      if (asset == instance->assets.end()) {
+      auto asset = assets.find(name);
+      if (asset == assets.end()) {
         return nullptr;
       }
       return std::dynamic_pointer_cast<AssetClass>(asset->second);
     }
+    
+    static void clear();
 };
 
 class Texture2D : public Asset {

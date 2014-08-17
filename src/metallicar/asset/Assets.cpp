@@ -12,10 +12,17 @@ using namespace std;
 
 namespace metallicar {
 
-Assets* Assets::instance = nullptr;
+map<string, shared_ptr<Asset>> Assets::assets;
 
-Assets::Assets() {
-  instance = this;
+void Assets::clear() {
+  for (auto it = assets.begin(); it != assets.end();) {
+    if (it->second.use_count() == 1) {
+      assets.erase(it++);
+    }
+    else {
+      it++;
+    }
+  }
 }
 
 } // namespace metallicar

@@ -14,14 +14,11 @@
 #include <vector>
 
 // local
-#include "metallicar_asset.hpp"
 #include "FieldTable.hpp"
 
 namespace metallicar {
 
 class Game {
-  private:
-    Assets assets;
   protected:
     observer::Connection quitEventConnection;
     
