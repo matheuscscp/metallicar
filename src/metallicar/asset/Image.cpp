@@ -49,8 +49,10 @@ Texture2D* Image::generateTexture() const {
   return new Texture2D(format, image->w, image->h, image->pixels);
 }
 
-Texture2D* Image::createTexture(const string& path) {
-  return Image(path).generateTexture();
+shared_ptr<Texture2D> Image::createTexture(const string& path) {
+  return Assets::put(
+    path, shared_ptr<Texture2D>(Image(path).generateTexture())
+  );
 }
 
 } // namespace metallicar

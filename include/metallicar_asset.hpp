@@ -36,7 +36,14 @@ class Assets {
   public:
     Assets();
     
-    static void put(const std::string& name, Asset* asset);
+    template <class AssetClass>
+    static std::shared_ptr<AssetClass> put(
+      const std::string& name,
+      const std::shared_ptr<AssetClass>& asset
+    ) {
+      instance->assets[name] = asset;
+      return asset;
+    }
     
     template <class AssetClass>
     static std::shared_ptr<AssetClass> get(const std::string& name) {
@@ -62,7 +69,7 @@ class Texture2D : public Asset {
 
 class TextureRenderer2D {
   protected:
-    Texture2D* texture;
+    std::shared_ptr<Texture2D> tex;
     float widthTexture, heightTexture;
     GLint filter;
     Color color;
@@ -77,11 +84,9 @@ class TextureRenderer2D {
     float vertexCoordY0, vertexCoordY1;
     float horizontalFlip, verticalFlip;
   public:
-    TextureRenderer2D(Texture2D* texture);
+    TextureRenderer2D(const std::shared_ptr<Texture2D>& texture);
     virtual ~TextureRenderer2D();
-    virtual int width() const;
-    virtual int height() const;
-    virtual GLuint textureID() const;
+    virtual std::shared_ptr<Texture2D> texture() const;
     virtual void setFilter(bool linear);
     virtual void setColor(const Color& color);
     virtual void setOpacity(float opacity);
@@ -106,7 +111,7 @@ class Image : public Asset {
     virtual ~Image();
     virtual Texture2D* generateTexture() const;
     
-    static Texture2D* createTexture(const std::string& path);
+    static std::shared_ptr<Texture2D> createTexture(const std::string& path);
 };
 
 } // namespace metallicar

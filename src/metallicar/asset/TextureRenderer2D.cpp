@@ -8,10 +8,12 @@
 // this
 #include "metallicar_asset.hpp"
 
+using namespace std;
+
 namespace metallicar {
 
-TextureRenderer2D::TextureRenderer2D(Texture2D* texture) :
-texture(texture),
+TextureRenderer2D::TextureRenderer2D(const shared_ptr<Texture2D>& texture) :
+tex(texture),
 widthTexture(float(texture->width())),
 heightTexture(float(texture->height())),
 filter(GL_LINEAR),
@@ -30,16 +32,8 @@ TextureRenderer2D::~TextureRenderer2D() {
   
 }
 
-int TextureRenderer2D::width() const {
-  return texture->width();
-}
-
-int TextureRenderer2D::height() const {
-  return texture->height();
-}
-
-GLuint TextureRenderer2D::textureID() const {
-  return texture->id();
+shared_ptr<Texture2D> TextureRenderer2D::texture() const {
+  return tex;
 }
 
 void TextureRenderer2D::setFilter(bool linear) {
@@ -100,7 +94,7 @@ void TextureRenderer2D::resetClip() {
 
 void TextureRenderer2D::render() const {
   // bind
-  glBindTexture(GL_TEXTURE_2D, texture->id());
+  glBindTexture(GL_TEXTURE_2D, tex->id());
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
   
