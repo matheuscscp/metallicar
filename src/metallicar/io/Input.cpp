@@ -55,11 +55,17 @@ uint32_t Input::ButtonUpEvent::button() const {
 }
 
 void Input::update() {
+  static bool updateMouse = true;
   int x, y;
   SDL_GetMouseState(&x, &y);
   bool out;
   Point2 mouse(Window::gameCoordinates(Point2(float(x), float(y)), out));
   if (!out) {
+    metallicar::mouse = mouse;
+    updateMouse = true;
+  }
+  else if (updateMouse) {
+    updateMouse = false;
     metallicar::mouse = mouse;
   }
   SDL_Event event;
