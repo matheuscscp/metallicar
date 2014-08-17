@@ -36,6 +36,9 @@ struct WindowOptions {
     const std::string& icon = "asset/icon.png",
     bool cursor = true
   );
+  geometry::Point2 gameCoordinates(
+    const geometry::Point2& windowCoordinates, bool& out
+  ) const;
 };
 
 class Window {
@@ -45,6 +48,10 @@ class Window {
     
     static WindowOptions getOptions();
     static void setOptions(const WindowOptions& options);
+    
+    static geometry::Point2 gameCoordinates(
+      const geometry::Point2& windowCoordinates, bool& out
+    );
     
     static void setOpenGLVersion(int major, int minor);
     

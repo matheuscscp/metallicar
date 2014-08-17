@@ -20,8 +20,7 @@ class Space2D : public ComponentGameObject::Component {
       return "spatial";
     }
     void init() {
-      object->fields().write("x", 640.0f);
-      object->fields().write("y", 360.0f);
+      object->fields().write("pos", Point2(640.0f, 360.0f));
     }
 };
 
@@ -63,8 +62,8 @@ class Renderer : public ComponentGameObject::Component {
       return {"spatial"};
     }
     void update() {
-      spr.setPosition(Point2(object->fields().read<float>("x"), object->fields().read<float>("y")));
-      spr2.setPosition(Point2(Input::mouse().x, Input::mouse().y));
+      spr.setPosition(object->fields().read<Point2>("pos"));
+      spr2.setPosition(Input::mouse());
       Game::addRenderer(0.0, [this]() {
         bg.render();
         spr.render();

@@ -57,8 +57,11 @@ uint32_t Input::ButtonUpEvent::button() const {
 void Input::update() {
   int x, y;
   SDL_GetMouseState(&x, &y);
-  metallicar::mouse.x = float(x);
-  metallicar::mouse.y = float(y);
+  bool out;
+  Point2 mouse(Window::gameCoordinates(Point2(float(x), float(y)), out));
+  if (!out) {
+    metallicar::mouse = mouse;
+  }
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {

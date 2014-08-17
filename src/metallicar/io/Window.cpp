@@ -120,6 +120,12 @@ void Window::setOptions(const WindowOptions& options) {
   Graphics::updateProjection();
 }
 
+geometry::Point2 Window::gameCoordinates(
+  const geometry::Point2& windowCoordinates, bool& out
+) {
+  return metallicar::options.gameCoordinates(windowCoordinates, out);
+}
+
 void Window::setOpenGLVersion(int major, int minor) {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
