@@ -11,7 +11,6 @@
 // standard
 #include <functional>
 #include <memory>
-#include <map>
 
 // lib
 #include "SDL.h"
@@ -90,7 +89,8 @@ class Atomic {
     std::unique_ptr<T> val;
     Mutex mutex;
   public:
-    Atomic(T* val = nullptr) : val(val ? val : new T) {
+    template <typename... Args>
+    Atomic(Args&&... args) : val(new T(std::forward<Args>(args)...)) {
       
     }
     
