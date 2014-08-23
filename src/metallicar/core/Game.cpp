@@ -200,7 +200,8 @@ void Game::run() {
         }
       }
       accumulateDT();
-      Thread::sleep(20);//FIXME
+      
+      Thread::sleep(1);
     }
   });
   updateThread.start();

@@ -22,7 +22,6 @@ class Space2D : public ComponentGameObject::Component {
     }
     void init() {
       object->fields().write("pos", Point2(640.0f, 360.0f));
-      object->fields().write("spr2.pos", Point2(640.0f, 360.0f));
     }
 };
 
@@ -65,30 +64,7 @@ class Renderer : public ComponentGameObject::Component {
     }
     void update() {
       spr.setPosition(object->fields().read<Point2>("pos"));
-      Point2 spr2pos = object->fields().read<Point2>("spr2.pos");
-      Point2 spr2speed;
-      if (Input::key(SDLK_UP)) {
-        spr2speed.y -= 1.0f;
-      }
-      if (Input::key(SDLK_DOWN)) {
-        spr2speed.y += 1.0f;
-      }
-      if (Input::key(SDLK_LEFT)) {
-        spr2speed.x -= 1.0f;
-      }
-      if (Input::key(SDLK_RIGHT)) {
-        spr2speed.x += 1.0f;
-      }
-      float speedLength = sqrt(spr2speed.x*spr2speed.x + spr2speed.y*spr2speed.y);
-      if (speedLength > 0.0f) {
-        spr2speed.x /= speedLength;
-        spr2speed.y /= speedLength;
-      }
-      float speed = 150.0f;
-      spr2pos.x += speed*Game::dt()*spr2speed.x;
-      spr2pos.y += speed*Game::dt()*spr2speed.y;
-      spr2.setPosition(spr2pos);
-      object->fields().write("spr2.pos", spr2pos);
+      spr2.setPosition(Input::mouse());
       Game::addRenderer(0.0, [this]() {
         bg.render();
         spr.render();
