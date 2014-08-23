@@ -17,6 +17,7 @@
 #include "metallicar_io.hpp"
 #include "metallicar_graphics.hpp"
 #include "metallicar_asset.hpp"
+#include "metallicar_concurrency.hpp"
 #include "Log.hpp"
 
 using namespace std;
@@ -38,7 +39,11 @@ static void updateFPS();
 // private globals
 // =============================================================================
 
-static map<double, list<function<void()>>> renderers;
+// rendering globals
+static map<double, list<function<void()>>> renderingBuffer1, renderingBuffer2;
+static map<double, list<function<void()>>>* renderingFrontBuffer;
+static map<double, list<function<void()>>>* renderingBackBuffer;
+static Mutex renderingBuffersMutex;
 
 static Game* instance;
 static Game* newInstance;
@@ -46,16 +51,19 @@ static Game* newInstance;
 static bool initialized;
 static bool quit;
 
-static float dt;                // unit: seconds
-static uint32_t updateInterval; // unit: milliseconds
-static uint32_t lastUpdate;     // unit: milliseconds
-static uint32_t timeElapsed;    // unit: milliseconds
+static float dt;              // unit: seconds
+static uint32_t updateStep;   // unit: milliseconds
+static uint32_t lastUpdate;   // unit: milliseconds
+static uint32_t timeElapsed;  // unit: milliseconds
 
-static float fps;               // unit: hertz
-static uint32_t lastFrame;      // unit: milliseconds
+static float fps;             // unit: hertz
+static uint32_t lastFrame;    // unit: milliseconds
 
 static void initGlobals() {
-  metallicar::renderers.clear();
+  metallicar::renderingBuffer1.clear();
+  metallicar::renderingBuffer2.clear();
+  metallicar::renderingFrontBuffer = &renderingBuffer1;
+  metallicar::renderingBackBuffer = &renderingBuffer2;
   
   metallicar::instance = nullptr;
   metallicar::newInstance = nullptr;
@@ -63,13 +71,13 @@ static void initGlobals() {
   metallicar::initialized = false;
   metallicar::quit = false;
   
-  metallicar::dt = 31/1000.0f;      // unit: seconds
-  metallicar::updateInterval = 31;  // unit: milliseconds
-  metallicar::lastUpdate = 0;       // unit: milliseconds
-  metallicar::timeElapsed = 0;      // unit: milliseconds
+  metallicar::dt = 31/1000.0f;  // unit: seconds
+  metallicar::updateStep = 31;  // unit: milliseconds
+  metallicar::lastUpdate = 0;   // unit: milliseconds
+  metallicar::timeElapsed = 0;  // unit: milliseconds
   
-  metallicar::fps = 60.0f;           // unit: hertz
-  metallicar::lastFrame = 0;        // unit: milliseconds
+  metallicar::fps = 60.0f;      // unit: hertz
+  metallicar::lastFrame = 0;    // unit: milliseconds
 }
 
 // =============================================================================
@@ -99,15 +107,6 @@ void Game::render() {
 
 Game& Game::runningInstance() {
   return *instance;
-}
-
-void Game::changeInstance() {
-  if (newInstance) {
-    delete instance;
-    instance = newInstance;
-    newInstance = nullptr;
-    Assets::clear();
-  }
 }
 
 void Game::init() {
@@ -164,37 +163,63 @@ void Game::run() {
     return;
   }
   
-  changeInstance();
+  instance = newInstance;
+  newInstance = nullptr;
+  Assets::clear();
   
+  Thread updateThread([]() {
+    while (!metallicar::quit && instance) {
+      updateDT();
+      if (reachedDT()) {
+        renderingBackBuffer->clear();
+        
+        // fill back buffer
+        Input::pollEvents();
+        instance->update();
+        instance->render();
+        
+        // swap buffers
+        renderingBuffersMutex.lock();
+        map<double, list<function<void()>>>* tmp = renderingFrontBuffer;
+        renderingFrontBuffer = renderingBackBuffer;
+        renderingBackBuffer = tmp;
+        renderingBuffersMutex.unlock();
+        
+        // change instance
+        if (newInstance) {
+          delete instance;
+          instance = newInstance;
+          newInstance = nullptr;
+          Assets::clear();
+        }
+      }
+      accumulateDT();
+      Thread::sleep(20);
+    }
+  });
+  updateThread.start();
+  
+  // the I/O thread must be the main thread
   while (!metallicar::quit && instance) {
     updateFPS();
-    
-    // update
-    updateDT();
-    while (reachedDT()) {
-      renderers.clear();
-      Input::update();
-      instance->update();
-      instance->render();
-    }
-    accumulateDT();
-    
-    // render
+    Input::pollWindowEvents();
     Graphics::prepareFrame();
-    for (auto& kv : renderers) {
+    renderingBuffersMutex.lock();
+    for (auto& kv : *renderingFrontBuffer) {
       for (auto& renderer : kv.second) {
         renderer();
       }
     }
+    renderingBuffersMutex.unlock();
     Graphics::finalizeFrame();
     Window::update();
-    
-    changeInstance();
   }
+  
+  updateThread.join();
 }
 
 void Game::addRenderer(double z, const function<void()>& renderer) {
-  renderers[z].push_back(renderer);
+  (*renderingBackBuffer)[z].push_back(renderer);
 }
 
 void Game::quit() {
@@ -205,12 +230,12 @@ float Game::dt() {
   return metallicar::dt;
 }
 
-void Game::setUpdateInterval(uint32_t updateInterval) {
-  if (!updateInterval) {
+void Game::setUpdateStep(uint32_t step) {
+  if (!step) {
     return;
   }
-  metallicar::updateInterval = updateInterval;
-  metallicar::dt = updateInterval/1000.0f;
+  updateStep = step;
+  metallicar::dt = step/1000.0f;
 }
 
 float Game::fps() {
@@ -222,7 +247,7 @@ float Game::fps() {
 // =============================================================================
 
 static void initDT() {
-  lastUpdate = Time::get() - updateInterval;
+  lastUpdate = Time::get() - updateStep;
 }
 
 static void updateDT() {
@@ -232,8 +257,8 @@ static void updateDT() {
 }
 
 static bool reachedDT() {
-  if (timeElapsed >= updateInterval) {
-    timeElapsed -= updateInterval;
+  if (timeElapsed >= updateStep) {
+    timeElapsed -= updateStep;
     return true;
   }
   return false;

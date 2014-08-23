@@ -13,7 +13,7 @@
 
 // local
 #include "metallicar_io.hpp"
-
+#include <cstdio>
 using namespace std;
 
 namespace metallicar {
@@ -47,6 +47,8 @@ void Graphics::initDefaultFunctions() {
     glScalef(float(w)/options.gameWidth, float(h)/options.gameHeight, 0.0f);
     
     glMatrixMode(GL_MODELVIEW);
+    printf("ueh\n");
+    fflush(stdout);
   };
   
   metallicar::prepareFrame = []() {
