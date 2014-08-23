@@ -202,7 +202,7 @@ void Game::run() {
   // the I/O thread must be the main thread
   while (!metallicar::quit && instance) {
     updateFPS();
-    Input::pollWindowEvents();//FIXME
+    Input::pollWindowEvents();
     Graphics::prepareFrame();
     renderingBuffersMutex.lock();
     for (auto& kv : *renderingFrontBuffer) {
