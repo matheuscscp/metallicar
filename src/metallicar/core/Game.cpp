@@ -172,13 +172,11 @@ void Game::run() {
       updateDT();
       if (reachedDT()) {
         renderingBackBuffer->clear();
-        
-        // fill back buffer
         Input::pollEvents();
         instance->update();
         instance->render();
         
-        // swap buffers
+        // swap rendering buffers
         renderingBuffersMutex.lock();
         map<double, list<function<void()>>>* tmp = renderingFrontBuffer;
         renderingFrontBuffer = renderingBackBuffer;
@@ -202,8 +200,12 @@ void Game::run() {
   // the main thread should process only I/O
   while (!metallicar::quit && instance) {
     updateFPS();
+    
     Input::pollWindowEvents();
+    
     Graphics::prepareFrame();
+    
+    // render
     renderingBuffersMutex.lock();
     for (auto& kv : *renderingFrontBuffer) {
       for (auto& renderer : kv.second) {
@@ -211,7 +213,9 @@ void Game::run() {
       }
     }
     renderingBuffersMutex.unlock();
+    
     Graphics::finalizeFrame();
+    
     Window::update();
   }
   
