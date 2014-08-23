@@ -8,6 +8,8 @@
 // this
 #include "metallicar_concurrency.hpp"
 
+using namespace std;
+
 namespace metallicar {
 
 Mutex::Mutex() : mutex(SDL_CreateMutex()) {
@@ -28,6 +30,12 @@ void Mutex::unlock() {
 
 bool Mutex::tryLock() {
   return SDL_TryLockMutex(mutex) == 0;
+}
+
+void Mutex::run(const function<void()>& callback) {
+  SDL_LockMutex(mutex);
+  callback();
+  SDL_UnlockMutex(mutex);
 }
 
 } // namespace metallicar

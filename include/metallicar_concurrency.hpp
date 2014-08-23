@@ -54,6 +54,7 @@ class Mutex {
     void lock();
     void unlock();
     bool tryLock();
+    void run(const std::function<void()>& callback);
 };
 
 class Semaphore {

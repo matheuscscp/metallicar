@@ -194,7 +194,7 @@ void Game::run() {
         }
       }
       accumulateDT();
-      Thread::sleep(20);
+      Thread::sleep(20);//FIXME
     }
   });
   updateThread.start();
@@ -202,7 +202,7 @@ void Game::run() {
   // the I/O thread must be the main thread
   while (!metallicar::quit && instance) {
     updateFPS();
-    Input::pollWindowEvents();
+    Input::pollWindowEvents();//FIXME
     Graphics::prepareFrame();
     renderingBuffersMutex.lock();
     for (auto& kv : *renderingFrontBuffer) {
