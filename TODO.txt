@@ -1,4 +1,3 @@
-check fullscreen performance bug
 engine:
   asset: font and text
   asset: audio
