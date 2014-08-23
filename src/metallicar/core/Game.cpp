@@ -11,6 +11,7 @@
 // lib
 #include "SDL_image.h"
 #include "SDL_net.h"
+#include "SDL_ttf.h"
 
 // local
 #include "metallicar_time.hpp"
@@ -131,6 +132,12 @@ void Game::init() {
     }
   }
   
+  // TTF
+  if (TTF_Init()) {
+    Log::message(Log::Error, TTF_GetError());
+    exit(0);
+  }
+  
   // SDLNet
   if (SDLNet_Init()) {
     Log::message(Log::Error, SDLNet_GetError());
@@ -154,6 +161,7 @@ void Game::close() {
   
   // libs
   SDLNet_Quit();
+  TTF_Quit();
   IMG_Quit();
   SDL_Quit();
 }
@@ -274,7 +282,11 @@ static void accumulateDT() {
 
 static void updateFPS() {
   uint32_t now = Time::get();
-  fps = fps*0.95f + 0.05f*(1000.0f/(now - lastFrame));
+  float newMeasure = 1000.0f/(now - lastFrame);
+  if (newMeasure > 500.0f) {
+    newMeasure = 0.0f;
+  }
+  fps = fps*0.95f + 0.05f*newMeasure;
   lastFrame = now;
 }
 

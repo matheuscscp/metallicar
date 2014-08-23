@@ -117,7 +117,6 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 800;
             opts.height = 600;
-            opts.fullscreen = false;
             opts.title = "Vish";
             Window::setOptions(opts);
             break;
@@ -127,7 +126,6 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 1024;
             opts.height = 768;
-            opts.fullscreen = false;
             opts.title = "Ueh";
             Window::setOptions(opts);
             break;
@@ -137,7 +135,6 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 1280;
             opts.height = 720;
-            opts.fullscreen = false;
             Window::setOptions(opts);
             break;
           }
@@ -146,7 +143,7 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 1920;
             opts.height = 1080;
-            //opts.fullscreen = true;
+            opts.fullscreen = true;
             Window::setOptions(opts);
             break;
           }
