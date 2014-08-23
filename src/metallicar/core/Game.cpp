@@ -199,7 +199,7 @@ void Game::run() {
   });
   updateThread.start();
   
-  // the I/O thread must be the main thread
+  // the main thread should process only I/O
   while (!metallicar::quit && instance) {
     updateFPS();
     Input::pollWindowEvents();
