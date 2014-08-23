@@ -22,6 +22,9 @@ static map<uint8_t, bool> buttons;
 static Point2 mouse, mouseDown, mouseUp;
 observer::Subject Input::subject;
 
+// =============================================================================
+// EventQueue
+// =============================================================================
 #define EVENT_BUFFER_SIZE 0x200
 static SDL_Event eventBuffer[EVENT_BUFFER_SIZE];
 static int nextEvent = 0, newEvent = 0;
@@ -52,6 +55,9 @@ class EventQueue {
       return true;
     }
 };
+// =============================================================================
+// EventQueue
+// =============================================================================
 
 Input::KeyDownEvent::KeyDownEvent(SDL_Keycode keycode) : keycode(keycode) {
   
@@ -69,7 +75,9 @@ SDL_Keycode Input::KeyUpEvent::key() const {
   return keycode;
 }
 
-Input::ButtonDownEvent::ButtonDownEvent(uint8_t buttoncode) : buttoncode(buttoncode) {
+Input::ButtonDownEvent::ButtonDownEvent(uint8_t buttoncode) :
+buttoncode(buttoncode)
+{
   
 }
 
@@ -77,7 +85,9 @@ uint32_t Input::ButtonDownEvent::button() const {
   return buttoncode;
 }
 
-Input::ButtonUpEvent::ButtonUpEvent(uint8_t buttoncode) : buttoncode(buttoncode) {
+Input::ButtonUpEvent::ButtonUpEvent(uint8_t buttoncode) :
+buttoncode(buttoncode)
+{
   
 }
 
@@ -87,11 +97,11 @@ uint32_t Input::ButtonUpEvent::button() const {
 
 void Input::pollWindowEvents() {
   SDL_Event event;
+  event.type = SDL_FIRSTEVENT;
   while (!EventQueue::full()) {
-    if (SDL_PollEvent(&event)) {
-      EventQueue::push(event);
-    }
-    else {
+    int pending = SDL_PollEvent(&event);
+    EventQueue::push(event);
+    if (!pending) {
       break;
     }
   }

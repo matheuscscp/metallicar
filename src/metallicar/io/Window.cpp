@@ -98,7 +98,6 @@ void Window::setOptions(const WindowOptions& options) {
   if (!window) {
     return;
   }
-  optionsChanged = true;
   
   metallicar::options = options;
   
@@ -117,6 +116,8 @@ void Window::setOptions(const WindowOptions& options) {
     SDL_FreeSurface(iconsurface);
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
+  
+  optionsChanged = true;
 }
 
 geometry::Point2 Window::gameCoordinates(
