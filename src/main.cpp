@@ -65,11 +65,9 @@ class Renderer : public ComponentGameObject::Component {
     void update() {
       spr.setPosition(object->fields().read<Point2>("pos"));
       spr2.setPosition(Input::mouse());
-      Game::addRenderer(0.0, [this]() {
-        bg.render();
-        spr.render();
-        spr2.render();
-      });
+      bg.render();
+      spr.render();
+      spr2.render();
     }
 };
 

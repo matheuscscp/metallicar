@@ -8,6 +8,9 @@
 // this
 #include "metallicar_asset.hpp"
 
+// local
+#include "metallicar_core.hpp"
+
 using namespace std;
 
 namespace metallicar {
@@ -92,35 +95,37 @@ void TextureRenderer2D::resetClip() {
   clip(geometry::Rectangle(0.0f, 0.0f, widthTexture, heightTexture));
 }
 
-void TextureRenderer2D::render() const {
-  // bind
-  glBindTexture(GL_TEXTURE_2D, tex->id());
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-  
-  glColor4f(color.r, color.g, color.b, color.a);
-  
-  glPushMatrix();
-    // transform
-    glLoadIdentity();
-    glTranslatef(position.x, position.y, 0.0f);
-    glRotatef(angle, 0.0f, 0.0f, 1.0f);
-    glRotatef(horizontalFlip, 0.0f, 1.0f, 0.0f);
-    glRotatef(verticalFlip, 1.0f, 0.0f, 0.0f);
-    glScalef(scale.x, scale.y, 1.0f);
+void TextureRenderer2D::render(double z) const {
+  Game::addRenderer(z, [=]() {
+    // bind
+    glBindTexture(GL_TEXTURE_2D, tex->id());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
     
-    // render
-    glBegin(GL_QUADS);
-      glTexCoord2f(texCoordX0, texCoordY0);
-      glVertex2f(vertexCoordX0, vertexCoordY0);
-      glTexCoord2f(texCoordX1, texCoordY0);
-      glVertex2f(vertexCoordX1, vertexCoordY0);
-      glTexCoord2f(texCoordX1, texCoordY1);
-      glVertex2f(vertexCoordX1, vertexCoordY1);
-      glTexCoord2f(texCoordX0, texCoordY1);
-      glVertex2f(vertexCoordX0, vertexCoordY1);
-    glEnd();
-  glPopMatrix();
+    glColor4f(color.r, color.g, color.b, color.a);
+    
+    glPushMatrix();
+      // transform
+      glLoadIdentity();
+      glTranslatef(position.x, position.y, 0.0f);
+      glRotatef(angle, 0.0f, 0.0f, 1.0f);
+      glRotatef(horizontalFlip, 0.0f, 1.0f, 0.0f);
+      glRotatef(verticalFlip, 1.0f, 0.0f, 0.0f);
+      glScalef(scale.x, scale.y, 1.0f);
+      
+      // render
+      glBegin(GL_QUADS);
+        glTexCoord2f(texCoordX0, texCoordY0);
+        glVertex2f(vertexCoordX0, vertexCoordY0);
+        glTexCoord2f(texCoordX1, texCoordY0);
+        glVertex2f(vertexCoordX1, vertexCoordY0);
+        glTexCoord2f(texCoordX1, texCoordY1);
+        glVertex2f(vertexCoordX1, vertexCoordY1);
+        glTexCoord2f(texCoordX0, texCoordY1);
+        glVertex2f(vertexCoordX0, vertexCoordY1);
+      glEnd();
+    glPopMatrix();
+  });
 }
 
 void TextureRenderer2D::adjustPosition() {

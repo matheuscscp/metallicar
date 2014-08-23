@@ -95,7 +95,7 @@ class TextureRenderer2D {
     virtual void setFlip(bool horizontal, bool vertical);
     virtual void clip(const geometry::Rectangle& clipRect);
     virtual void resetClip();
-    virtual void render() const;
+    virtual void render(double z = 0.0) const;
   protected:
     virtual void adjustPosition();
 };
