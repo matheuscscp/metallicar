@@ -25,33 +25,32 @@ observer::Subject Input::subject;
 // =============================================================================
 // EventQueue
 // =============================================================================
-#define EVENT_BUFFER_SIZE 0x200
-static SDL_Event eventBuffer[EVENT_BUFFER_SIZE];
-static int nextEvent = 0, newEvent = 0;
+struct EventNode {
+  SDL_Event event;
+  EventNode* next;
+  EventNode() : next(nullptr) {
+    
+  }
+};
+static EventNode* firstEventNode = new EventNode;
+static EventNode* lastEventNode = firstEventNode; // last node is always empty
 class EventQueue {
   public:
-    static bool full() {
-      return 
-        newEvent == nextEvent - 1 ||
-        (nextEvent == 0 && newEvent == EVENT_BUFFER_SIZE - 1)
-      ;
-    }
-    
-    static bool push(const SDL_Event& event) {
-      if (full()) {
-        return false;
-      }
-      eventBuffer[newEvent] = event;
-      newEvent = (newEvent + 1)%EVENT_BUFFER_SIZE;
-      return true;
+    static void push(const SDL_Event& event) {
+      EventNode* newNode = lastEventNode;
+      lastEventNode = new EventNode;
+      newNode->event = event;
+      newNode->next = lastEventNode;
     }
     
     static bool pop(SDL_Event& event) {
-      if (nextEvent == newEvent) { // if empty
+      if (firstEventNode->next == nullptr) {
         return false;
       }
-      event = eventBuffer[nextEvent];
-      nextEvent = (nextEvent + 1)%EVENT_BUFFER_SIZE;
+      event = firstEventNode->event;
+      EventNode* tmp = firstEventNode;
+      firstEventNode = firstEventNode->next;
+      delete tmp;
       return true;
     }
 };
@@ -96,15 +95,13 @@ uint32_t Input::ButtonUpEvent::button() const {
 }
 
 void Input::pollWindowEvents() {
+  int pending;
   SDL_Event event;
   event.type = SDL_FIRSTEVENT;
-  while (!EventQueue::full()) {
-    int pending = SDL_PollEvent(&event);
+  do {
+    pending = SDL_PollEvent(&event);
     EventQueue::push(event);
-    if (!pending) {
-      break;
-    }
-  }
+  } while (pending);
 }
 
 void Input::pollEvents() {
