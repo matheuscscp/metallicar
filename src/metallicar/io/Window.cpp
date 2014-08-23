@@ -29,6 +29,7 @@ namespace metallicar {
 static WindowOptions options;
 static SDL_Window* window = nullptr;
 static SDL_GLContext glContext = nullptr;
+static bool optionsChanged = false;
 
 // =============================================================================
 // public methods
@@ -100,7 +101,6 @@ void Window::setOptions(const WindowOptions& options) {
   
   metallicar::options = options;
   
-  // window
   SDL_SetWindowTitle(window, options.title.c_str());
   SDL_SetWindowFullscreen(window, 0);
   SDL_SetWindowSize(window, options.width, options.height);
@@ -117,7 +117,7 @@ void Window::setOptions(const WindowOptions& options) {
   }
   SDL_ShowCursor(options.cursor ? 1 : 0);
   
-  Graphics::updateProjection();
+  optionsChanged = true;
 }
 
 geometry::Point2 Window::gameCoordinates(
@@ -157,6 +157,11 @@ void Window::destroyOpenGLContext(SDL_GLContext glContext) {
 
 void Window::update() {
   if (window) {
+    if (optionsChanged) {
+      optionsChanged = false;
+      Graphics::updateProjection();
+    }
+    
     SDL_GL_SwapWindow(window);
   }
 }

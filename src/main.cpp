@@ -6,6 +6,7 @@
  */
 
 #include <cstdio>
+#include <cmath>
 
 #include "metallicar.hpp"
 #include "String.hpp"
@@ -21,6 +22,7 @@ class Space2D : public ComponentGameObject::Component {
     }
     void init() {
       object->fields().write("pos", Point2(640.0f, 360.0f));
+      object->fields().write("spr2.pos", Point2(640.0f, 360.0f));
     }
 };
 
@@ -63,7 +65,30 @@ class Renderer : public ComponentGameObject::Component {
     }
     void update() {
       spr.setPosition(object->fields().read<Point2>("pos"));
-      spr2.setPosition(Input::mouse());
+      Point2 spr2pos = object->fields().read<Point2>("spr2.pos");
+      Point2 spr2speed;
+      if (Input::key(SDLK_UP)) {
+        spr2speed.y -= 1.0f;
+      }
+      if (Input::key(SDLK_DOWN)) {
+        spr2speed.y += 1.0f;
+      }
+      if (Input::key(SDLK_LEFT)) {
+        spr2speed.x -= 1.0f;
+      }
+      if (Input::key(SDLK_RIGHT)) {
+        spr2speed.x += 1.0f;
+      }
+      float speedLength = sqrt(spr2speed.x*spr2speed.x + spr2speed.y*spr2speed.y);
+      if (speedLength > 0.0f) {
+        spr2speed.x /= speedLength;
+        spr2speed.y /= speedLength;
+      }
+      float speed = 150.0f;
+      spr2pos.x += speed*Game::dt()*spr2speed.x;
+      spr2pos.y += speed*Game::dt()*spr2speed.y;
+      spr2.setPosition(spr2pos);
+      object->fields().write("spr2.pos", spr2pos);
       Game::addRenderer(0.0, [this]() {
         bg.render();
         spr.render();
@@ -83,6 +108,7 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 480;
             opts.height = 640;
+            opts.fullscreen = false;
             Window::setOptions(opts);
             break;
           }
@@ -91,6 +117,7 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 800;
             opts.height = 600;
+            opts.title = "Vish";
             Window::setOptions(opts);
             break;
           }
@@ -99,6 +126,7 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 1024;
             opts.height = 768;
+            opts.title = "Ueh";
             Window::setOptions(opts);
             break;
           }
@@ -115,6 +143,7 @@ class ProjUpdater : public ComponentGameObject::Component {
             WindowOptions opts = Window::getOptions();
             opts.width = 1920;
             opts.height = 1080;
+            opts.fullscreen = true;
             Window::setOptions(opts);
             break;
           }

@@ -103,7 +103,8 @@ class Input {
   private:
     static observer::Subject subject;
   public:
-    static void update();
+    static void pollWindowEvents();
+    static void pollEvents();
     
     static bool quitRequested();
     static void resetQuitRequest();

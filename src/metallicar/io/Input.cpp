@@ -22,6 +22,43 @@ static map<uint8_t, bool> buttons;
 static Point2 mouse, mouseDown, mouseUp;
 observer::Subject Input::subject;
 
+// =============================================================================
+// EventQueue
+// =============================================================================
+#define EVENT_BUFFER_SIZE 0x200
+static SDL_Event eventBuffer[EVENT_BUFFER_SIZE];
+static int nextEvent = 0, newEvent = 0;
+class EventQueue {
+  public:
+    static bool full() {
+      return 
+        newEvent == nextEvent - 1 ||
+        (nextEvent == 0 && newEvent == EVENT_BUFFER_SIZE - 1)
+      ;
+    }
+    
+    static bool push(const SDL_Event& event) {
+      if (full()) {
+        return false;
+      }
+      eventBuffer[newEvent] = event;
+      newEvent = (newEvent + 1)%EVENT_BUFFER_SIZE;
+      return true;
+    }
+    
+    static bool pop(SDL_Event& event) {
+      if (nextEvent == newEvent) { // if empty
+        return false;
+      }
+      event = eventBuffer[nextEvent];
+      nextEvent = (nextEvent + 1)%EVENT_BUFFER_SIZE;
+      return true;
+    }
+};
+// =============================================================================
+// EventQueue
+// =============================================================================
+
 Input::KeyDownEvent::KeyDownEvent(SDL_Keycode keycode) : keycode(keycode) {
   
 }
@@ -38,7 +75,9 @@ SDL_Keycode Input::KeyUpEvent::key() const {
   return keycode;
 }
 
-Input::ButtonDownEvent::ButtonDownEvent(uint8_t buttoncode) : buttoncode(buttoncode) {
+Input::ButtonDownEvent::ButtonDownEvent(uint8_t buttoncode) :
+buttoncode(buttoncode)
+{
   
 }
 
@@ -46,7 +85,9 @@ uint32_t Input::ButtonDownEvent::button() const {
   return buttoncode;
 }
 
-Input::ButtonUpEvent::ButtonUpEvent(uint8_t buttoncode) : buttoncode(buttoncode) {
+Input::ButtonUpEvent::ButtonUpEvent(uint8_t buttoncode) :
+buttoncode(buttoncode)
+{
   
 }
 
@@ -54,7 +95,19 @@ uint32_t Input::ButtonUpEvent::button() const {
   return buttoncode;
 }
 
-void Input::update() {
+void Input::pollWindowEvents() {
+  SDL_Event event;
+  event.type = SDL_FIRSTEVENT;
+  while (!EventQueue::full()) {
+    int pending = SDL_PollEvent(&event);
+    EventQueue::push(event);
+    if (!pending) {
+      break;
+    }
+  }
+}
+
+void Input::pollEvents() {
   static bool updateMouse = true;
   int x, y;
   SDL_GetMouseState(&x, &y);
@@ -69,7 +122,7 @@ void Input::update() {
     metallicar::mouse = mouse;
   }
   SDL_Event event;
-  while (SDL_PollEvent(&event)) {
+  while (EventQueue::pop(event)) {
     switch (event.type) {
       case SDL_KEYDOWN:
         if (!event.key.repeat) {

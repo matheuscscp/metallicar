@@ -28,8 +28,6 @@ class Game {
     virtual void render();
     
     static Game& runningInstance();
-  private:
-    static void changeInstance();
   public:
     static void init();
     static void close();
@@ -39,7 +37,7 @@ class Game {
     static void quit();
     
     static float dt();
-    static void setUpdateInterval(uint32_t updateInterval);
+    static void setUpdateStep(uint32_t step);
     
     static float fps();
 };

@@ -13,6 +13,7 @@
 
 // local
 #include "metallicar_io.hpp"
+#include "metallicar_concurrency.hpp"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ namespace metallicar {
 static function<void()> updateProjection([]() {});
 static function<void()> prepareFrame([]() {});
 static function<void()> finalizeFrame([]() {});
+static Mutex graphicalFunctionsMutex;
 
 void Graphics::initDefaultFunctions() {
   metallicar::updateProjection = []() {
@@ -69,27 +71,33 @@ void Graphics::initDefaultFunctions() {
 }
 
 void Graphics::setProjectionUpdater(const function<void()>& updater) {
-  metallicar::updateProjection = updater;
+  graphicalFunctionsMutex.run([updater]() {
+    metallicar::updateProjection = updater;
+  });
 }
 
 void Graphics::setFramePreparation(const function<void()>& preparation) {
-  metallicar::prepareFrame = preparation;
+  graphicalFunctionsMutex.run([preparation]() {
+    metallicar::prepareFrame = preparation;
+  });
 }
 
 void Graphics::setFrameFinalization(const function<void()>& finalization) {
-  metallicar::finalizeFrame = finalization;
+  graphicalFunctionsMutex.run([finalization]() {
+    metallicar::finalizeFrame = finalization;
+  });
 }
 
 void Graphics::updateProjection() {
-  metallicar::updateProjection();
+  graphicalFunctionsMutex.run(metallicar::updateProjection);
 }
 
 void Graphics::prepareFrame() {
-  metallicar::prepareFrame();
+  graphicalFunctionsMutex.run(metallicar::prepareFrame);
 }
 
 void Graphics::finalizeFrame() {
-  metallicar::finalizeFrame();
+  graphicalFunctionsMutex.run(metallicar::finalizeFrame);
 }
 
 } // namespace metallicar
