@@ -17,10 +17,13 @@ static int exec(void* threadInfo);
 class ThreadInfo {
   public:
     function<void()> callback;
-    bool* terminated;
-    ThreadInfo(const function<void()>& callback, bool* terminated) :
-    callback(callback), terminated(terminated) {}
-    ~ThreadInfo() { delete terminated; }
+    shared_ptr<bool> terminated;
+    ThreadInfo(
+      const function<void()>& callback,
+      const shared_ptr<bool>& terminated
+    ) : callback(callback), terminated(terminated) {
+      
+    }
 };
 
 Thread::Thread(const function<void()>& callback) :
@@ -30,11 +33,8 @@ callback(callback), thread(nullptr), joined(false), terminated(new bool)
 }
 
 Thread::~Thread() {
-  if (!thread) {
-    delete terminated;
-  }
 #ifdef _WIN32
-  else if (!joined) {
+  if (!joined) {
     SDL_DetachThread(thread);
   }
 #endif
@@ -49,8 +49,8 @@ terminated(other.terminated)
   auto tmp = (Thread&)other;
   
   tmp.joined = true;
-  tmp.terminated = new bool;
-  *tmp.terminated = true;
+  tmp.terminated.reset(new bool);
+  *(tmp.terminated) = true;
 }
 
 Thread& Thread::operator=(const Thread& other) {
@@ -62,8 +62,8 @@ Thread& Thread::operator=(const Thread& other) {
   auto tmp = (Thread&)other;
   
   tmp.joined = true;
-  tmp.terminated = new bool;
-  *tmp.terminated = true;
+  tmp.terminated.reset(new bool);
+  *(tmp.terminated) = true;
   
   return *this;
 }
@@ -75,8 +75,8 @@ joined(other.joined),
 terminated(other.terminated)
 {
   other.joined = true;
-  other.terminated = new bool;
-  *other.terminated = true;
+  other.terminated.reset(new bool);
+  *(other.terminated) = true;
 }
 
 Thread& Thread::operator=(Thread&& other) {
@@ -86,8 +86,8 @@ Thread& Thread::operator=(Thread&& other) {
   terminated = other.terminated;
   
   other.joined = true;
-  other.terminated = new bool;
-  *other.terminated = true;
+  other.terminated.reset(new bool);
+  *(other.terminated) = true;
   
   return *this;
 }
@@ -108,11 +108,11 @@ void Thread::join() {
 }
 
 bool Thread::running() const {
-  return thread && !terminated;
+  return thread && !(*terminated);
 }
 
 uint32_t Thread::getID() const {
-  if (!thread || terminated) {
+  if (!thread || (*terminated)) {
     return 0;
   }
   return SDL_GetThreadID(thread);
@@ -151,7 +151,7 @@ void Thread::setPriority(Priority priority) {
 static int exec(void* threadInfo) {
   auto info = (ThreadInfo*)threadInfo;
   info->callback();
-  *info->terminated = true;
+  *(info->terminated) = true;
   delete info;
   return 0;
 }

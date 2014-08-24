@@ -1,5 +1,4 @@
 engine:
-  concurrency: fix bugs in Thread class
   asset: font and text
   asset: audio
   other assets (animation, tile set, tile map, etc.)

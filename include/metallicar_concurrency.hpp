@@ -22,7 +22,7 @@ class Thread {
     std::function<void()> callback;
     SDL_Thread* thread;
     bool joined;
-    bool* terminated;
+    std::shared_ptr<bool> terminated;
   public:
     enum Priority {
       LOW, NORMAL, HIGH
