@@ -7,6 +7,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <list>
 
 #include "metallicar.hpp"
 #include "String.hpp"
@@ -62,12 +63,26 @@ class Renderer : public ComponentGameObject::Component {
     vector<string> depends() const {
       return {"spatial"};
     }
+    list<Point2> positions;
     void update() {
-      spr.setPosition(object->fields().read<Point2>("pos"));
-      spr2.setPosition(Input::mouse());
+      const int max = 20;
+      if (positions.size() == 0) {
+        for (int i = 0; i < max; i++) {
+          positions.push_back(Input::mouse());
+        }
+      }
+      positions.pop_front();
+      positions.push_back(Input::mouse());
+
       bg.render();
+      spr.setPosition(object->fields().read<Point2>("pos"));
       spr.render();
-      spr2.render();
+      int i = 1;
+      for (auto& pos : positions) {
+        spr2.setOpacity(pow((i++)/float(max), 4));
+        spr2.setPosition(pos);
+        spr2.render();
+      }
     }
 };
 
