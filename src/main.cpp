@@ -73,15 +73,15 @@ class Renderer : public ComponentGameObject::Component {
       }
       positions.pop_front();
       positions.push_back(Input::mouse());
-
-      bg.render();
+      
+      bg.render(0);
       spr.setPosition(object->fields().read<Point2>("pos"));
-      spr.render();
+      spr.render(0);
       int i = 1;
       for (auto& pos : positions) {
         spr2.setOpacity(pow((i++)/float(max), 4));
         spr2.setPosition(pos);
-        spr2.render();
+        spr2.render(0);
       }
     }
 };

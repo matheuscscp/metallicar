@@ -95,38 +95,40 @@ void TextureRenderer2D::resetClip() {
   clip(geometry::Rectangle(0.0f, 0.0f, widthTexture, heightTexture));
 }
 
+void TextureRenderer2D::render() const {
+  // bind
+  glBindTexture(GL_TEXTURE_2D, tex->id());
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+  
+  glColor4f(color.r, color.g, color.b, color.a);
+  
+  glPushMatrix();
+    // transform
+    glLoadIdentity();
+    glTranslatef(position.x, position.y, 0.0f);
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
+    glRotatef(horizontalFlip, 0.0f, 1.0f, 0.0f);
+    glRotatef(verticalFlip, 1.0f, 0.0f, 0.0f);
+    glScalef(scale.x, scale.y, 1.0f);
+    
+    // render
+    glBegin(GL_QUADS);
+      glTexCoord2f(texCoordX0, texCoordY0);
+      glVertex2f(vertexCoordX0, vertexCoordY0);
+      glTexCoord2f(texCoordX1, texCoordY0);
+      glVertex2f(vertexCoordX1, vertexCoordY0);
+      glTexCoord2f(texCoordX1, texCoordY1);
+      glVertex2f(vertexCoordX1, vertexCoordY1);
+      glTexCoord2f(texCoordX0, texCoordY1);
+      glVertex2f(vertexCoordX0, vertexCoordY1);
+    glEnd();
+  glPopMatrix();
+}
+
 void TextureRenderer2D::render(double z) const {
   TextureRenderer2D tmp(*this);
-  Game::addRenderer(z, [tmp]() {
-    // bind
-    glBindTexture(GL_TEXTURE_2D, tmp.tex->id());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, tmp.filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, tmp.filter);
-    
-    glColor4f(tmp.color.r, tmp.color.g, tmp.color.b, tmp.color.a);
-    
-    glPushMatrix();
-      // transform
-      glLoadIdentity();
-      glTranslatef(tmp.position.x, tmp.position.y, 0.0f);
-      glRotatef(tmp.angle, 0.0f, 0.0f, 1.0f);
-      glRotatef(tmp.horizontalFlip, 0.0f, 1.0f, 0.0f);
-      glRotatef(tmp.verticalFlip, 1.0f, 0.0f, 0.0f);
-      glScalef(tmp.scale.x, tmp.scale.y, 1.0f);
-      
-      // render
-      glBegin(GL_QUADS);
-        glTexCoord2f(tmp.texCoordX0, tmp.texCoordY0);
-        glVertex2f(tmp.vertexCoordX0, tmp.vertexCoordY0);
-        glTexCoord2f(tmp.texCoordX1, tmp.texCoordY0);
-        glVertex2f(tmp.vertexCoordX1, tmp.vertexCoordY0);
-        glTexCoord2f(tmp.texCoordX1, tmp.texCoordY1);
-        glVertex2f(tmp.vertexCoordX1, tmp.vertexCoordY1);
-        glTexCoord2f(tmp.texCoordX0, tmp.texCoordY1);
-        glVertex2f(tmp.vertexCoordX0, tmp.vertexCoordY1);
-      glEnd();
-    glPopMatrix();
-  });
+  Game::addRenderer(z, [tmp]() { tmp.render(); });
 }
 
 void TextureRenderer2D::adjustPosition() {
