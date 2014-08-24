@@ -29,10 +29,8 @@ namespace metallicar {
 // private function declarations
 // =============================================================================
 
-static void initDT();
-static void updateDT();
-static bool reachedDT();
-static void accumulateDT();
+static void updateTimeElapsed();
+static bool timeElapsedGreaterThanStep();
 
 static void updateFPS();
 
@@ -143,8 +141,6 @@ void Game::init() {
     Log::message(Log::Error, SDLNet_GetError());
     exit(0);
   }
-  
-  initDT();
 }
 
 void Game::close() {
@@ -176,37 +172,42 @@ void Game::run() {
   Assets::clear();
   
   Thread updateThread([]() {
+    lastUpdate = Time::get();
+    
     while (!metallicar::quit && instance) {
-      updateDT();
-      if (reachedDT()) {
+      bool updated = false;
+      
+      updateTimeElapsed();
+      while (timeElapsedGreaterThanStep()) {
+        updated = true;
+        
         renderingBackBuffer->clear();
         Input::pollEvents();
         instance->update();
         instance->render();
         
-        // swap rendering buffers
-        renderingBuffersMutex.lock();
-        map<double, list<function<void()>>>* tmp = renderingFrontBuffer;
-        renderingFrontBuffer = renderingBackBuffer;
-        renderingBackBuffer = tmp;
-        renderingBuffersMutex.unlock();
-        
-        // change instance
-        if (newInstance) {
+        if (newInstance) { // change instance
           delete instance;
           instance = newInstance;
           newInstance = nullptr;
           Assets::clear();
         }
       }
-      accumulateDT();
+      
+      if (updated) { // swap rendering buffers
+        renderingBuffersMutex.lock();
+        map<double, list<function<void()>>>* tmp = renderingFrontBuffer;
+        renderingFrontBuffer = renderingBackBuffer;
+        renderingBackBuffer = tmp;
+        renderingBuffersMutex.unlock();
+      }
       
       Thread::sleep(1);
     }
   });
   updateThread.start();
   
-  // the main thread should process only I/O
+  // main thread (I/O)
   while (!metallicar::quit && instance) {
     updateFPS();
     
@@ -259,26 +260,21 @@ float Game::fps() {
 // private functions
 // =============================================================================
 
-static void initDT() {
-  lastUpdate = Time::get() - updateStep;
-}
-
-static void updateDT() {
+static void updateTimeElapsed() {
   uint32_t now = Time::get();
-  timeElapsed = now - lastUpdate;
+  timeElapsed += now - lastUpdate;
+  if (timeElapsed > 250) {
+    timeElapsed = 250;
+  }
   lastUpdate = now;
 }
 
-static bool reachedDT() {
+static bool timeElapsedGreaterThanStep() {
   if (timeElapsed >= updateStep) {
     timeElapsed -= updateStep;
     return true;
   }
   return false;
-}
-
-static void accumulateDT() {
-  lastUpdate -= timeElapsed;
 }
 
 static void updateFPS() {
