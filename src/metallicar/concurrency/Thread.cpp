@@ -100,7 +100,7 @@ void Thread::start() {
 }
 
 void Thread::join() {
-  if (joined) {
+  if (!thread || joined) {
     return;
   }
   SDL_WaitThread(thread, nullptr);
