@@ -31,6 +31,12 @@ verticalFlip(0.0f)
   resetClip();
 }
 
+TextureRenderer2D::TextureRenderer2D(Texture2D* texture) :
+TextureRenderer2D(shared_ptr<Texture2D>(texture))
+{
+  
+}
+
 TextureRenderer2D::~TextureRenderer2D() {
   
 }

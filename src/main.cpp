@@ -28,14 +28,15 @@ class Space2D : public ComponentGameObject::Component {
 
 class Renderer : public ComponentGameObject::Component {
   public:
-    TextureRenderer2D bg, spr, spr2;
+    TextureRenderer2D bg, spr, spr2, texto;
     observer::Connection keyDownConn;
     bool flipH, flipV;
     float angle;
     Renderer() :
-    bg(Image::createTexture("asset/background.png")),
-    spr(Image::createTexture("asset/metallicar.png")),
-    spr2(Image::createTexture("asset/icon.png")),
+    bg(Image::getTexture("asset/background.png")),
+    spr(Image::getTexture("asset/metallicar.png")),
+    spr2(Image::getTexture("asset/icon.png")),
+    texto(Font::getFont("asset/font.ttf", 70)->render("HUE", 0, true)),
     flipH(false),
     flipV(false),
     angle(0.0f)
@@ -83,6 +84,10 @@ class Renderer : public ComponentGameObject::Component {
         spr2.setPosition(pos);
         spr2.render(0);
       }
+      texto.setPosition(Point2(50,50));
+      texto.setColor(Color(0x7F0000));
+      texto.setOpacity(0.5);
+      texto.render(0);
     }
 };
 

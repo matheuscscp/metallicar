@@ -16,6 +16,7 @@
 // lib
 #include "SDL_opengl.h"
 #include "SDL_surface.h"
+#include "SDL_ttf.h"
 
 // local
 #include "Color.hpp"
@@ -83,6 +84,7 @@ class TextureRenderer2D {
     float horizontalFlip, verticalFlip;
   public:
     TextureRenderer2D(const std::shared_ptr<Texture2D>& texture);
+    TextureRenderer2D(Texture2D* texture);
     virtual ~TextureRenderer2D();
     virtual std::shared_ptr<Texture2D> texture() const;
     virtual void setFilter(bool linear);
@@ -110,7 +112,22 @@ class Image : public Asset {
     virtual ~Image();
     virtual Texture2D* generateTexture() const;
     
-    static std::shared_ptr<Texture2D> createTexture(const std::string& path);
+    static std::shared_ptr<Texture2D> getTexture(const std::string& path);
+};
+
+class Font : public Asset {
+  protected:
+    std::string path;
+    int ptsize;
+    TTF_Font* font;
+  public:
+    Font(const std::string& path, int ptsize);
+    virtual ~Font();
+    virtual Texture2D* render(
+      const std::string& text, int style, bool filter
+    ) const;
+    
+    static std::shared_ptr<Font> getFont(const std::string& path, int ptsize);
 };
 
 } // namespace metallicar
