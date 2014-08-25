@@ -213,17 +213,18 @@ void Game::run() {
     
     Input::pollWindowEvents();
     
-    Graphics::prepareFrame();
+    // copy front buffer
+    renderingBuffersMutex.lock();
+    map<double, list<function<void()>>> renderers(*renderingFrontBuffer);
+    renderingBuffersMutex.unlock();
     
     // render
-    renderingBuffersMutex.lock();
-    for (auto& kv : *renderingFrontBuffer) {
+    Graphics::prepareFrame();
+    for (auto& kv : renderers) {
       for (auto& renderer : kv.second) {
         renderer();
       }
     }
-    renderingBuffersMutex.unlock();
-    
     Graphics::finalizeFrame();
     
     Window::update();
