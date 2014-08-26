@@ -54,6 +54,13 @@ Texture2D* Font::render(const string& text, int style, bool filter) const {
   return tex;
 }
 
+geometry::Rectangle Font::calculateSize(const string& text, int style) const {
+  int w, h;
+  TTF_SetFontStyle(font, style);
+  TTF_SizeUTF8(font, text.c_str(), &w, &h);
+  return geometry::Rectangle(0.0f, 0.0f, float(w), float(h));
+}
+
 shared_ptr<Font> Font::getFont(const string& path, int ptsize) {
   string name = String::from("%s%d", path.c_str(), ptsize);
   shared_ptr<Font> font = Assets::get<Font>(name);

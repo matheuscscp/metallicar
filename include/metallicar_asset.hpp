@@ -126,6 +126,9 @@ class Font : public Asset {
     virtual Texture2D* render(
       const std::string& text, int style, bool filter
     ) const;
+    virtual geometry::Rectangle calculateSize(
+      const std::string& text, int style
+    ) const;
     
     static std::shared_ptr<Font> getFont(const std::string& path, int ptsize);
 };
