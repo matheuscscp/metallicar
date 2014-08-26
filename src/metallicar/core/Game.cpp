@@ -9,7 +9,6 @@
 #include "metallicar_core.hpp"
 
 // lib
-#include "SDL_image.h"
 #include "SDL_net.h"
 #include "SDL_ttf.h"
 #include "alc.h"
@@ -133,15 +132,6 @@ void Game::init() {
     exit(0);
   }
   
-  // IMG
-  {
-    int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF;
-    if (IMG_Init(flags) != flags) {
-      Log::message(Log::Error, IMG_GetError());
-      exit(0);
-    }
-  }
-  
   // TTF
   if (TTF_Init()) {
     Log::message(Log::Error, TTF_GetError());
@@ -175,7 +165,6 @@ void Game::close() {
   closeOpenAl();
   SDLNet_Quit();
   TTF_Quit();
-  IMG_Quit();
   SDL_Quit();
 }
 

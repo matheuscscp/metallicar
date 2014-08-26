@@ -12,10 +12,10 @@
 #include <cstdlib>
 
 // lib
-#include "SDL_image.h"
 #include "SDL_opengl.h"
 
 // local
+#include "metallicar_asset.hpp"
 #include "metallicar_graphics.hpp"
 #include "Log.hpp"
 #include "Path.hpp"
@@ -60,7 +60,7 @@ void Window::init(const WindowOptions& options) {
     window, &metallicar::options.width, &metallicar::options.height
   );
   if (options.icon.size()) {
-    SDL_Surface* iconsurface = IMG_Load(Path::get(options.icon).c_str());
+    SDL_Surface* iconsurface = Image::createSDL_Surface(options.icon);
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
@@ -111,7 +111,7 @@ void Window::setOptions(const WindowOptions& options) {
     window, &metallicar::options.width, &metallicar::options.height
   );
   if (options.icon.size()) {
-    SDL_Surface* iconsurface = IMG_Load(Path::get(options.icon).c_str());
+    SDL_Surface* iconsurface = Image::createSDL_Surface(options.icon);
     SDL_SetWindowIcon(window, iconsurface);
     SDL_FreeSurface(iconsurface);
   }
