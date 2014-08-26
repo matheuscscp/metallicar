@@ -70,6 +70,7 @@ shared_ptr<Texture2D> Image::getTexture(const string& path) {
 }
 
 SDL_Surface* Image::createSDL_Surface(const string& path) {
+  // defining masks
   uint32_t rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
   rmask = 0x000000ff;
@@ -82,15 +83,28 @@ SDL_Surface* Image::createSDL_Surface(const string& path) {
   bmask = 0x0000ff00;
   amask = 0x000000ff;
 #endif
+  
+  // loading pixels
   Image tmp(path);
-  SDL_Surface* ret;
-  if (tmp.comp == 4) {
-    ret = SDL_CreateRGBSurface(0, tmp.w, tmp.h, 32, rmask, gmask, bmask, amask);
+  int total_pixels = tmp.w*tmp.h;
+  if (tmp.comp == 1) {
+    tmp.comp = 3;
+    stbi_uc* newImage = new stbi_uc[total_pixels*3];
+    for (int i = 0, j = 0; i < total_pixels; i++) {
+      newImage[j++] = tmp.image[i];
+      newImage[j++] = tmp.image[i];
+      newImage[j++] = tmp.image[i];
+    }
+    stbi_image_free(tmp.image);
+    tmp.image = newImage;
   }
-  else {
-    ret = SDL_CreateRGBSurface(0, tmp.w, tmp.h, 24, rmask, gmask, bmask, 0);
-  }
-  memcpy(ret->pixels, tmp.image, tmp.comp*tmp.w*tmp.h);
+  
+  // creating surface
+  SDL_Surface* ret = SDL_CreateRGBSurface(
+    0, tmp.w, tmp.h, tmp.comp << 3,
+    rmask, gmask, bmask, tmp.comp == 4 ? amask : 0
+  );
+  memcpy(ret->pixels, tmp.image, tmp.comp*total_pixels);
   return ret;
 }
 
