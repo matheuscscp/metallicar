@@ -10,7 +10,6 @@
 
 // standard
 #include <cstdio>
-#include <cstdlib>
 
 using namespace std;
 
@@ -33,23 +32,24 @@ Address::Address(const string& ip, const string& port) : ip(0), port(0) {
 }
 
 Address Address::local() {
-  IPaddress addrs[100];
+  Address ret;
+  IPaddress* addrs = new IPaddress[100];
+  
   int total = SDLNet_GetLocalAddresses(addrs, 100);
-  if (!total) {
-    fprintf(stderr, "No network interface was found\n");
-    exit(0);
+  if (total) {
+    // look for a private network address
+    for (int i = 0; i < total; i++) {
+      IPaddress addr;
+      SDLNet_ResolveHost(&addr, SDLNet_ResolveIP(&addrs[i]), 0);
+      if (isPrivateNetwork(addr.host)) {
+        ret = Address(addr.host, 0);
+        break;
+      }
+    }
   }
   
-  // look for a private network address
-  for (int i = 0; i < total; i++) {
-    IPaddress addr;
-    SDLNet_ResolveHost(&addr, SDLNet_ResolveIP(&addrs[i]), 0);
-    if (isPrivateNetwork(addr.host))
-      return Address(addr.host, 0);
-  }
-  
-  fprintf(stderr, "No private network address was found\n");
-  exit(0);
+  delete[] addrs;
+  return ret;
 }
 
 string Address::toString() const {
