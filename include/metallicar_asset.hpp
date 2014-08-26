@@ -105,7 +105,6 @@ class TextureRenderer2D {
 
 class Image : public Asset {
   protected:
-    std::string path;
     SDL_Surface* image;
   public:
     Image(const std::string& path);
@@ -117,8 +116,6 @@ class Image : public Asset {
 
 class Font : public Asset {
   protected:
-    std::string path;
-    int ptsize;
     TTF_Font* font;
   public:
     Font(const std::string& path, int ptsize);

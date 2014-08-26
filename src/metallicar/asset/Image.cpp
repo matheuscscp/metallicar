@@ -20,10 +20,7 @@ using namespace std;
 
 namespace metallicar {
 
-Image::Image(const string& path) :
-path(path),
-image(IMG_Load(Path::get(path).c_str()))
-{
+Image::Image(const string& path) : image(IMG_Load(Path::get(path).c_str())) {
   if (!image) {
     Log::message(
       Log::Error,

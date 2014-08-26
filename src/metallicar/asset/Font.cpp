@@ -18,8 +18,6 @@ using namespace std;
 namespace metallicar {
 
 Font::Font(const string& path, int ptsize) :
-path(path),
-ptsize(ptsize),
 font(TTF_OpenFont(Path::get(path).c_str(), ptsize))
 {
   if (!font) {
