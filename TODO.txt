@@ -1,10 +1,9 @@
 engine:
-  asset: audio
-  other assets (animation, tile set, tile map, etc.)
-  time (countdown with alarm)
-  util (button, text input)
-  graphics (2d shapes)
-  vamo explorar o 3d, agora
+  asset: audio, animation
+  time: countdown with alarm (observer)
+  util: button, text input
+  graphics: 2D shapes
+  agora, vamo explorar o 3D
 helper:
   linear algebra
   geometry (overlap, SAT)
