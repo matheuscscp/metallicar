@@ -12,6 +12,7 @@
 #include "SDL_image.h"
 #include "SDL_net.h"
 #include "SDL_ttf.h"
+#include "alc.h"
 
 // local
 #include "metallicar_time.hpp"
@@ -33,6 +34,9 @@ static void updateTimeElapsed();
 static bool timeElapsedGreaterThanStep();
 
 static void updateFPS();
+
+static bool initOpenAL();
+static void closeOpenAl();
 
 // =============================================================================
 // private globals
@@ -58,6 +62,10 @@ static uint32_t timeElapsed;  // unit: milliseconds
 static float fps;             // unit: hertz
 static uint32_t lastFrame;    // unit: milliseconds
 
+static ALCdevice* alDevice;
+static ALCcontext* alContext;
+static string alError;
+
 static void initGlobals() {
   metallicar::renderingBuffer1.clear();
   metallicar::renderingBuffer2.clear();
@@ -77,6 +85,10 @@ static void initGlobals() {
   
   metallicar::fps = 60.0f;      // unit: hertz
   metallicar::lastFrame = 0;    // unit: milliseconds
+  
+  metallicar::alDevice = nullptr;
+  metallicar::alContext = nullptr;
+  metallicar::alError = "";
 }
 
 // =============================================================================
@@ -141,6 +153,12 @@ void Game::init() {
     Log::message(Log::Error, SDLNet_GetError());
     exit(0);
   }
+  
+  // OpenAL
+  if (!initOpenAL()) {
+    Log::message(Log::Error, alError);
+    exit(0);
+  }
 }
 
 void Game::close() {
@@ -151,11 +169,10 @@ void Game::close() {
   
   // cleaning instance
   delete newInstance;
-  newInstance = nullptr;
   delete instance;
-  instance = nullptr;
   
   // libs
+  closeOpenAl();
   SDLNet_Quit();
   TTF_Quit();
   IMG_Quit();
@@ -286,6 +303,40 @@ static void updateFPS() {
   }
   fps = fps*0.95f + 0.05f*newMeasure;
   lastFrame = now;
+}
+
+static bool initOpenAL() {
+  // device
+  alDevice = alcOpenDevice(nullptr);
+  if (!alDevice) {
+    alError = "It was not possible to open audio device";
+    return false;
+  }
+  
+  // context
+  alContext = alcCreateContext(alDevice, nullptr);
+  if (!alContext) {
+    alError = "It was not possible to create audio context";
+    return false;
+  }
+  
+  alcMakeContextCurrent(alContext);
+  
+  return true;
+}
+
+static void closeOpenAl() {
+  alcMakeContextCurrent(nullptr);
+  
+  // context
+  if (alContext) {
+    alcDestroyContext(alContext);
+  }
+  
+  // device
+  if (alDevice) {
+    alcCloseDevice(alDevice);
+  }
 }
 
 } // namespace metallicar
