@@ -21,8 +21,42 @@ class Space2D : public ComponentGameObject::Component {
     string family() const {
       return "spatial";
     }
+    shared_ptr<Audio> audio;
+    observer::Connection keydown;
     void init() {
+      audio = Audio::playBGM("asset/bird.ogg");
       object->fields().write("pos", Point2(640.0f, 360.0f));
+      keydown = Input::connect<Input::KeyDownEvent>([this](const observer::EventBase& event) {
+        auto& keyevent = (Input::KeyDownEvent&)event;
+        switch (keyevent.key()) {
+          case SDLK_p:
+            audio->pause();
+            break;
+            
+          case SDLK_r:
+            audio->resume();
+            break;
+            
+          case SDLK_t:
+            audio->stop();
+            break;
+            
+          case SDLK_UP:
+            audio->setVolume(audio->getVolume() + 0.1);
+            printf("vol: %.2f\n", audio->getVolume());
+            fflush(stdout);
+            break;
+            
+          case SDLK_DOWN:
+            audio->setVolume(audio->getVolume() - 0.1);
+            printf("vol: %.2f\n", audio->getVolume());
+            fflush(stdout);
+            break;
+            
+          default:
+            break;
+        }
+      });
     }
 };
 

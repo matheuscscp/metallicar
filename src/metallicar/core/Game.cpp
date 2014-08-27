@@ -157,6 +157,8 @@ void Game::close() {
   }
   initialized = false;
   
+  Audio::stopAll();
+  
   // cleaning instance
   delete newInstance;
   delete instance;
@@ -213,6 +215,14 @@ void Game::run() {
   });
   updateThread.start();
   
+  Thread audioCleanupThread([]() {
+    while (!metallicar::quit && instance) {
+      Audio::clean();
+      Thread::sleep(500);
+    }
+  });
+  audioCleanupThread.start();
+  
   // main thread (I/O)
   while (!metallicar::quit && instance) {
     updateFPS();
@@ -237,6 +247,7 @@ void Game::run() {
   }
   
   updateThread.join();
+  audioCleanupThread.join();
 }
 
 void Game::addRenderer(double z, const function<void()>& renderer) {

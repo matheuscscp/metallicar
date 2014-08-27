@@ -1,5 +1,7 @@
 engine:
-  asset: audio, animation
+  asset: audio looping playback
+  asset: support more OpenAL features
+  asset: animation, tile set, tile map
   time: countdown with alarm (observer)
   util: button, text input
   graphics: 2D shapes

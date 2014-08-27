@@ -15,10 +15,11 @@
 
 // lib
 #include "SDL_opengl.h"
-#include "SDL_surface.h"
+#include "stb_image.h"
 #include "SDL_ttf.h"
 
 // local
+#include "metallicar_concurrency.hpp"
 #include "Color.hpp"
 #include "geometry.hpp"
 
@@ -105,13 +106,16 @@ class TextureRenderer2D {
 
 class Image : public Asset {
   protected:
-    SDL_Surface* image;
+    stbi_uc* image;
+    int w, h;
+    int comp;
   public:
     Image(const std::string& path);
     virtual ~Image();
     virtual Texture2D* generateTexture() const;
     
     static std::shared_ptr<Texture2D> getTexture(const std::string& path);
+    static SDL_Surface* createSDL_Surface(const std::string& path);
 };
 
 class Font : public Asset {
@@ -128,6 +132,34 @@ class Font : public Asset {
     ) const;
     
     static std::shared_ptr<Font> getFont(const std::string& path, int ptsize);
+};
+
+class Audio : public Asset {
+  public:
+    struct Playback;
+  private:
+    Playback* playback;
+    Mutex playbackMutex;
+    Audio(Playback* playback);
+  public:
+    ~Audio();
+    
+    void pause();
+    void resume();
+    void stop();
+    float getVolume();
+    void setVolume(float vol);
+    
+    static std::shared_ptr<Audio> playSFX(
+      const std::string& path, int loop = 0, float volume = 1.0f
+    );
+    static std::shared_ptr<Audio> playBGM(
+      const std::string& path, int loop = 0, float volume = 1.0f
+    );
+    static void setSFXVolume(float volume);
+    static void setBGMVolume(float volume);
+    static void clean();
+    static void stopAll();
 };
 
 } // namespace metallicar
