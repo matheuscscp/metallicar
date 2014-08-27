@@ -122,7 +122,7 @@ void Input::pollEvents() {
   while (EventQueue::pop(event)) {
     switch (event.type) {
       case SDL_KEYDOWN:
-        if (!event.key.repeat) {
+        if (!keys[event.key.keysym.sym]) {
           keys[event.key.keysym.sym] = true;
           subject.broadcast(KeyDownEvent(event.key.keysym.sym));
         }
