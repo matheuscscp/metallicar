@@ -45,7 +45,7 @@ static void closeOpenAl();
 static map<double, list<function<void()>>> renderingBuffer1, renderingBuffer2;
 static map<double, list<function<void()>>>* renderingFrontBuffer;
 static map<double, list<function<void()>>>* renderingBackBuffer;
-static Mutex renderingBuffersMutex;
+static Lock renderingBuffersLock;
 
 static Game* instance;
 static Game* newInstance;
@@ -203,11 +203,11 @@ void Game::run() {
       }
       
       if (updated) { // swap rendering buffers
-        renderingBuffersMutex.lock();
+        renderingBuffersLock.mutexlock();
         map<double, list<function<void()>>>* tmp = renderingFrontBuffer;
         renderingFrontBuffer = renderingBackBuffer;
         renderingBackBuffer = tmp;
-        renderingBuffersMutex.unlock();
+        renderingBuffersLock.unlock();
       }
       
       Thread::sleep(1);
@@ -230,9 +230,9 @@ void Game::run() {
     Input::pollWindowEvents();
     
     // copy front buffer
-    renderingBuffersMutex.lock();
+    renderingBuffersLock.mutexlock();
     map<double, list<function<void()>>> renderers(*renderingFrontBuffer);
-    renderingBuffersMutex.unlock();
+    renderingBuffersLock.unlock();
     
     // render
     Graphics::prepareFrame();

@@ -20,15 +20,12 @@ Semaphore::~Semaphore() {
   SDL_DestroySemaphore(semaphore);
 }
 
+void Semaphore::wait() {
+  SDL_SemWait(semaphore);
+}
+
 bool Semaphore::wait(uint32_t ms) {
-  bool ret = true;
-  if (!ms) {
-    SDL_SemWait(semaphore);
-  }
-  else {
-    ret = (SDL_SemWaitTimeout(semaphore, ms) == 0);
-  }
-  return ret;
+  return (SDL_SemWaitTimeout(semaphore, ms) == 0);
 }
 
 void Semaphore::post() {

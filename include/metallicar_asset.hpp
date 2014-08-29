@@ -139,7 +139,7 @@ class Audio : public Asset {
     struct Playback;
   private:
     Playback* playback;
-    Mutex playbackMutex;
+    Lock playbackLock;
     Audio(Playback* playback);
   public:
     ~Audio();

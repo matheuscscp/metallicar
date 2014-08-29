@@ -19,15 +19,16 @@ Condition::~Condition() {
   SDL_DestroyMutex(mutex);
 }
 
-bool Condition::wait(uint32_t ms) {
-  bool ret = true;
+void Condition::wait() {
   SDL_LockMutex(mutex);
-  if (!ms) {
-    SDL_CondWait(condition, mutex);
-  }
-  else {
-    ret = (SDL_CondWaitTimeout(condition, mutex, ms) == 0);
-  }
+  SDL_CondWait(condition, mutex);
+  SDL_UnlockMutex(mutex);
+}
+
+bool Condition::wait(uint32_t ms) {
+  bool ret;
+  SDL_LockMutex(mutex);
+  ret = (SDL_CondWaitTimeout(condition, mutex, ms) == 0);
   SDL_UnlockMutex(mutex);
   return ret;
 }

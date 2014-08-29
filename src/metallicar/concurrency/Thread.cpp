@@ -122,20 +122,18 @@ uint32_t Thread::ID() {
   return SDL_ThreadID();
 }
 
-void Thread::sleep(uint32_t ms, const bool* keepCondition) {
-  // for naps, or if there is no wakeup condition
-  if (ms <= 50 || keepCondition == nullptr) {
-    SDL_Delay(ms);
-    return;
-  }
-  
+void Thread::sleep(uint32_t ms) {
+  SDL_Delay(ms);
+}
+
+void Thread::sleep(uint32_t ms, const bool& wakeup) {
   uint32_t now = SDL_GetTicks();
   uint32_t time = now + ms;
   do {
     ms = time - now;
     SDL_Delay(ms < 50 ? ms : 50);
     now = SDL_GetTicks();
-  } while (now < time && *keepCondition);
+  } while (now < time && wakeup == false);
 }
 
 void Thread::setPriority(Priority priority) {

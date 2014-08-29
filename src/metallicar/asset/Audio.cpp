@@ -27,7 +27,7 @@ using namespace std;
 namespace metallicar {
 
 static list<pair<shared_ptr<Audio>, Thread>> playbacks;
-static Mutex playbacksMutex;
+static Lock playbacksLock;
 static float volumeSFX = 1.0f, volumeBGM = 1.0f;
 
 static shared_ptr<Audio> play(
@@ -106,7 +106,7 @@ struct Audio::Playback {
   }
   
   ~Playback() {
-    audio->playbackMutex.run([this]() { audio->playback = nullptr; });
+    audio->playbackLock.mutex([this]() { audio->playback = nullptr; });
     
     alDeleteSources(1, &source);
     alDeleteBuffers(2, buffers);
@@ -184,29 +184,29 @@ Audio::~Audio() {
 }
 
 void Audio::pause() {
-  playbackMutex.run([this]() { if (playback) playback->pause(); });
+  playbackLock.mutex([this]() { if (playback) playback->pause(); });
 }
 
 void Audio::resume() {
-  playbackMutex.run([this]() { if (playback) playback->resume(); });
+  playbackLock.mutex([this]() { if (playback) playback->resume(); });
 }
 
 void Audio::stop() {
-  playbackMutex.run([this]() { if (playback) playback->stop(); });
+  playbackLock.mutex([this]() { if (playback) playback->stop(); });
 }
 
 float Audio::getVolume() {
   float vol = 0.0f;
-  playbackMutex.lock();
+  playbackLock.mutexlock();
   if (playback) {
     vol = playback->getVolume();
   }
-  playbackMutex.unlock();
+  playbackLock.unlock();
   return vol;
 }
 
 void Audio::setVolume(float vol) {
-  playbackMutex.run([this, vol]() { if (playback) playback->setVolume(vol); });
+  playbackLock.mutex([this, vol]() { if (playback) playback->setVolume(vol); });
 }
 
 shared_ptr<Audio> Audio::playSFX(const string& path, int loop, float volume) {
@@ -226,7 +226,7 @@ void Audio::setBGMVolume(float volume) {
 }
 
 void Audio::clean() {
-  playbacksMutex.run([]() {
+  playbacksLock.mutex([]() {
     for (auto it = playbacks.begin(); it != playbacks.end();) {
       if (it->second.running()) {
         it++;
@@ -240,15 +240,15 @@ void Audio::clean() {
 }
 
 void Audio::stopAll() {
-  playbacksMutex.run([]() {
+  playbacksLock.mutex([]() {
     while (playbacks.size()) {
       auto& pbackPair = playbacks.front();
       Audio& audio = *(pbackPair.first.get());
-      audio.playbackMutex.lock();
+      audio.playbackLock.mutexlock();
       if (audio.playback) {
         audio.playback->stop();
       }
-      audio.playbackMutex.unlock();
+      audio.playbackLock.unlock();
       pbackPair.second.join();
       playbacks.pop_front();
     }
@@ -260,7 +260,7 @@ static shared_ptr<Audio> play(
 ) {
   Audio::Playback* tmp = nullptr;
   
-  playbacksMutex.run([&]() {
+  playbacksLock.mutex([&]() {
     int error = 0;
     
     playbacks.emplace_back(nullptr, Thread([&]() {

@@ -22,7 +22,7 @@ namespace metallicar {
 static function<void()> updateProjection([]() {});
 static function<void()> prepareFrame([]() {});
 static function<void()> finalizeFrame([]() {});
-static Mutex graphicalFunctionsMutex;
+static Lock graphicalFunctionsLock;
 
 void Graphics::initDefaultFunctions() {
   metallicar::updateProjection = []() {
@@ -71,33 +71,33 @@ void Graphics::initDefaultFunctions() {
 }
 
 void Graphics::setProjectionUpdater(const function<void()>& updater) {
-  graphicalFunctionsMutex.run([updater]() {
+  graphicalFunctionsLock.mutex([updater]() {
     metallicar::updateProjection = updater;
   });
 }
 
 void Graphics::setFramePreparation(const function<void()>& preparation) {
-  graphicalFunctionsMutex.run([preparation]() {
+  graphicalFunctionsLock.mutex([preparation]() {
     metallicar::prepareFrame = preparation;
   });
 }
 
 void Graphics::setFrameFinalization(const function<void()>& finalization) {
-  graphicalFunctionsMutex.run([finalization]() {
+  graphicalFunctionsLock.mutex([finalization]() {
     metallicar::finalizeFrame = finalization;
   });
 }
 
 void Graphics::updateProjection() {
-  graphicalFunctionsMutex.run(metallicar::updateProjection);
+  graphicalFunctionsLock.mutex(metallicar::updateProjection);
 }
 
 void Graphics::prepareFrame() {
-  graphicalFunctionsMutex.run(metallicar::prepareFrame);
+  graphicalFunctionsLock.mutex(metallicar::prepareFrame);
 }
 
 void Graphics::finalizeFrame() {
-  graphicalFunctionsMutex.run(metallicar::finalizeFrame);
+  graphicalFunctionsLock.mutex(metallicar::finalizeFrame);
 }
 
 } // namespace metallicar

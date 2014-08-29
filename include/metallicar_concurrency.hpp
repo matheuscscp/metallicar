@@ -41,7 +41,8 @@ class Thread {
     uint32_t getID();
     
     static uint32_t ID();
-    static void sleep(uint32_t ms, const bool* keepCondition = nullptr);
+    static void sleep(uint32_t ms);
+    static void sleep(uint32_t ms, const bool& wakeup);
     static void setPriority(Priority priority);
 };
 
@@ -51,22 +52,24 @@ class Semaphore {
   public:
     Semaphore(uint32_t initialValue);
     ~Semaphore();
-    bool wait(uint32_t ms = 0);
+    void wait();
+    bool wait(uint32_t ms);
     void post();
     bool trywait();
     uint32_t value();
 };
 
-class Mutex {
+class Lock {
   private:
-    SDL_mutex* mutex;
+    SDL_mutex* mutex_;
   public:
-    Mutex();
-    ~Mutex();
-    void lock();
-    void unlock();
+    Lock();
+    ~Lock();
+    void mutexlock();
+    void spinlock();
     bool trylock();
-    void run(const std::function<void()>& callback);
+    void unlock();
+    void mutex(const std::function<void()>& callback);
 };
 
 class Condition {
@@ -76,7 +79,8 @@ class Condition {
   public:
     Condition();
     ~Condition();
-    bool wait(uint32_t ms = 0);
+    void wait();
+    bool wait(uint32_t ms);
     void signal();
     void broadcast();
 };
@@ -85,7 +89,7 @@ template <class T>
 class Atomic {
   private:
     std::unique_ptr<T> val;
-    Mutex mutex;
+    Lock lock_;
   public:
     template <typename... Args>
     Atomic(Args&&... args) : val(new T(std::forward<Args>(args)...)) {
@@ -97,11 +101,11 @@ class Atomic {
     }
     
     void lock() {
-      mutex.lock();
+      lock_.mutexlock();
     }
     
     void unlock() {
-      mutex.unlock();
+      lock_.unlock();
     }
     
     T& value() const {
