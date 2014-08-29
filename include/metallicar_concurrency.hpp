@@ -28,7 +28,7 @@ class Thread {
       LOW, NORMAL, HIGH
     };
     
-    Thread(const std::function<void()>& callback);
+    Thread(const std::function<void()>& callback = []() {});
     ~Thread();
     Thread(const Thread& other);
     Thread& operator=(const Thread& other);
@@ -38,11 +38,23 @@ class Thread {
     void start();
     void join();
     bool running() const;
-    uint32_t getID() const;
+    uint32_t getID();
     
     static uint32_t ID();
     static void sleep(uint32_t ms, const bool* keepCondition = nullptr);
     static void setPriority(Priority priority);
+};
+
+class Semaphore {
+  private:
+    SDL_sem* semaphore;
+  public:
+    Semaphore(uint32_t initialValue);
+    ~Semaphore();
+    bool wait(uint32_t ms = 0);
+    void post();
+    bool trywait();
+    uint32_t value();
 };
 
 class Mutex {
@@ -53,34 +65,19 @@ class Mutex {
     ~Mutex();
     void lock();
     void unlock();
-    bool tryLock();
+    bool trylock();
     void run(const std::function<void()>& callback);
-};
-
-class Semaphore {
-  private:
-    uint32_t initial_value;
-    SDL_sem* semaphore;
-  public:
-    Semaphore(uint32_t initialValue);
-    ~Semaphore();
-    void wait();
-    void post();
-    bool tryWait();
-    bool waitTimeout(uint32_t ms);
-    uint32_t value() const;
-    uint32_t initialValue() const;
 };
 
 class Condition {
   private:
     SDL_cond* condition;
+    SDL_mutex* mutex;
   public:
     Condition();
     ~Condition();
-    void wait(Mutex& mutex);
+    bool wait(uint32_t ms = 0);
     void signal();
-    bool waitTimeout(Mutex& mutex, uint32_t ms);
     void broadcast();
 };
 

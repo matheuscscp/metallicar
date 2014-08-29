@@ -28,8 +28,8 @@ void Mutex::unlock() {
   SDL_UnlockMutex(mutex);
 }
 
-bool Mutex::tryLock() {
-  return SDL_TryLockMutex(mutex) == 0;
+bool Mutex::trylock() {
+  return (SDL_TryLockMutex(mutex) == 0);
 }
 
 void Mutex::run(const function<void()>& callback) {

@@ -111,7 +111,7 @@ bool Thread::running() const {
   return thread && !(*terminated);
 }
 
-uint32_t Thread::getID() const {
+uint32_t Thread::getID() {
   if (!thread || (*terminated)) {
     return 0;
   }

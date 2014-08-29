@@ -11,7 +11,7 @@
 namespace metallicar {
 
 Semaphore::Semaphore(uint32_t initialValue) :
-initial_value(initialValue), semaphore(SDL_CreateSemaphore(initialValue))
+semaphore(SDL_CreateSemaphore(initialValue))
 {
   
 }
@@ -20,28 +20,27 @@ Semaphore::~Semaphore() {
   SDL_DestroySemaphore(semaphore);
 }
 
-void Semaphore::wait() {
-  SDL_SemWait(semaphore);
+bool Semaphore::wait(uint32_t ms) {
+  bool ret = true;
+  if (!ms) {
+    SDL_SemWait(semaphore);
+  }
+  else {
+    ret = (SDL_SemWaitTimeout(semaphore, ms) == 0);
+  }
+  return ret;
 }
 
 void Semaphore::post() {
   SDL_SemPost(semaphore);
 }
 
-bool Semaphore::tryWait() {
-  return SDL_SemTryWait(semaphore) == 0;
+bool Semaphore::trywait() {
+  return (SDL_SemTryWait(semaphore) == 0);
 }
 
-bool Semaphore::waitTimeout(uint32_t ms) {
-  return SDL_SemWaitTimeout(semaphore, ms) == 0;
-}
-
-uint32_t Semaphore::value() const {
+uint32_t Semaphore::value() {
   return SDL_SemValue(semaphore);
-}
-
-uint32_t Semaphore::initialValue() const {
-  return initial_value;
 }
 
 } // namespace metallicar

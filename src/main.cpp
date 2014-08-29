@@ -183,7 +183,77 @@ class ProjUpdater : public ComponentGameObject::Component {
     }
 };
 
+bool testeSem() {
+  Semaphore s(0);
+  Mutex printMutex;
+  
+  Thread ts[4];
+  for (auto& t : ts) {
+    t = Thread([&]() {
+      printMutex.run([]() { printf("entrou\n"); });
+      s.wait();
+      printMutex.run([]() { printf("saiu\n"); });
+    });
+    t.start();
+  }
+  
+  int total = 0;
+  while (true) {
+    int tmp;
+    scanf("%d", &tmp);
+    if (tmp == 0) {
+      s.post();
+      total++;
+      if (total == 4) {
+        break;
+      }
+    }
+  }
+  
+  for (auto& t : ts) {
+    t.join();
+  }
+  
+  return true;
+}
+
+bool testeCond() {
+  Condition c;
+  Mutex printMutex;
+  
+  Thread ts[4];
+  for (auto& t : ts) {
+    t = Thread([&]() {
+      printMutex.run([]() { printf("entrou\n"); });
+      c.wait();
+      printMutex.run([]() { printf("saiu\n"); });
+    });
+    t.start();
+  }
+  
+  while (true) {
+    int tmp;
+    scanf("%d", &tmp);
+    if (tmp == 0) {
+      c.signal();
+      break;
+    }
+  }
+  
+  for (auto& t : ts) {
+    t.join();
+  }
+  
+  return true;
+}
+
 int main(int argc, char* argv[]) {
+  Game::init();
+  if (testeCond()) {
+    Game::close();
+    return 0;
+  }
+  
   Game::init();
   Window::init();
   Graphics::initDefaultFunctions();
