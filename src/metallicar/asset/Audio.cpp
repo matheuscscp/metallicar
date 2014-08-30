@@ -212,6 +212,10 @@ void Audio::setVolume(float vol) {
   playbackLock.mutex([this, vol]() { if (playback) playback->setVolume(vol); });
 }
 
+bool Audio::stopped() const {
+  return (playback == nullptr);
+}
+
 shared_ptr<Audio> Audio::playSFX(const string& path, int loop, float volume) {
   return play(path, loop, volume, &volumeSFX);
 }
