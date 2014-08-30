@@ -43,7 +43,7 @@ struct Audio::Playback {
   int loop;
   ALfloat volume;
   ALfloat* globalVolume;
-  bool paused;
+  bool paused, stopped;
   
   Playback(
     const string& path, int loop, float volume, float* globalVolume, int* error
@@ -55,7 +55,8 @@ struct Audio::Playback {
   loop(loop),
   volume(volume),
   globalVolume(globalVolume),
-  paused(false)
+  paused(false),
+  stopped(false)
   {
     if (!handle) {
       return;
@@ -146,23 +147,25 @@ struct Audio::Playback {
       
       Thread::sleep(1);
     }
+    stopped = true;
   }
   
   void pause() {
-    if (!paused) {
+    if (!paused && !stopped) {
       paused = true;
       alSourcePause(source);
     }
   }
   
   void resume() {
-    if (paused) {
+    if (paused && !stopped) {
       paused = false;
       alSourcePlay(source);
     }
   }
   
   void stop() {
+    stopped = true;
     alSourceStop(source);
   }
   

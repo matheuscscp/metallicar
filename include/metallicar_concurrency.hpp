@@ -70,6 +70,7 @@ class Lock {
     bool trylock();
     void unlock();
     void mutex(const std::function<void()>& callback);
+    void spin(const std::function<void()>& callback);
 };
 
 class Condition {
@@ -83,34 +84,6 @@ class Condition {
     bool wait(uint32_t ms);
     void signal();
     void broadcast();
-};
-
-template <class T>
-class Atomic {
-  private:
-    std::unique_ptr<T> val;
-    Lock lock_;
-  public:
-    template <typename... Args>
-    Atomic(Args&&... args) : val(new T(std::forward<Args>(args)...)) {
-      
-    }
-    
-    ~Atomic() {
-      
-    }
-    
-    void lock() {
-      lock_.mutexlock();
-    }
-    
-    void unlock() {
-      lock_.unlock();
-    }
-    
-    T& value() const {
-      return *(val.get());
-    }
 };
 
 } // namespace metallicar

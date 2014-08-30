@@ -42,4 +42,10 @@ void Lock::mutex(const function<void()>& callback) {
   SDL_UnlockMutex(mutex_);
 }
 
+void Lock::spin(const function<void()>& callback) {
+  while (SDL_TryLockMutex(mutex_));
+  callback();
+  SDL_UnlockMutex(mutex_);
+}
+
 } // namespace metallicar
