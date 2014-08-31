@@ -246,7 +246,7 @@ void Audio::clean() {
   });
 }
 
-void Audio::stopAll() {
+void Audio::clear() {
   playbacksLock.mutex([]() {
     while (playbacks.size()) {
       auto& pbackPair = playbacks.front();

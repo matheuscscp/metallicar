@@ -52,6 +52,7 @@ class Assets {
       return std::dynamic_pointer_cast<AssetClass>(asset->second);
     }
     
+    static void clean();
     static void clear();
 };
 
@@ -160,7 +161,7 @@ class Audio : public Asset {
     static void setSFXVolume(float volume);
     static void setBGMVolume(float volume);
     static void clean();
-    static void stopAll();
+    static void clear();
 };
 
 } // namespace metallicar

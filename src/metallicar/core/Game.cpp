@@ -157,11 +157,13 @@ void Game::close() {
   }
   initialized = false;
   
-  Audio::stopAll();
-  
   // cleaning instance
   delete newInstance;
   delete instance;
+  
+  // assets
+  Audio::clear();
+  Assets::clear();
   
   // libs
   closeOpenAl();
@@ -177,7 +179,7 @@ void Game::run() {
   
   instance = newInstance;
   newInstance = nullptr;
-  Assets::clear();
+  Assets::clean();
   
   Thread updateThread([]() {
     lastUpdate = Time::get();
@@ -198,7 +200,7 @@ void Game::run() {
           delete instance;
           instance = newInstance;
           newInstance = nullptr;
-          Assets::clear();
+          Assets::clean();
         }
       }
       

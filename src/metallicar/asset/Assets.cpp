@@ -14,7 +14,7 @@ namespace metallicar {
 
 map<string, shared_ptr<Asset>> Assets::assets;
 
-void Assets::clear() {
+void Assets::clean() {
   for (auto it = assets.begin(); it != assets.end();) {
     if (it->second.use_count() == 1) {
       assets.erase(it++);
@@ -23,6 +23,10 @@ void Assets::clear() {
       it++;
     }
   }
+}
+
+void Assets::clear() {
+  assets.clear();
 }
 
 } // namespace metallicar
