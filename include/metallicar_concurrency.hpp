@@ -86,6 +86,17 @@ class Condition {
     void broadcast();
 };
 
+class Barrier {
+  private:
+    SDL_cond* condition;
+    SDL_mutex* mutex;
+    unsigned n_threads, blocked;
+  public:
+    Barrier(unsigned n_threads);
+    ~Barrier();
+    void wait();
+};
+
 } // namespace metallicar
 
 #endif /* METALLICAR_CONCURRENCY_HPP_ */
