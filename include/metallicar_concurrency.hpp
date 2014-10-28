@@ -85,6 +85,8 @@ class Condition {
   public:
     Condition();
     ~Condition();
+    void init();
+    void close();
     void wait();
     bool wait(uint32_t ms);
     void signal();
@@ -97,8 +99,10 @@ class Barrier {
     SDL_mutex* mutex;
     unsigned n_threads, blocked;
   public:
-    Barrier(unsigned n_threads);
+    Barrier();
     ~Barrier();
+    void init(unsigned n_threads);
+    void close();
     void wait();
 };
 
