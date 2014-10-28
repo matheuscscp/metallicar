@@ -114,27 +114,46 @@ class Monitor {
         SDL_mutex* mutex;
       public:
         Guard(Monitor<T>& monitor) : mutex(monitor.mutex) {
-          SDL_LockMutex(mutex);
+          if (mutex) {
+            SDL_LockMutex(mutex);
+          }
         }
         
         ~Guard() {
-          SDL_UnlockMutex(mutex);
+          if (mutex) {
+            SDL_UnlockMutex(mutex);
+          }
         }
     };
   private:
-    SDL_mutex* mutex;
     T object;
+    SDL_mutex* mutex;
   public:
     template <typename... Args>
     Monitor(Args&&... args) :
-    mutex(SDL_CreateMutex()),
-    object(std::forward<Args>(args)...)
+    object(std::forward<Args>(args)...),
+    mutex(nullptr)
     {
       
     }
     
     ~Monitor() {
-      SDL_DestroyMutex(mutex);
+      if (mutex) {
+        SDL_DestroyMutex(mutex);
+      }
+    }
+    
+    void init() {
+      if (!mutex) {
+        mutex = SDL_CreateMutex();
+      }
+    }
+    
+    void close() {
+      if (mutex) {
+        SDL_DestroyMutex(mutex);
+        mutex = nullptr;
+      }
     }
     
     T* operator->() {
