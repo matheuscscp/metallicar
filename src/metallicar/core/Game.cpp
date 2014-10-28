@@ -45,7 +45,6 @@ static void closeOpenAl();
 static map<double, list<function<void()>>> renderingBuffer1, renderingBuffer2;
 static map<double, list<function<void()>>>* renderingFrontBuffer;
 static map<double, list<function<void()>>>* renderingBackBuffer;
-static Lock renderingBuffersLock;
 
 static Game* instance;
 static Game* newInstance;
@@ -88,6 +87,20 @@ static void initGlobals() {
   metallicar::alDevice = nullptr;
   metallicar::alContext = nullptr;
   metallicar::alError = "";
+}
+
+// =============================================================================
+// private locks
+// =============================================================================
+
+static Lock renderingBuffersLock;
+
+static void initLocks() {
+  metallicar::renderingBuffersLock.init();
+}
+
+static void closeLocks() {
+  metallicar::renderingBuffersLock.close();
 }
 
 // =============================================================================
@@ -149,6 +162,11 @@ void Game::init() {
     Log::message(Log::Error, alError);
     exit(0);
   }
+  
+  initLocks();
+  
+  Graphics::init();
+  Audio::init();
 }
 
 void Game::close() {
@@ -161,12 +179,16 @@ void Game::close() {
   delete newInstance;
   delete instance;
   
-  // assets
-  Audio::clear();
-  Assets::clear();
+  closeLocks();
   
-  // mutexes
+  Graphics::close();
+  Audio::close();
+  
   Atomic::clear();
+  
+  // assets
+  Assets::clear();
+  Audio::clear();
   
   // libs
   closeOpenAl();

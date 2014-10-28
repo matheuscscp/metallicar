@@ -179,11 +179,11 @@ struct Audio::Playback {
 };
 
 Audio::Audio(Playback* playback) : playback(playback) {
-  
+  playbackLock.init();
 }
 
 Audio::~Audio() {
-  
+  playbackLock.close();
 }
 
 void Audio::pause() {
@@ -214,6 +214,14 @@ void Audio::setVolume(float vol) {
 
 bool Audio::stopped() const {
   return (playback == nullptr);
+}
+
+void Audio::init() {
+  playbacksLock.init();
+}
+
+void Audio::close() {
+  playbacksLock.close();
 }
 
 shared_ptr<Audio> Audio::playSFX(const string& path, int loop, float volume) {

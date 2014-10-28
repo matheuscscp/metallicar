@@ -15,6 +15,8 @@ namespace metallicar {
 
 class Graphics {
   public:
+    static void init();
+    static void close();
     static void initDefaultFunctions();
     
     static void setProjectionUpdater(const std::function<void()>& updater);

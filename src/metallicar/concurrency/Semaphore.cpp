@@ -10,34 +10,60 @@
 
 namespace metallicar {
 
-Semaphore::Semaphore(uint32_t initialValue) :
-semaphore(SDL_CreateSemaphore(initialValue))
-{
+Semaphore::Semaphore() : semaphore(nullptr) {
   
 }
 
 Semaphore::~Semaphore() {
-  SDL_DestroySemaphore(semaphore);
+  if (semaphore) {
+    SDL_DestroySemaphore(semaphore);
+  }
+}
+
+void Semaphore::init(uint32_t initialValue) {
+  if (!semaphore) {
+    semaphore = SDL_CreateSemaphore(initialValue);
+  }
+}
+
+void Semaphore::close() {
+  if (semaphore) {
+    SDL_DestroySemaphore(semaphore);
+    semaphore = nullptr;
+  }
 }
 
 void Semaphore::wait() {
-  SDL_SemWait(semaphore);
+  if (semaphore) {
+    SDL_SemWait(semaphore);
+  }
 }
 
 bool Semaphore::wait(uint32_t ms) {
-  return (SDL_SemWaitTimeout(semaphore, ms) == 0);
+  if (semaphore) {
+    return (SDL_SemWaitTimeout(semaphore, ms) == 0);
+  }
+  return false;
 }
 
 void Semaphore::post() {
-  SDL_SemPost(semaphore);
+  if (semaphore) {
+    SDL_SemPost(semaphore);
+  }
 }
 
 bool Semaphore::trywait() {
-  return (SDL_SemTryWait(semaphore) == 0);
+  if (semaphore) {
+    return (SDL_SemTryWait(semaphore) == 0);
+  }
+  return false;
 }
 
 uint32_t Semaphore::value() {
-  return SDL_SemValue(semaphore);
+  if (semaphore) {
+    return SDL_SemValue(semaphore);
+  }
+  return 0;
 }
 
 } // namespace metallicar

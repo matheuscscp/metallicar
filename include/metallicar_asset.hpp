@@ -152,6 +152,8 @@ class Audio : public Asset {
     void setVolume(float vol);
     bool stopped() const;
     
+    static void init();
+    static void close();
     static std::shared_ptr<Audio> playSFX(
       const std::string& path, int loop = 0, float volume = 1.0f
     );

@@ -24,6 +24,14 @@ static function<void()> prepareFrame([]() {});
 static function<void()> finalizeFrame([]() {});
 static Lock graphicalFunctionsLock;
 
+void Graphics::init() {
+  graphicalFunctionsLock.init();
+}
+
+void Graphics::close() {
+  graphicalFunctionsLock.close();
+}
+
 void Graphics::initDefaultFunctions() {
   metallicar::updateProjection = []() {
     // viewport

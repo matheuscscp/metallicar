@@ -51,8 +51,10 @@ class Semaphore {
   private:
     SDL_sem* semaphore;
   public:
-    Semaphore(uint32_t initialValue);
+    Semaphore();
     ~Semaphore();
+    void init(uint32_t initialValue);
+    void close();
     void wait();
     bool wait(uint32_t ms);
     void post();
@@ -66,6 +68,8 @@ class Lock {
   public:
     Lock();
     ~Lock();
+    void init();
+    void close();
     void mutexlock();
     void spinlock();
     bool trylock();
