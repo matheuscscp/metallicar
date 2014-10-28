@@ -134,44 +134,30 @@ class Monitor {
     }
     
     template <typename Method, typename... Args>
-    typename std::result_of<Method(T*, Args...)>::type func(Method method, Args&&... args) {
-      SDL_LockMutex(mutex);
-      typename std::result_of<Method(T*, Args...)>::type ret = (object.*method)(std::forward<Args>(args)...);
-      SDL_UnlockMutex(mutex);
-      return ret;
-    }
-    
-    template <typename Method, typename... Args>
-    void proc(Method method, Args&&... args) {
-      SDL_LockMutex(mutex);
-      (object.*method)(std::forward<Args>(args)...);
-      SDL_UnlockMutex(mutex);
+    typename std::result_of<Method(T*, Args...)>::type call(Method method, Args&&... args) {
+      Guard guard(*this);
+      return (object.*method)(std::forward<Args>(args)...);
     }
 };
 
 class Atomic {
   private:
-    static std::map<void*, SDL_mutex*> mutexes;
+    class Guard {
+      private:
+        SDL_mutex* mutex;
+      public:
+        Guard(void* function);
+        ~Guard();
+    };
     
-    static SDL_mutex* getMutex(void* function);
+    static std::map<void*, SDL_mutex*> mutexes;
   public:
     static void clear();
     
     template <typename Function, typename... Args>
-    static typename std::result_of<Function(Args...)>::type func(Function function, Args&&... args) {
-      SDL_mutex* mutex = getMutex((void*)function);
-      SDL_LockMutex(mutex);
-      typename std::result_of<Function(Args...)>::type ret = (*function)(std::forward<Args>(args)...);
-      SDL_UnlockMutex(mutex);
-      return ret;
-    }
-    
-    template <typename Procedure, typename... Args>
-    static void proc(Procedure procedure, Args&&... args) {
-      SDL_mutex* mutex = getMutex((void*)procedure);
-      SDL_LockMutex(mutex);
-      (*procedure)(std::forward<Args>(args)...);
-      SDL_UnlockMutex(mutex);
+    static typename std::result_of<Function(Args...)>::type call(Function function, Args&&... args) {
+      Guard guard((void*)function);
+      return (*function)(std::forward<Args>(args)...);
     }
 };
 

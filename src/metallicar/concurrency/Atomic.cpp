@@ -14,14 +14,21 @@ namespace metallicar {
 
 map<void*, SDL_mutex*> Atomic::mutexes;
 
-SDL_mutex* Atomic::getMutex(void* function) {
+Atomic::Guard::Guard(void* function) {
   auto it = mutexes.find(function);
   if (it != mutexes.end()) {
-    return it->second;
+    mutex = it->second;
   }
-  auto& mutex = mutexes[function];
-  mutex = SDL_CreateMutex();
-  return mutex;
+  else {
+    auto& mutex = mutexes[function];
+    mutex = SDL_CreateMutex();
+    this->mutex = mutex;
+  }
+  SDL_LockMutex(mutex);
+}
+
+Atomic::Guard::~Guard() {
+  SDL_UnlockMutex(mutex);
 }
 
 void Atomic::clear() {
