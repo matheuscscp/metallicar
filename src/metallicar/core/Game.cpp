@@ -165,6 +165,9 @@ void Game::close() {
   Audio::clear();
   Assets::clear();
   
+  // mutexes
+  Atomic::clear();
+  
   // libs
   closeOpenAl();
   SDLNet_Quit();

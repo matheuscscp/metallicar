@@ -183,7 +183,7 @@ class ProjUpdater : public ComponentGameObject::Component {
     }
 };
 
-int main(int argc, char* argv[]) {
+int main(int argc, char** argv) {
   Game::init();
   Window::init();
   Graphics::initDefaultFunctions();
